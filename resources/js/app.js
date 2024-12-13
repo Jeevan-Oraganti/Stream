@@ -10,9 +10,10 @@ import ContactButton from "./components/ContactButton.vue";
 import ServicesButton from "./components/ServicesButton.vue";
 import AboutUsButton from "./components/AboutUsButton.vue";
 import Accordian from "./components/Accordian.vue";
-import Pinned from "./components/Pinned.vue";
 import Tippy from "tippy.js";
 import 'tippy.js/dist/tippy.css';
+import Tooltippy from "./components/Tooltippy.vue";
+import PinnedToTop from "./components/PinnedToTop.vue";
 
 
 Vue.component("Carousel", Carousel);
@@ -24,18 +25,21 @@ Vue.component("ContactButton", ContactButton);
 Vue.component("ServicesButton", ServicesButton);
 Vue.component("AboutUsButton", AboutUsButton);
 Vue.component("Accordion", Accordian);
-Vue.component("Pinned", Pinned);
+Vue.component("PinnedToTop", PinnedToTop);
+Vue.component("Tooltippy", Tooltippy);
+
+
+Vue.directive('tooltip', {
+    bind(elem, binding) {
+
+        Tippy(elem, {
+            content: binding.value,
+            placement: binding.arg,
+        })
+    }
+});
 
 new Vue({
     el: "#app",
     router,
-
-    mounted() {
-        document.querySelectorAll('[data-tooltip]').forEach(elem => {
-            Tippy(elem, {
-                placement: 'top',
-                content: elem.dataset.tooltip,
-            })
-        })
-    }
 });

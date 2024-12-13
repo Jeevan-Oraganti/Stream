@@ -1,7 +1,18 @@
 <template>
     <div class="container mx-auto py-8 px-4 bg-gray-900 text-white rounded-lg">
-        <h1 class="text-xl text-center font-semibold mb-6" title="Hardcode">Welcome to the <span data-tooltip="I am using a tooltip">Stream</span></h1>
+        <h1 class="text-xl text-center font-semibold mb-6" title="Hardcoding">
 
+            <span v-tooltip:top="'Welcome back'">Welcome to the </span>
+            <span v-tooltip:right="'to the stream'">Stream </span>
+
+            <span data-tooltip-name="products">Products</span>
+
+            <tooltippy name="products" placement="bottom">
+                <h1>Products</h1>
+                <p class="text-xs">Lorem epsum</p>
+            </tooltippy>
+
+        </h1>
         <div class="columns is-centered">
             <div class="column is-8">
                 <div class="mb-8">
@@ -27,7 +38,7 @@ import Status from '../models/Status';
 import AddToStream from "../components/AddToStream.vue";
 
 export default {
-    components: { AddToStream },
+    components: {AddToStream},
     mounted() {
         console.log('Home component mounted.')
     },
