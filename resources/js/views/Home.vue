@@ -37,20 +37,21 @@
 
                 <add-to-stream @completed="addStatus"></add-to-stream>
             </div>
-            <conditional-render when-hidden="#js-forum-reply-button">
-
-                <div class="participate-button fixed z-50">
-                    <a class="bg-white hover:bg-blue-700 rounded-full w-16 h-16 text-center flex items-center justify-center shadow-lg"
-                       @click="$modal.show('add-reply-modal')">
-                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
-                             class="w-6 h-6 text-white">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
-                        </svg>
-                    </a>
-                </div>
-
-            </conditional-render>
         </div>
+
+        <conditional-render when-hidden="#push-to-stream">
+            <div class="participate-button fixed bottom-8 right-8 z-50">
+                <a class="bg-white hover:bg-gray-200 rounded-full w-16 h-16 text-center flex items-center justify-center shadow-lg"
+                   @click="scrollToPush">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-700" fill="none"
+                         viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                    </svg>
+                </a>
+            </div>
+        </conditional-render>
+
+
     </div>
 </template>
 
@@ -61,7 +62,7 @@ import Status from '../models/Status';
 import AddToStream from "../components/AddToStream.vue";
 
 export default {
-    components: { AddToStream },
+    components: {AddToStream},
     mounted() {
         console.log('Home component mounted.')
     },
@@ -88,7 +89,18 @@ export default {
             alert('Your status has been added to the stream!');
 
             window.scrollTo(0, 0);
+        },
+        scrollToPush() {
+            const element = document.getElementById('push-to-stream');
+            if (element) {
+                element.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'start',
+                })
+            }
+            ;
         }
     }
 }
 </script>
+

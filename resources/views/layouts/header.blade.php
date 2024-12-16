@@ -37,7 +37,7 @@
         <div class="container has-text-centered">
             <carousel :autoplay="true">
                 <img src="https://placehold.co/600x400/orange/white" alt="Christmas"
-                    style="width: 500px; height: auto;">
+                     style="width: 500px; height: auto;">
                 <img src="https://placehold.co/600x400/green/white" alt="Christmas" style="width: 500px; height: auto;">
                 <img src="https://placehold.co/600x400/black/white" alt="Christmas" style="width: 500px; height: auto;">
                 <img src="https://placehold.co/600x400/red/white" alt="Christmas" style="width: 500px; height: auto;">
@@ -51,8 +51,10 @@
             <div class="columns is-centered">
                 <div class="column is-one-third has-text-centered">
                     <div class="box p-4 bg-gradient-to-r text-white rounded-lg shadow-xl">
-                        <h2 class="text-4xl font-extrabold mb-2 animate__animated animate__fadeIn">
-                            <count :to="299"></count>
+                        <h2 class="text-4xl font-bold mb-2">
+                            <span data-tooltip-name="count">
+                            <count :to="3485"></count>
+                            </span>
                         </h2>
                         <p class="text-xl font-medium mt-2">Streams happening per Day</p>
                     </div>
@@ -60,6 +62,11 @@
             </div>
         </div>
     </div>
+
+    <tooltippy name="count" placement="top">
+        <h1>3485</h1>
+        <p class="text-xs">Streams per day</p>
+    </tooltippy>
 
     <!-- Hero footer: will stick at the top when scrolled -->
 
@@ -71,25 +78,25 @@
                         <router-link to="/" exact v-slot="{ href, navigate, isActive, isExactActive }" custom>
                             <li :class="{ 'is-active': isActive, 'exact-active': isExactActive }" class="relative">
                                 <a :href="href" @click="navigate" class="block py-2 px-4"
-                                    :class="{ 'text-blue-500': isActive, 'text-gray-700': !isActive }">Home</a>
+                                   :class="{ 'text-blue-500': isActive, 'text-gray-700': !isActive }">Home</a>
                             </li>
                         </router-link>
                         <router-link to="/about" v-slot="{ href, navigate, isActive, isExactActive }" custom>
                             <li :class="{ 'is-active': isActive, 'exact-active': isExactActive }" class="relative">
                                 <a :href="href" @click="navigate" class="block py-2 px-4"
-                                    :class="{ 'text-blue-500': isActive, 'text-gray-700': !isActive }">About</a>
+                                   :class="{ 'text-blue-500': isActive, 'text-gray-700': !isActive }">About</a>
                             </li>
                         </router-link>
                         <router-link to="/faq" v-slot="{ href, navigate, isActive, isExactActive }" custom>
                             <li :class="{ 'is-active': isActive, 'exact-active': isExactActive }" class="relative">
                                 <a :href="href" @click="navigate" class="block py-2 px-4"
-                                    :class="{ 'text-blue-500': isActive, 'text-gray-700': !isActive }">FAQ</a>
+                                   :class="{ 'text-blue-500': isActive, 'text-gray-700': !isActive }">FAQ</a>
                             </li>
                         </router-link>
                         <router-link to="/contact" v-slot="{ href, navigate, isActive, isExactActive }" custom>
                             <li :class="{ 'is-active': isActive, 'exact-active': isExactActive }" class="relative">
                                 <a :href="href" @click="navigate" class="block py-2 px-4"
-                                    :class="{ 'text-blue-500': isActive, 'text-gray-700': !isActive }">Contact</a>
+                                   :class="{ 'text-blue-500': isActive, 'text-gray-700': !isActive }">Contact</a>
                             </li>
                         </router-link>
                     </ul>
