@@ -2,12 +2,12 @@
     <div class="container">
         <div class="row">
             <div class="col-md-4 mb-3">
-                <h5>About Us</h5>
+                <h5 class="font-bold">About Us</h5>
                 <p>We are a leading company in providing streaming services. Our mission is to deliver high-quality
                     content to our users.</p>
             </div>
             <div class="col-md-4 mb-3">
-                <h5>Quick Links</h5>
+                <h5 class="font-bold">Quick Links</h5>
                 <ul class="list-unstyled">
                     <router-link to="/" exact v-slot="{ href, navigate, isActive, isExactActive }" custom>
                         <li :class="{ 'is-active': isActive, 'exact-active': isExactActive }">
@@ -29,7 +29,7 @@
                 </ul>
             </div>
             <div class="col-md-4 mb-3">
-                <h5>Contact Us</h5>
+                <h5 class="font-bold">Contact Us</h5>
                 <p>Email: <a href="mailto:info@streamingservice.com" class="text-info">info@streamingservice.com</a></p>
                 <p>Phone: <a href="tel:+1234567890" class="text-info">+123 456 7890</a></p>
                 <p>Address: 123 Streaming St, Media City, Country</p>

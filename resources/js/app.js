@@ -11,9 +11,9 @@ import ServicesButton from "./components/ServicesButton.vue";
 import AboutUsButton from "./components/AboutUsButton.vue";
 import Accordian from "./components/Accordian.vue";
 import Tippy from "tippy.js";
-import 'tippy.js/dist/tippy.css';
 import Tooltippy from "./components/Tooltippy.vue";
 import PinnedToTop from "./components/PinnedToTop.vue";
+import 'tippy.js/dist/tippy.css';
 
 
 Vue.component("Carousel", Carousel);
