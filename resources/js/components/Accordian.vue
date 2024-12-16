@@ -1,6 +1,6 @@
 <template>
     <div class="container mx-auto py-8 px-4 bg-gray-900 text-white rounded-lg">
-        <h1 class="text-3xl text-center font-semibold mb-6">Frequently Asked Questions</h1>
+        <h1 class="text-2xl text-center font-semibold mb-6 mt-4">Frequently Asked Questions</h1>
 
         <div class="mb-8 px-6">
             <div v-for="(question, index) in questions" :key="question.title" class="flex items-start mb-6">

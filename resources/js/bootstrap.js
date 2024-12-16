@@ -4,11 +4,13 @@ import axios from "axios";
 import Form from "./utilities/Form";
 import PortalVue from "portal-vue";
 import VModal from "vue-js-modal";
+import inView from "in-viewport";
 
 window.Vue = Vue;
 Vue.use(VueRouter);
 Vue.use(PortalVue);
 Vue.use(VModal);
+Vue.use(inView);
 
 window.axios = axios;
 

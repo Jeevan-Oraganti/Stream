@@ -1,15 +1,25 @@
 <template>
     <div class="container mx-auto py-8 px-4 bg-gray-900 text-white rounded-lg">
-        <h1 class="text-xl text-center font-semibold mb-6" title="Hardcoding">
+        <h1 class="text-2xl text-center font-semibold mb-6 mt-4" title="Hardcoding">
 
-            <span v-tooltip:top="'Welcome back'">Welcome to the </span>
-            <span v-tooltip:right="'to the stream'">Stream </span>
+            <span data-tooltip-name="Welcome">Welcome to the </span>
+            <span data-tooltip-name="stream">Stream </span>
 
             <span data-tooltip-name="products">Products</span>
 
+            <tooltippy name="Welcome" placement="top">
+                <h1>Welcome</h1>
+                <p class="text-xs">Welcome to the Stream</p>
+            </tooltippy>
+
+            <tooltippy name="stream" placement="top">
+                <h1>Stream</h1>
+                <p class="text-xs">Stream is a platform for building scalable news feeds and activity streams.</p>
+            </tooltippy>
+
             <tooltippy name="products" placement="bottom">
                 <h1>Products</h1>
-                <p class="text-xs">Lorem epsum</p>
+                <p class="text-xs">Products are the items or services that are offered by Stream.</p>
             </tooltippy>
 
         </h1>
@@ -38,7 +48,7 @@ import Status from '../models/Status';
 import AddToStream from "../components/AddToStream.vue";
 
 export default {
-    components: {AddToStream},
+    components: { AddToStream },
     mounted() {
         console.log('Home component mounted.')
     },

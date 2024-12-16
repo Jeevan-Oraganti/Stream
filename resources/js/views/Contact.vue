@@ -1,28 +1,28 @@
 <template>
     <div>
         <div class="container py-4 px-16 bg-gray-900 text-white rounded-lg">
-            <h1 class="text-2xl text-center font-semibold mb-6 mt-6">Contact Us</h1>
+            <h1 class="text-2xl text-center font-semibold mb-6 mt-4">Contact Us</h1>
 
             <form @submit.prevent="submitForm">
                 <div class="mb-4">
                     <label for="name" class="block text-lg text-gray-200 mb-2">Your Name</label>
                     <input type="text" id="name" v-model="form.name"
-                        class="w-full px-4 py-2 bg-gray-800 text-white border border-gray-600 rounded-md"
-                        placeholder="Your Name" required>
+                           class="w-full px-4 py-2 bg-gray-800 text-white border border-gray-600 rounded-md"
+                           placeholder="Your Name" required>
                 </div>
 
                 <div class="mb-4">
                     <label for="email" class="block text-lg text-gray-200 mb-2">Your Email</label>
                     <input type="email" id="email" v-model="form.email"
-                        class="w-full px-4 py-2 bg-gray-800 text-white border border-gray-600 rounded-md"
-                        placeholder="Your Email" required>
+                           class="w-full px-4 py-2 bg-gray-800 text-white border border-gray-600 rounded-md"
+                           placeholder="Your Email" required>
                 </div>
 
                 <div class="mb-4">
                     <label for="message" class="block text-lg text-gray-200 mb-2">Your Message</label>
                     <textarea id="message" v-model="form.message"
-                        class="w-full px-4 py-2 bg-gray-800 text-white border border-gray-600 rounded-md"
-                        placeholder="Your Message" rows="4" required></textarea>
+                              class="w-full px-4 py-2 bg-gray-800 text-white border border-gray-600 rounded-md"
+                              placeholder="Your Message" rows="4" required></textarea>
                 </div>
 
                 <div class="flex justify-between mb-6">
@@ -31,7 +31,7 @@
                     </button>
 
                     <a @click="cancel"
-                        class="button text-white border-2 border-white hover:bg-white hover:text-gray-900 px-4 py-2 rounded-md">
+                       class="button text-white border-2 border-white hover:bg-white hover:text-gray-900 px-4 py-2 rounded-md">
                         Cancel
                     </a>
                 </div>

@@ -2,7 +2,7 @@
     <div>
             <div class="container py-4 px-16 bg-gray-900 text-white rounded-lg">
                 <!-- Modal Header -->
-                <h1 class="text-2xl text-center font-semibold mb-6 mt-6">About Us</h1>
+                <h1 class="text-2xl text-center font-semibold mb-6 mt-4">About Us</h1>
 
                 <!-- Company Introduction -->
                 <div class="mb-6">

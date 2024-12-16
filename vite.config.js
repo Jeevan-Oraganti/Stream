@@ -1,6 +1,7 @@
 import { defineConfig } from "vite";
 import laravel from "laravel-vite-plugin";
 import vue from "@vitejs/plugin-vue2";
+import { nodePolyfills } from "vite-plugin-node-polyfills"; // Corrected import statement
 
 export default defineConfig({
     resolve: {
@@ -30,6 +31,7 @@ export default defineConfig({
                 },
             },
         }),
+        nodePolyfills(), // Add the polyfill plugin to your configuration
     ],
     css: {
         preprocessorOptions: {
