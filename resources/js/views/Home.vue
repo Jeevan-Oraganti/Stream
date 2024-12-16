@@ -1,5 +1,5 @@
 <template>
-    <div class="container mx-auto py-8 px-4 bg-gray-900 text-white rounded-lg">
+    <div id="home" class="container mx-auto py-8 px-4 bg-gray-900 text-white rounded-lg">
         <h1 class="text-2xl text-center font-semibold mb-6 mt-4" title="Hardcoding">
 
             <span data-tooltip-name="Welcome">Welcome to the </span>
@@ -37,6 +37,19 @@
 
                 <add-to-stream @completed="addStatus"></add-to-stream>
             </div>
+            <conditional-render when-hidden="#js-forum-reply-button">
+
+                <div class="participate-button fixed z-50">
+                    <a class="bg-white hover:bg-blue-700 rounded-full w-16 h-16 text-center flex items-center justify-center shadow-lg"
+                       @click="$modal.show('add-reply-modal')">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                             class="w-6 h-6 text-white">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                        </svg>
+                    </a>
+                </div>
+
+            </conditional-render>
         </div>
     </div>
 </template>

@@ -62,7 +62,7 @@
     </div>
 
     <!-- Hero footer: will stick at the top when scrolled -->
-    {{-- <menu-view></menu-view>--}}
+
     <pinned-to-top>
         <div ref="menu-banner-meta" class="hero-foot">
             <nav class="tabs is-boxed is-fullwidth">

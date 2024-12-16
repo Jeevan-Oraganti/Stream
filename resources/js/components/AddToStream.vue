@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div class="message">
+        <div id="js-forum-reply-button" class="message">
             <div class="message-header">
                 Push to the Stream...
             </div>
