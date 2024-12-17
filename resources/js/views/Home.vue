@@ -51,7 +51,6 @@
             </div>
         </conditional-render>
 
-
     </div>
 </template>
 
@@ -98,9 +97,8 @@ export default {
                     block: 'start',
                 })
             }
-            ;
-        }
+            this.$forceUpdate();
+        },
     }
 }
 </script>
-

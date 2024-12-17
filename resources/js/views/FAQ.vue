@@ -76,7 +76,6 @@ export default {
             } else {
                 question.isOpen = !question.isOpen
             }
-
             this.$forceUpdate();
         }
     },
