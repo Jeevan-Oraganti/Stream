@@ -1,7 +1,7 @@
 import { defineConfig } from "vite";
 import laravel from "laravel-vite-plugin";
 import vue from "@vitejs/plugin-vue2";
-import { nodePolyfills } from "vite-plugin-node-polyfills"; // Corrected import statement
+import { nodePolyfills } from "vite-plugin-node-polyfills";
 
 export default defineConfig({
     resolve: {
@@ -10,7 +10,7 @@ export default defineConfig({
         },
     },
     build: {
-        sourcemap: true, // Source map generation must be turned on
+        sourcemap: true,
         commonjsOptions: {
             /**
              * Setting to make prod-build working with vue-slider-component

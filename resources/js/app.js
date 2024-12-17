@@ -11,7 +11,7 @@ import ServicesButton from "./components/footer/ServicesButton.vue";
 import AboutUsButton from "./components/footer/AboutUsButton.vue";
 import Count from "./components/Count.vue";
 import ConditionalRender from "./components/ConditionalRender.vue";
-import Accordian from "./views/Accordian.vue";
+import Accordian from "./views/FAQ.vue";
 import Tooltippy from "./components/Tooltippy.vue";
 import PinnedToTop from "./components/PinnedToTop.vue";
 import 'tippy.js/dist/tippy.css';

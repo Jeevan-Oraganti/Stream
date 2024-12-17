@@ -21,7 +21,7 @@
                     </svg>
                 </button>
 
-                <div class="leading-loose flex-1">
+                <div class="leading-loose">
                     <p v-text="question.title" class="mb-3 text-lg font-semibold text-gray-200 cursor-pointer"
                        @click="toggle(question)">
                     </p>
