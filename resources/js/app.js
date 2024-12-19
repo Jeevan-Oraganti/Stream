@@ -12,7 +12,9 @@ import AboutUsButton from "./components/footer/AboutUsButton.vue";
 import Count from "./components/Count.vue";
 import ConditionalRender from "./components/ConditionalRender.vue";
 import Dropdown from "./components/Dropdown.vue";
-import Accordian from "./views/FAQ.vue";
+import Tabs from "./components/Tabs.vue";
+import Tab from "./components/Tab.vue";
+import FAQ from "./views/FAQ.vue";
 import Tooltippy from "./components/Tooltippy.vue";
 import PinnedToTop from "./components/PinnedToTop.vue";
 import 'tippy.js/dist/tippy.css';
@@ -29,9 +31,11 @@ Vue.component("AboutUsButton", AboutUsButton);
 Vue.component("ConditionalRender", ConditionalRender);
 Vue.component("Dropdown", Dropdown);
 Vue.component("Count", Count);
-Vue.component("Accordion", Accordian);
+Vue.component("FAQ", FAQ);
 Vue.component("PinnedToTop", PinnedToTop);
 Vue.component("Tooltippy", Tooltippy);
+Vue.component("Tabs", Tabs);
+Vue.component("Tab", Tab);
 
 
 new Vue({

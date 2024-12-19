@@ -1,12 +1,13 @@
 <template>
-    <div class="dropdown relative inline-block">
+    <div class="dropdown inline">
         <div class="dropdown-trigger top-0 left-0 text-white mt-4" @click="isOpen = !isOpen">
             <slot name="trigger"></slot>
         </div>
 
         <transition name="pop-out-quick">
             <div v-show="isOpen"
-                 class="absolute bg-gray-900 mt-2 py-2 rounded shadow text-white z-10">
+                 class="absolute bg-gray-900 mt-2 py-2 rounded shadow text-white z-10"
+                 @click="isOpen = !isOpen">
                 <slot></slot>
             </div>
         </transition>

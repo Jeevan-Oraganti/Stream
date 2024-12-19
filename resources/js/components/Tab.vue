@@ -1,13 +1,19 @@
 <template>
 
+    <div role="tabpanel" v-show="show">
+        <slot></slot>
+    </div>
+
 </template>
 
 <script>
 export default {
-name: "Tab"
+    props: ['title'],
+
+    data() {
+        return {
+            show: false
+        };
+    }
 }
 </script>
-
-<style scoped>
-
-</style>

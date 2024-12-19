@@ -13,4 +13,6 @@ Route::get('/statuses', [StatusController::class, 'index']);
 
 Route::post('/statuses', [StatusController::class, 'store']);
 
-Route::get('faq', [StatusController::class, 'faq']);
+Route::get('/tabs', function () {
+    return view('layouts.tabs');
+});

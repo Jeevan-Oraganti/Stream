@@ -16,20 +16,22 @@
 </head>
 
 <body>
-    <div id="app">
-        @include('layouts.header')
+<div id="app">
+    @include('layouts.header')
 
-        <section class="section">
-            <div class="container">
+    @include('layouts.tabs')
 
-                <router-view></router-view>
+    <section class="section">
+        <div class="container">
 
-            </div>
-        </section>
+            <router-view></router-view>
 
-        @include('layouts.footer')
+        </div>
+    </section>
 
-    </div>
+    @include('layouts.footer')
+
+</div>
 </body>
 
 </html>

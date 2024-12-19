@@ -4,15 +4,17 @@
             About Us
         </a>
 
-        <modal name="about-us-modal" height="auto" width="50%" :pivotY="1" class="rounded-lg shadow-lg">
+        <modal name="about-us-modal" height="auto" width="50%" :pivotY=".5" class="rounded-lg shadow-lg">
             <div class="container py-4 px-16 bg-gray-900 text-white rounded-lg">
                 <h1 class="text-2xl text-center font-semibold mb-6 mt-6">About Us</h1>
 
                 <div class="mb-6">
                     <h3 class="text-xl font-bold text-gray-200">Our Mission</h3>
-                    <p class="text-sm text-gray-400 mt-2">We strive to deliver high-quality digital solutions that help
+                    <p class="text-sm text-gray-400 mt-2">
+                        We strive to deliver high-quality digital solutions that help
                         businesses thrive in a fast-paced world. Our mission is to provide innovative and impactful web
-                        and mobile services to empower our clients.</p>
+                        and mobile services to empower our clients.
+                    </p>
                 </div>
 
                 <div class="mb-6">
@@ -30,17 +32,20 @@
                     <h3 class="text-xl font-bold text-gray-200">Our Values</h3>
                     <ul class="list-disc pl-6 mt-4">
                         <li class="text-sm text-gray-400">Innovation: We constantly strive to innovate and offer
-                            creative solutions.</li>
+                            creative solutions.
+                        </li>
                         <li class="text-sm text-gray-400">Integrity: We value honesty and transparency in all our
-                            dealings.</li>
+                            dealings.
+                        </li>
                         <li class="text-sm text-gray-400">Customer-Centric: We put our clients' needs at the heart of
-                            everything we do.</li>
+                            everything we do.
+                        </li>
                     </ul>
                 </div>
 
                 <div class="flex justify-end">
                     <a @click="cancel"
-                        class="button text-white border-2 border-white hover:bg-white hover:text-gray-900 px-4 py-2 mb-6 rounded-md">
+                       class="button text-white border-2 border-white hover:bg-white hover:text-gray-900 px-4 py-2 mb-6 rounded-md">
                         Close
                     </a>
                 </div>

@@ -5,15 +5,15 @@
             <div class="container">
                 <div class="navbar-brand">
                     <div>
-                        <dropdown>
+                        <dropdown class="w-full">
                             <template v-slot:trigger>
                                 <button class="text-black font-bold uppercase">My Stream</button>
                             </template>
 
-                            <a href="#" class="text-sm pl-4 pr-14 py-1 hover:bg-gray-500 rounded-md">Home</a>
-                            <a href="#" class="text-sm pl-4 pr-14 py-1 hover:bg-gray-500 rounded-md">About</a>
-                            <a href="#" class="text-sm pl-4 pr-14 py-1 hover:bg-gray-500 rounded-md">Support</a>
-                            <a href="#" class="text-sm pl-4 pr-14 py-1 hover:bg-gray-500 rounded-md">Contact</a>
+                            <a href="/" class="text-sm pl-4 pr-14 py-1 hover:bg-gray-500 rounded-md">Home</a>
+                            <a href="#/about" class="text-sm pl-4 pr-14 py-1 hover:bg-gray-500 rounded-md">About</a>
+                            <a href="#/faq" class="text-sm pl-4 pr-14 py-1 hover:bg-gray-500 rounded-md">FAQ</a>
+                            <a href="#/contact" class="text-sm pl-4 pr-14 py-1 hover:bg-gray-500 rounded-md">Contact</a>
                         </dropdown>
                     </div>
                     <span class="navbar-burger" data-target="navbarMenuHeroA">
