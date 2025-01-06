@@ -1,6 +1,6 @@
 <footer class="bg-gray-800 text-blue-100 py-4">
     <div class="container">
-        <div class="row">
+        <div class="row ml-4 ">
             <div class="col-md-4 mb-3">
                 <h5 class="font-bold">About Us</h5>
                 <p>We are a leading company in providing streaming services. Our mission is to deliver high-quality

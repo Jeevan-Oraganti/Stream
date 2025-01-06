@@ -9,8 +9,8 @@ import 'flickity/dist/flickity.min.css';
 
 export default {
     props: {
-        wraparound: { type: Boolean, default: true },
-        autoplay: { type: Boolean, default: false }
+        wraparound: {type: Boolean, default: true},
+        autoplay: {type: Boolean, default: false}
     },
     mounted() {
         new Flickity(this.$el, {
@@ -19,7 +19,6 @@ export default {
             cellAlign: 'left',
             contain: true
         });
-        console.log('Carousel component mounted.');
     }
 }
 </script>

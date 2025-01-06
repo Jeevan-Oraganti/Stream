@@ -2,7 +2,7 @@
     <div @mouseover="active = true" @mouseout="active = false" class="relative">
 
         <a href="/podcasts"
-           class="block md:px-8 md:flex-1 uppercase text-transparent-50 font-bold hover:text-white">
+           class="block md:px-8 md:flex-1 uppercase text-gray-300 font-bold hover:text-white">
             Podcasts
         </a>
 

@@ -8,25 +8,25 @@
             <span data-tooltip-name="products">Products</span>
 
             <tooltippy name="Welcome" placement="top">
-                <h1>Welcome</h1>
+                <h1 class="text-xl font-bold">Welcome</h1>
                 <p class="text-xs">Welcome to the Stream</p>
             </tooltippy>
 
             <tooltippy name="stream" placement="top">
-                <h1>Stream</h1>
+                <h1 class="text-xl font-bold">Stream</h1>
                 <p class="text-xs">Stream is a platform for building scalable news feeds and activity streams.</p>
             </tooltippy>
 
             <tooltippy name="products" placement="bottom">
-                <h1>Products</h1>
+                <h1 class="text-xl font-bold">Products</h1>
                 <p class="text-xs">Products are the items or services that are offered by Stream.</p>
             </tooltippy>
-
         </h1>
         <div class="columns is-centered">
             <div class="column is-8">
                 <div class="mb-8">
-                    <div v-for="status in statuses" :key="status.id" class="bg-gray-800 p-4 rounded-lg mb-4">
+                    <div v-for="status in statuses" :key="status.id"
+                         class="transition-transform duration-300 hover:scale-105 border border-gray-500 mb-12 rounded-xl p-4 rounded-lg mb-4">
                         <div class="flex justify-between items-center mb-3">
                             <p class="text-lg font-medium">{{ status.user.name }} said...</p>
                             <p class="text-sm text-gray-400">{{ status.created_at | ago | capitalize }}</p>
@@ -62,9 +62,6 @@ import AddToStream from "../components/AddToStream.vue";
 
 export default {
     components: {AddToStream},
-    mounted() {
-        console.log('Home component mounted.')
-    },
     data() {
         return {
             statuses: []

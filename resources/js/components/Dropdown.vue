@@ -1,6 +1,6 @@
 <template>
     <div class="dropdown inline">
-        <div class="dropdown-trigger top-0 left-0 text-white mt-4" @click="isOpen = !isOpen">
+        <div class="dropdown-trigger absolute -top-8 left-3 text-white mt-4" @click="isOpen = !isOpen">
             <slot name="trigger"></slot>
         </div>
 

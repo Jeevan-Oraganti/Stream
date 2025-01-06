@@ -16,22 +16,22 @@
 </head>
 
 <body>
-<div id="app">
-    @include('layouts.header')
+    <div id="app" class="bg-gradient-to-r from-gray-800 via-gray-700 to-gray-600">
+        @include('layouts.header')
 
-    @include('layouts.tabs')
+        <section class="section">
+            <div class="container">
 
-    <section class="section">
-        <div class="container">
+                <router-view></router-view>
 
-            <router-view></router-view>
+            </div>
+        </section>
 
-        </div>
-    </section>
+        @include('layouts.tabs')
 
-    @include('layouts.footer')
+        @include('layouts.footer')
 
-</div>
+    </div>
 </body>
 
 </html>

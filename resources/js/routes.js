@@ -3,7 +3,7 @@ import VueRouter from "vue-router";
 import Home from "./views/Home.vue";
 import About from "./views/About.vue";
 import Contact from "./views/Contact.vue";
-import Accordian from "./views/FAQ.vue";
+import FAQ from "./views/FAQ.vue";
 
 
 let routes = [
@@ -17,7 +17,7 @@ let routes = [
     },
     {
         path: "/faq",
-        component: Accordian,
+        component: FAQ,
     },
     {
         path: "/contact",

@@ -35,7 +35,7 @@ Vue.component("FAQ", FAQ);
 Vue.component("PinnedToTop", PinnedToTop);
 Vue.component("Tooltippy", Tooltippy);
 Vue.component("Tabs", Tabs);
-Vue.component("Tab", Tab);
+Vue.component("Tab", Tab)
 
 
 new Vue({
