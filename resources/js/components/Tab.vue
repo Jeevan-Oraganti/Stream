@@ -14,6 +14,11 @@ export default {
         return {
             show: false
         };
+    },
+    methods: {
+        selectTab() {
+            this.$emit('tab-selected', this.title);
+        }
     }
 }
 </script>
