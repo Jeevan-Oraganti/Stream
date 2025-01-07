@@ -3,25 +3,25 @@
         <!-- Tab Navigation -->
         <ul class="flex mb-4 border-b border-gray-400 justify-around" role="tablist">
             <li v-for="(tab, index) in tabs" :key="index" class="px-4 py-2 cursor-pointer" :class="{
-                'border border-b-0 rounded-t-lg bg-white shadow-md': tab === activeTab,
-                'hover:bg-gray-200 hover:rounded-t-lg': tab !== activeTab
+                'border border-b-0 rounded-t-lg bg-white text-black': tab === activeTab,
+                'hover:bg-gray-300 hover:rounded-t-lg hover:text-black': tab !== activeTab
             }" :style="tab === activeTab ? 'margin-bottom: -1px' : ''" role="presentation">
-                <button v-text="tab.title" :class="{ 'text-black font-bold': tab === activeTab }"
-                    class="focus:outline-none text-gray-300" role="tab" :aria-selected="tab === activeTab"
+                <button v-text="tab.title" :class="{ 'font-bold': tab === activeTab }"
+                    class="focus:outline-none" role="tab" :aria-selected="tab === activeTab"
                     @click="selectTab(tab)"></button>
             </li>
         </ul>
 
         <!-- Tab Content -->
         <div v-if="loading" class="text-center p-4">
-            <span class="text-gray-700">Loading...</span>
+            <span class="text-white">Loading...</span>
         </div>
         <div v-else-if="activeTabContent" class="p-4 rounded-lg shadow" role="tabpanel">
             <div>
                 <h2 class="text-2xl font-bold mb-4" v-text="activeTabContent.title"></h2>
-                <p class="mb-4 text-gray-100" v-text="activeTabContent.content"></p>
+                <p class="mb-4 text-white" v-text="activeTabContent.content"></p>
                 <ul class="list-disc pl-6">
-                    <li v-for="(item, index) in activeTabContent.items" :key="index" class="mb-2 text-gray-100">
+                    <li v-for="(item, index) in activeTabContent.items" :key="index" class="mb-2 text-white">
                         {{ item }}
                     </li>
                 </ul>
@@ -84,7 +84,8 @@ export default {
                 });
         },
         handleSelectedTab(tab) {
-            console.log("Selected tab:", tab);
+            console.log("Selected tab:", this.activeTabContent);
+            this.$router.push({ name: 'tab-detail', params: { tabId: tab.id } });
         }
     },
     mounted() {

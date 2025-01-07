@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
 
     <div role="tabpanel" v-show="show">
         <slot></slot>
@@ -16,4 +16,4 @@ export default {
         };
     },
 }
-</script>
+</script> -->

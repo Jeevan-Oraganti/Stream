@@ -26,7 +26,7 @@
             <div class="column is-8">
                 <div class="mb-8">
                     <div v-for="status in statuses" :key="status.id"
-                         class="transition-transform duration-300 hover:scale-105 border border-gray-500 mb-12 rounded-xl p-4 rounded-lg mb-4">
+                         class="transition-transform duration-300 hover:scale-105 border border-gray-500 p-4 rounded-lg mb-4">
                         <div class="flex justify-between items-center mb-3">
                             <p class="text-lg font-medium">{{ status.user.name }} said...</p>
                             <p class="text-sm text-gray-400">{{ status.created_at | ago | capitalize }}</p>
