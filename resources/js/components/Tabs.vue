@@ -8,7 +8,7 @@
             }" :style="tab === activeTab ? 'margin-bottom: -1px' : ''" role="presentation">
                 <button v-text="tab.title" :class="{ 'text-black font-bold': tab === activeTab }"
                     class="focus:outline-none text-gray-300" role="tab" :aria-selected="tab === activeTab"
-                    @click="loadTabContent(tab)"></button>
+                    @click="selectTab(tab)"></button>
             </li>
         </ul>
 
@@ -57,6 +57,7 @@ export default {
         selectTab(tab) {
             this.activeTab = tab;
             this.$emit('tab-selected', tab);
+            this.loadTabContent(tab);
         },
         loadTabContent(tab) {
             this.activeTab = tab;
@@ -81,8 +82,10 @@ export default {
                 .finally(() => {
                     this.loading = false;
                 });
-                console.log(tab);
         },
+        handleSelectedTab(tab) {
+            console.log("Selected tab:", tab);
+        }
     },
     mounted() {
         if (this.tabs.length > 0) {

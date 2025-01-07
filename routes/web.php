@@ -14,8 +14,4 @@ Route::get('/statuses', [StatusController::class, 'index']);
 
 Route::post('/statuses', [StatusController::class, 'store']);
 
-Route::get('/tabs', function () {
-    return view('layouts.tabs');
-});
-
 Route::get('/tabs/{id}/content', [TabController::class, 'getContent']);
