@@ -17,7 +17,7 @@ export default {
             window.addEventListener("scroll", throttle(function () {
                 el.classList[
                     window.scrollY >= originalOffsetTop ? 'add' : 'remove'
-                    ]("fixed", "top-0", "z-10", "bg-white", "w-full");
+                    ]("fixed", "top-0", "z-10", "bg-white", "w-full", "p-1");
             }));
         }
     },

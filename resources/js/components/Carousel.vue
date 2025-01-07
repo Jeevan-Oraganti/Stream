@@ -16,8 +16,10 @@ export default {
         new Flickity(this.$el, {
             wrapAround: this.wraparound,
             autoPlay: this.autoplay,
-            cellAlign: 'left',
-            contain: true
+            cellAlign: 'center',
+            contain: true,
+            draggable: true,
+            pageDots: true
         });
     }
 }

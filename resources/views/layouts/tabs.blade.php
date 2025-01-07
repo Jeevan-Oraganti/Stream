@@ -180,6 +180,7 @@ $tabs = [
         <tabs class="border border-gray-500 p-6 mb-12 rounded-xl">
             @foreach ($tabs as $tab)
             <tab title="{{ $tab['title'] }}">
+                <p class="text-lg font-semibold mb-4">{{ $tab['title'] }}</p>
                 <p class="text-lg mb-4">{{ $tab['content'] }}</p>
                 <ul class="list-disc pl-5">
                     @foreach ($tab['items'] as $item)
