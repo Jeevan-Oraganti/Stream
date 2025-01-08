@@ -41,9 +41,4 @@ new Vue({
     el: "#app",
     router,
     store,
-    methods: {
-        handleTabSelected(tab) {
-            console.log("Tab selected: ", tab);
-        },
-    },
 });

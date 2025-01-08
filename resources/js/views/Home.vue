@@ -39,14 +39,16 @@
             </div>
         </div>
 
+
         <conditional-render when-hidden="#push-to-stream">
-            <div class="participate-button fixed bottom-8 right-8 z-50">
-                <a class="bg-white hover:bg-gray-200 rounded-full w-16 h-16 text-center flex items-center justify-center shadow-lg"
+            <div class="participate-button fixed bottom-10 right-6 z-50">
+                <a class="bg-blue-500 text-white text-xs hover:bg-white hover:text-blue-500 rounded-full w-36 h-12 text-center flex items-center justify-center shadow-lg"
                    @click="scrollToPush">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-blue-700" fill="none"
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white mr-1" fill="none"
                          viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                     </svg>
+                    Add to Stream
                 </a>
             </div>
         </conditional-render>
@@ -59,12 +61,14 @@
 import moment from 'moment';
 import Status from '../models/Status';
 import AddToStream from "../components/AddToStream.vue";
+import Tabs from "../components/Tabs.vue";
+import axios from "axios";
 
 export default {
-    components: {AddToStream},
+    components: {AddToStream, Tabs},
     data() {
         return {
-            statuses: []
+            statuses: [],
         }
     },
     filters: {

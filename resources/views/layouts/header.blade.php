@@ -1,5 +1,5 @@
 <section class="hero text-white is-small"
-         style="background: conic-gradient(from 300deg, #3d52a0, #7091e6, #ede8f5); height: 100vh; justify-content: center;">
+    style="background: conic-gradient(from 300deg, #3d52a0, #7091e6, #ede8f5); height: 100vh; justify-content: center;">
     <!-- Hero head: Navigation -->
     <div class="hero-head">
         <nav class="navbar">
@@ -8,35 +8,35 @@
                     <dropdown class="relative">
                         <template v-slot:trigger>
                             <button
-                                class="text-white font-bold uppercase flex items-center transition-transform duration-300 ease-in-out hover:scale-105 space-x-1 border border-gray-500 px-3 py-2 rounded-lg bg-blue-900">
+                                class="text-white font-bold uppercase flex items-center transition-transform duration-300 ease-in-out hover:scale-105 space-x-1 border border-gray-500 px-4 py-2 rounded-lg" style="background: linear-gradient(45deg, #3d52a0, #7091e6, #ede8f5);">
                                 <span>My</span>
                                 <span>Stream</span>
                             </button>
                         </template>
 
 
-                        <div class="absolute bg-white text-gray-700 rounded shadow-lg mt-2 ml-6">
-                            <a href="/" class="block text-sm px-4 py-2 hover:bg-gray-200 rounded-md">Home</a>
-                            <a href="#/about" class="block text-sm px-4 py-2 hover:bg-gray-200 rounded-md">About</a>
-                            <a href="#/faq" class="block text-sm px-4 py-2 hover:bg-gray-200 rounded-md">FAQ</a>
-                            <a href="#/contact" class="block text-sm px-4 py-2 hover:bg-gray-200 rounded-md">Contact</a>
-                        </div>
-                    </dropdown>
+                        <div class=" absolute bg-white text-gray-700 rounded shadow-lg mt-2 ml-6">
+                                <a href="/" class="block text-sm px-4 py-2 hover:bg-gray-200 rounded-md">Home</a>
+                                <a href="#/about" class="block text-sm px-4 py-2 hover:bg-gray-200 rounded-md">About</a>
+                                <a href="#/faq" class="block text-sm px-4 py-2 hover:bg-gray-200 rounded-md">FAQ</a>
+                                <a href="#/contact" class="block text-sm px-4 py-2 hover:bg-gray-200 rounded-md">Contact</a>
                 </div>
+                </dropdown>
+            </div>
 
-                <div id="navbarMenuHeroA" class="navbar-menu flex items-center mt-4">
-                    <div class="navbar-end flex space-x-4">
-                        <catalog-dropdown></catalog-dropdown>
-                        <series-dropdown></series-dropdown>
-                        <podcasts-dropdown></podcasts-dropdown>
-                    </div>
+            <div id="navbarMenuHeroA" class="navbar-menu flex items-center mt-4">
+                <div class="navbar-end flex space-x-4">
+                    <catalog-dropdown></catalog-dropdown>
+                    <series-dropdown></series-dropdown>
+                    <podcasts-dropdown></podcasts-dropdown>
                 </div>
             </div>
-        </nav>
+    </div>
+    </nav>
 
-        <portal-target name="nav-catalog"></portal-target>
-        <portal-target name="nav-series"></portal-target>
-        <portal-target name="nav-podcasts"></portal-target>
+    <portal-target name="nav-catalog"></portal-target>
+    <portal-target name="nav-series"></portal-target>
+    <portal-target name="nav-podcasts"></portal-target>
     </div>
 
     <!-- Hero content: Centered Carousel -->
@@ -50,7 +50,7 @@
                     src="https://images.unsplash.com/photo-1736024852276-112dad90586d?q=80&w=1974&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
                     class="w-96 h-64 mx-auto rounded-lg shadow-lg">
                 <img
-                    src="https://images.unsplash.com/photo-1711869090270-02af29df0597?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHx0b3BpYy1mZWVkfDU3fDZzTVZqVExTa2VRfHxlbnwwfHx8fHw%3D"
+                    src="https://images.pexels.com/photos/3941855/pexels-photo-3941855.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1"
                     class="w-96 h-64 mx-auto rounded-lg shadow-lg">
                 <img
                     src="https://images.unsplash.com/photo-1732871706369-73c5e4d27e38?q=80&w=1925&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
@@ -94,25 +94,25 @@
                         <router-link to="/" exact v-slot="{ href, navigate, isActive, isExactActive }" custom>
                             <li :class="{ 'is-active': isActive, 'exact-active': isExactActive }" class="relative">
                                 <a :href="href" @click="navigate" class="block py-2 px-4 rounded-md"
-                                   :class="{ 'bg-blue-500 text-white': isActive, 'bg-gray-200 text-gray-900': !isActive }">Home</a>
+                                    :class="{ 'bg-blue-500 text-white': isActive, 'bg-gray-200 text-gray-900': !isActive }">Home</a>
                             </li>
                         </router-link>
                         <router-link to="/about" v-slot="{ href, navigate, isActive, isExactActive }" custom>
                             <li :class="{ 'is-active': isActive, 'exact-active': isExactActive }" class="relative">
                                 <a :href="href" @click="navigate" class="block py-2 px-4 rounded-md"
-                                   :class="{ 'bg-blue-500 text-white': isActive, 'bg-gray-200 text-gray-900': !isActive }">About</a>
+                                    :class="{ 'bg-blue-500 text-white': isActive, 'bg-gray-200 text-gray-900': !isActive }">About</a>
                             </li>
                         </router-link>
                         <router-link to="/faq" v-slot="{ href, navigate, isActive, isExactActive }" custom>
                             <li :class="{ 'is-active': isActive, 'exact-active': isExactActive }" class="relative">
                                 <a :href="href" @click="navigate" class="block py-2 px-4 rounded-md"
-                                   :class="{ 'bg-blue-500 text-white': isActive, 'bg-gray-200 text-gray-900': !isActive }">FAQ</a>
+                                    :class="{ 'bg-blue-500 text-white': isActive, 'bg-gray-200 text-gray-900': !isActive }">FAQ</a>
                             </li>
                         </router-link>
                         <router-link to="/contact" v-slot="{ href, navigate, isActive, isExactActive }" custom>
                             <li :class="{ 'is-active': isActive, 'exact-active': isExactActive }" class="relative">
                                 <a :href="href" @click="navigate" class="block py-2 px-4 rounded-md"
-                                   :class="{ 'bg-blue-500 text-white': isActive, 'bg-gray-200 text-gray-900': !isActive }">Contact</a>
+                                    :class="{ 'bg-blue-500 text-white': isActive, 'bg-gray-200 text-gray-900': !isActive }">Contact</a>
                             </li>
                         </router-link>
                     </ul>
