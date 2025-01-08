@@ -19,7 +19,7 @@ $tabs = [
 
         <div class="border border-gray-200 p-6 mb-12 rounded-xl">
             <h1 class="text-3xl font-semibold mb-8">Explore Categories</h1>
-            <tabs :tabs='@json($tabs)' @tab-selected="handleTabSelected" />
+            <tabs :tabs='@json($tabs)'/>
         </div>
     </div>
 </section>

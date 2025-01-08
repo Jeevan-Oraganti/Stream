@@ -1,19 +1,87 @@
-<!-- <template>
-
-    <div role="tabpanel" v-show="show">
-        <slot></slot>
+<template>
+    <div>
+        <div v-if="loading" class="text-center p-4">
+            <span class="text-white">Loading...</span>
+        </div>
+        <div v-else-if="tabContent" class="p-4 rounded-lg" role="tabpanel">
+            <div>
+                <h2 class="text-2xl font-bold mb-4 text-white" v-text="tabContent.title"></h2>
+                <p class="mb-4 text-white" v-text="tabContent.content"></p>
+                <ul class="list-disc pl-6">
+                    <li v-for="(item, index) in tabContent.items" :key="index" class="mb-2 text-white">
+                        {{ item }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div v-else class="text-center text-gray-400 p-4">
+            Select a category to view details.
+        </div>
     </div>
-
 </template>
 
 <script>
-export default {
-    props: ['title'],
+import axios from "axios";
 
+export default {
+    props: {
+        tab: {
+            type: Object,
+            required: true,
+        },
+    },
     data() {
         return {
-            show: false
+            tabContent: null,
+            loading: false,
+            contentCache: {},
         };
     },
+    methods: {
+        loadTabContent() {
+            if (this.contentCache[this.tab.id]) {
+                this.tabContent = this.contentCache[this.tab.id];
+                this.$emit('tab-selected', { content: this.tabContent, cached: true});
+            } else {
+                this.loading = true;
+                axios
+                    .get(`/tabs/${this.tab.id}/content`)
+                    .then((response) => {
+                        this.contentCache[this.tab.id] = response.data;
+                        this.tabContent = response.data;
+                        this.$emit('tab-selected', { content: response.data, cached: false });
+                    })
+                    .catch(() => {
+                        this.tabContent = {
+                            title: "Error",
+                            content: "Failed to load content.",
+                            items: [],
+                        };
+                        this.$emit('tab-selected', { content: this.tabContent, cached: false });
+                        console.log("Failed to load content.");
+                    })
+                    .finally(() => {
+                        this.loading = false;
+                    });
+            }
+        },
+    },
+    mounted() {
+        this.loadTabContent();
+    },
+    watch: {
+        tab: {
+            handler() {
+                this.loadTabContent();
+            },
+            immediate: true,
+        },
+    },
+};
+</script>
+
+<style scoped>
+button {
+    transition: background-color 0.2s ease;
 }
-</script> -->
+</style>
