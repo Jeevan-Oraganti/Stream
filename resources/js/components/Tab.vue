@@ -49,7 +49,7 @@ export default {
                     .then((response) => {
                         this.contentCache[this.tab.id] = response.data;
                         this.tabContent = response.data;
-                        this.$emit('tab-selected', { content: response.data, cached: false });
+                        this.$emit('tab-selected', { content: response.data, cached: true });
                     })
                     .catch(() => {
                         this.tabContent = {

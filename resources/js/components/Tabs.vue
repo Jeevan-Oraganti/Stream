@@ -48,7 +48,6 @@ export default {
         handleTabSelected({ content, cached }) {
             this.activeTabContent = content;
             this.tabCacheStatus[this.activeTab.id] = cached;
-            console.log('Tab content:', content);
             this.$forceUpdate();
         },
     },
