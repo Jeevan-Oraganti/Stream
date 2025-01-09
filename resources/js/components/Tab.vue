@@ -1,11 +1,11 @@
 <template>
     <div>
-        <div v-if="loading" class="text-center p-4">
-            <span class="text-white">Loading...</span>
+        <div v-if="loading" class="container loader p-2 items-centers mt-20 mb-20">
+<!--            <span class="text-white">Loading...</span>-->
         </div>
         <div v-else-if="tabContent" class="p-4 rounded-lg" role="tabpanel">
             <div>
-                <h2 class="text-2xl font-bold mb-4 text-white" v-text="tabContent.title"></h2>
+                <!-- <h2 class="text-2xl font-bold mb-4 text-white" v-text="tabContent.title"></h2> -->
                 <p class="mb-4 text-white" v-text="tabContent.content"></p>
                 <ul class="list-disc pl-6">
                     <li v-for="(item, index) in tabContent.items" :key="index" class="mb-2 text-white">
@@ -45,7 +45,7 @@ export default {
             } else {
                 this.loading = true;
                 axios
-                    .get(`/tabs/${this.tab.id}/content`)
+                    .get(`/tabs/${this.tab.slug}/content`)
                     .then((response) => {
                         this.contentCache[this.tab.id] = response.data;
                         this.tabContent = response.data;
@@ -80,8 +80,23 @@ export default {
 };
 </script>
 
-<style scoped>
-button {
-    transition: background-color 0.2s ease;
+<style>
+.loader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 50px;
+    height: 50px;
+    border: 5px solid rgba(255, 255, 255, 0.2);
+    border-top-color: #4caf50;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
 }
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
 </style>

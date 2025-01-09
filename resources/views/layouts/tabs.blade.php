@@ -1,15 +1,15 @@
 <?php
 $tabs = [
-    ['title' => 'Electronics', 'id' => 1],
-    ['title' => 'Clothing', 'id' => 2],
-    ['title' => 'Books', 'id' => 3],
-    ['title' => 'Movies', 'id' => 4],
-    ['title' => 'Travel', 'id' => 5],
-    ['title' => 'Food', 'id' => 6],
-    ['title' => 'Fitness', 'id' => 7],
-    ['title' => 'Gaming', 'id' => 8],
-    ['title' => 'Grocery', 'id' => 9],
-    ['title' => 'Other', 'id' => 10],
+    ['title' => 'Electronics', 'slug' => 'electronics', 'id' => 1],
+    ['title' => 'Clothing', 'slug' => 'clothing', 'id' => 2],
+    ['title' => 'Books', 'slug' => 'books', 'id' => 3],
+    ['title' => 'Movies', 'slug' => 'movies', 'id' => 4],
+    ['title' => 'Travel', 'slug' => 'travel', 'id' => 5],
+    ['title' => 'Food', 'slug' => 'food', 'id' => 6],
+    ['title' => 'Fitness', 'slug' => 'fitness', 'id' => 7],
+    ['title' => 'Gaming', 'slug' => 'gaming', 'id' => 8],
+    ['title' => 'Grocery', 'slug' => 'grocery', 'id' => 9],
+    ['title' => 'Other', 'slug' => 'other', 'id' => 10],
 ];
 ?>
 

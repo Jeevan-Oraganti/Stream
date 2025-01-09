@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class TabsContentSeeder extends Seeder
 {
@@ -14,8 +15,9 @@ class TabsContentSeeder extends Seeder
         $tabsContent = [
             1 => [
                 'title' => 'Electronics',
+                'slug' => 'electronics',
                 'content' => 'Discover the latest gadgets and tech innovations.',
-                'items' => [
+                'items' => json_encode([
                     'Smartphone - Samsung Galaxy S23',
                     'Laptop - MacBook Pro 16"',
                     'Wireless Earbuds - Sony WF-1000XM5',
@@ -31,12 +33,13 @@ class TabsContentSeeder extends Seeder
                     'Keyboard - Keychron K2 Mechanical Keyboard',
                     'Mouse - Logitech MX Master 3',
                     'Router - Netgear Nighthawk AX12',
-                ],
+                ]),
             ],
             2 => [
                 'title' => 'Clothing',
+                'slug' => 'clothing',
                 'content' => 'Explore the trendiest outfits and fashion accessories.',
-                'items' => [
+                'items' => json_encode([
                     'Men’s Jacket - North Face Apex',
                     'Women’s Dress - Zara Evening Gown',
                     'Unisex Sneakers - Nike Air Max',
@@ -52,12 +55,13 @@ class TabsContentSeeder extends Seeder
                     'Belt - Tommy Hilfiger Leather Belt',
                     'Sunglasses - Ray-Ban Aviator',
                     'Gloves - North Face Etip Gloves',
-                ],
+                ]),
             ],
             3 => [
                 'title' => 'Books',
+                'slug' => 'books',
                 'content' => 'Immerse yourself in captivating stories and insightful reads.',
-                'items' => [
+                'items' => json_encode([
                     'Fiction - "The Midnight Library" by Matt Haig',
                     'Self-Help - "Atomic Habits" by James Clear',
                     'Biography - "Steve Jobs" by Walter Isaacson',
@@ -73,12 +77,13 @@ class TabsContentSeeder extends Seeder
                     'Historical Fiction - "The Nightingale" by Kristin Hannah',
                     'Horror - "It" by Stephen King',
                     'Science Fiction - "Dune" by Frank Herbert',
-                ],
+                ]),
             ],
             4 => [
                 'title' => 'Movies',
+                'slug' => 'movies',
                 'content' => 'Get recommendations on the latest movies.',
-                'items' => [
+                'items' => json_encode([
                     'The Martian - A survivor from Mars',
                     'Big Hero 6 - A tech geek lost his brother tries to take revenge on the killer',
                     'The Chosen - A famous series in the community opening eyes of many',
@@ -94,12 +99,13 @@ class TabsContentSeeder extends Seeder
                     'Titanic - A timeless love story',
                     'Spider-Man: No Way Home - An epic multiverse saga',
                     'Coco - A heartfelt animated journey into music and family',
-                ],
+                ]),
             ],
             5 => [
                 'title' => 'Travel',
+                'slug' => 'travel',
                 'content' => 'Plan your next adventure with these travel destinations.',
-                'items' => [
+                'items' => json_encode([
                     'Paris, France - The city of lights and romance',
                     'Tokyo, Japan - A blend of tradition and modernity',
                     'Bali, Indonesia - Tropical paradise with serene beaches',
@@ -115,12 +121,13 @@ class TabsContentSeeder extends Seeder
                     'Rio de Janeiro, Brazil - Carnival and breathtaking views',
                     'London, UK - Historic landmarks and modern life',
                     'Machu Picchu, Peru - Ancient Incan ruins',
-                ],
+                ]),
             ],
             6 => [
                 'title' => 'Food',
+                'slug' => 'food',
                 'content' => 'Delight your taste buds with these culinary picks.',
-                'items' => [
+                'items' => json_encode([
                     'Pizza - Authentic Neapolitan Pizza',
                     'Sushi - Fresh Tuna Nigiri',
                     'Dessert - Belgian Chocolate Mousse',
@@ -136,12 +143,13 @@ class TabsContentSeeder extends Seeder
                     'Snack - Nachos with Salsa and Cheese',
                     'Drink - Freshly Brewed Cappuccino',
                     'Ice Cream - Artisan Gelato',
-                ],
+                ]),
             ],
             7 => [
                 'title' => 'Fitness',
+                'slug' => 'fitness',
                 'content' => 'Gear up for a healthy lifestyle with these essentials.',
-                'items' => [
+                'items' => json_encode([
                     'Dumbbells - Adjustable Weight Set',
                     'Yoga Mat - Non-Slip Eco-Friendly Mat',
                     'Resistance Bands - Multi-Level Set',
@@ -157,12 +165,13 @@ class TabsContentSeeder extends Seeder
                     'Water Bottle - Stainless Steel Insulated',
                     'Workout Gloves - Harbinger Training Gloves',
                     'Stretching Strap - Yoga and Mobility Aid',
-                ],
+                ]),
             ],
             8 => [
                 'title' => 'Gaming',
+                'slug' => 'gaming',
                 'content' => 'Level up your gaming experience with these top picks.',
-                'items' => [
+                'items' => json_encode([
                     'Console - PlayStation 5',
                     'Game - "The Legend of Zelda: Breath of the Wild"',
                     'Accessory - Logitech G502 Gaming Mouse',
@@ -178,8 +187,9 @@ class TabsContentSeeder extends Seeder
                     'Light - Philips Hue Play',
                     'Game - "Cyberpunk 2077"',
                     'Streaming Mic - Blue Yeti Nano',
-                ],
+                ]),
             ],
         ];
+        DB::table('tabs_content')->insert($tabsContent);
     }
 }

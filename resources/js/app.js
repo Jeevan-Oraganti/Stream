@@ -1,7 +1,6 @@
 import "./bootstrap";
 import router from "./routes";
 import Vue from "vue";
-import store from "../store.js"
 import Carousel from "./components/Carousel.vue";
 import SeriesDropdown from "./components/dropdown/SeriesDropdown.vue";
 import CatalogDropdown from "./components/dropdown/CatalogDropdown.vue";
@@ -40,5 +39,4 @@ Vue.component("Tab", Tab);
 new Vue({
     el: "#app",
     router,
-    store,
 });

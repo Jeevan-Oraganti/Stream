@@ -13,6 +13,7 @@ class TabContent extends Model
 
     protected $fillable = [
         'title',
+        'slug',
         'content',
         'items',
     ];
