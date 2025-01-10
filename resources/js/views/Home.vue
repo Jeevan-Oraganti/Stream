@@ -66,7 +66,6 @@ import moment from 'moment';
 import Status from '../models/Status';
 import AddToStream from "../components/AddToStream.vue";
 import Tabs from "../components/Tabs.vue";
-import axios from "axios";
 
 export default {
     components: { AddToStream, Tabs },

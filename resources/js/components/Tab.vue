@@ -1,11 +1,11 @@
 <template>
     <div>
         <div v-if="loading" class="container loader p-2 items-centers mt-20 mb-20">
-<!--            <span class="text-white">Loading...</span>-->
+            <!--            <span class="text-white">Loading...</span>-->
         </div>
         <div v-else-if="tabContent" class="p-4 rounded-lg" role="tabpanel">
             <div>
-                <!-- <h2 class="text-2xl font-bold mb-4 text-white" v-text="tabContent.title"></h2> -->
+                <!--                 <h2 class="text-2xl font-bold mb-4 text-white" v-text="tabContent.title"></h2>-->
                 <p class="mb-4 text-white" v-text="tabContent.content"></p>
                 <ul class="list-disc pl-6">
                     <li v-for="(item, index) in tabContent.items" :key="index" class="mb-2 text-white">
@@ -41,7 +41,7 @@ export default {
         loadTabContent() {
             if (this.contentCache[this.tab.id]) {
                 this.tabContent = this.contentCache[this.tab.id];
-                this.$emit('tab-selected', { content: this.tabContent, cached: true});
+                this.$emit('tab-selected', { content: this.tabContent, cached: true });
             } else {
                 this.loading = true;
                 axios
@@ -65,9 +65,19 @@ export default {
                     });
             }
         },
+        setContent(content) {
+            this.contentCache[this.tab.id] = content;
+            this.tabContent = content;
+            this.$emit('tab-selected', { content: content, cached: true });
+        }
     },
     mounted() {
         this.loadTabContent();
+        this.$on('preload-tab', ({ id, content }) => {
+            if (this.tab.id === id) {
+                this.setContent(content);
+            }
+        })
     },
     watch: {
         tab: {
@@ -98,5 +108,4 @@ export default {
         transform: rotate(360deg);
     }
 }
-
 </style>
