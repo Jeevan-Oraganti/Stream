@@ -5,7 +5,7 @@
         </div>
         <div v-else-if="tabContent" class="p-4 rounded-lg" role="tabpanel">
             <div>
-                <!--                 <h2 class="text-2xl font-bold mb-4 text-white" v-text="tabContent.title"></h2>-->
+                <h2 class="text-2xl font-bold mb-4 text-white" v-text="tabContent.title"></h2>
                 <p class="mb-4 text-white" v-text="tabContent.content"></p>
                 <ul class="list-disc pl-6">
                     <li v-for="(item, index) in tabContent.items" :key="index" class="mb-2 text-white">
@@ -29,25 +29,27 @@ export default {
             type: Object,
             required: true,
         },
+        contentCache: {
+            type: Object,
+            required: true,
+        }
     },
     data() {
         return {
             tabContent: null,
             loading: false,
-            contentCache: {},
         };
     },
     methods: {
         loadTabContent() {
-            if (this.contentCache[this.tab.id]) {
-                this.tabContent = this.contentCache[this.tab.id];
-                this.$emit('tab-selected', { content: this.tabContent, cached: true });
-            } else {
+            // if (this.contentCache[this.tab.id]) {
+            //     this.tabContent = this.contentCache[this.tab.id];
+            //     this.$emit('tab-selected', { content: this.tabContent, cached: true });
+            // } else {
                 this.loading = true;
                 axios
                     .get(`/tabs/${this.tab.slug}/content`)
                     .then((response) => {
-                        this.contentCache[this.tab.id] = response.data;
                         this.tabContent = response.data;
                         this.$emit('tab-selected', { content: response.data, cached: true });
                     })
@@ -63,29 +65,12 @@ export default {
                     .finally(() => {
                         this.loading = false;
                     });
-            }
+            // }
         },
         setContent(content) {
-            this.contentCache[this.tab.id] = content;
             this.tabContent = content;
             this.$emit('tab-selected', { content: content, cached: true });
         }
-    },
-    mounted() {
-        this.loadTabContent();
-        this.$on('preload-tab', ({ id, content }) => {
-            if (this.tab.id === id) {
-                this.setContent(content);
-            }
-        })
-    },
-    watch: {
-        tab: {
-            handler() {
-                this.loadTabContent();
-            },
-            immediate: true,
-        },
     },
 };
 </script>

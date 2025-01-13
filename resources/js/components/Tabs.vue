@@ -15,7 +15,28 @@
             </li>
         </ul>
 
-        <tab v-if="activeTab" :tab="activeTab" @tab-selected="handleTabSelected" />
+        <div v-for="tab in tabs" :key="tab.id">
+            <tab :tab="tab" :contentCache="contentCache" @tab-selected="handleTabSelected" :ref="'tab-' + tab.slug"
+                v-show="tab === activeTab" />
+        </div>
+<!-- 
+        <div v-if="loading" class="container loader p-2 items-centers mt-20 mb-20">
+            <span class="text-white">Loading...</span>
+        </div>
+        <div v-else-if="activeTabContent" class="p-4 rounded-lg" role="tabpanel">
+            <div>
+                <h2 class="text-2xl font-bold mb-4 text-white" v-text="activeTabContent.title"></h2>
+                <p class="mb-4 text-white" v-text="activeTabContent.content"></p>
+                <ul class="list-disc pl-6">
+                    <li v-for="(item, index) in activeTabContent.items" :key="index" class="mb-2 text-white">
+                        {{ item }}
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div v-else class="text-center text-gray-400 p-4">
+            Select a category to view details.
+        </div> -->
 
     </div>
 </template>
@@ -40,11 +61,15 @@ export default {
             activeTabContent: null,
             loading: false,
             tabCacheStatus: {},
+            contentCache: {},
         };
     },
     methods: {
         selectTab(tab) {
             this.activeTab = tab;
+            if (!this.tabCacheStatus[tab.id]) {
+                this.$refs[`tab-${tab.slug}`][0].loadTabContent();
+            }
         },
         handleTabSelected({ content, cached }) {
             this.activeTabContent = content;
@@ -55,18 +80,19 @@ export default {
             const preloadSlugs = ['electronics', 'movies'];
             preloadSlugs.forEach(slug => {
                 const tab = this.tabs.find(t => t.slug === slug);
-                if (tab) {
+                if (tab && !this.tabCacheStatus[tab.id]) {
                     axios.get(`/tabs/${tab.slug}/content`)
                         .then(response => {
                             this.tabCacheStatus[tab.id] = true;
-                            this.$emit('preload-tab', { id:tab.id, content:response.data});
+                            this.contentCache[tab.id] = response.data;
+                            this.$refs[`tab-${tab.slug}`][0].setContent(response.data);
                         })
                         .catch(() => {
                             console.log(`Failed to preload content for ${slug}`);
                         });
                 }
             });
-        }
+        },
     },
     watch: {
         activeTab(newTab) {
@@ -78,7 +104,7 @@ export default {
             this.selectTab(this.tabs[0]);
             this.preloadTabs();
         }
-    },
+    }
 };
 </script>
 
