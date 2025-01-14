@@ -1,14 +1,12 @@
 <template>
     <div>
-        <div v-if="loading" class="container loader p-2 items-centers mt-20 mb-20">
-            <!--            <span class="text-white">Loading...</span>-->
-        </div>
-        <div v-else-if="tabContent" class="p-4 rounded-lg" role="tabpanel">
+        <div v-if="loading" class="container loader p-2 items-centers mt-20 mb-20"></div>
+        <div v-else-if="tab.content" class="p-4 rounded-lg" role="tabpanel">
             <div>
-                <h2 class="text-2xl font-bold mb-4 text-white" v-text="tabContent.title"></h2>
-                <p class="mb-4 text-white" v-text="tabContent.content"></p>
+                <h2 class="text-2xl font-bold mb-4 text-white" v-html="tab.content.title"></h2>
+                <p class="mb-4 text-white" v-html="tab.content.content"></p>
                 <ul class="list-disc pl-6">
-                    <li v-for="(item, index) in tabContent.items" :key="index" class="mb-2 text-white">
+                    <li v-for="(item, index) in tab.content.items" :key="index" class="mb-2 text-white">
                         {{ item }}
                     </li>
                 </ul>
@@ -29,47 +27,41 @@ export default {
             type: Object,
             required: true,
         },
-        contentCache: {
-            type: Object,
-            required: true,
-        }
     },
     data() {
         return {
-            tabContent: null,
             loading: false,
         };
     },
     methods: {
         loadTabContent() {
-            // if (this.contentCache[this.tab.id]) {
-            //     this.tabContent = this.contentCache[this.tab.id];
-            //     this.$emit('tab-selected', { content: this.tabContent, cached: true });
-            // } else {
+            if (this.tab.content) {
+                this.$emit('tab-selected', { content: this.tab.content });
+            } else {
                 this.loading = true;
                 axios
                     .get(`/tabs/${this.tab.slug}/content`)
                     .then((response) => {
-                        this.tabContent = response.data;
-                        this.$emit('tab-selected', { content: response.data, cached: true });
+                        this.tab.content = response.data;
+                        this.$emit('tab-selected', { content: response.data });
                     })
                     .catch(() => {
-                        this.tabContent = {
+                        this.tab.content = {
                             title: "Error",
-                            content: "Failed to load content.",
-                            items: [],
+                            content: `<div style="color: red; font-weight: bold; text-align: center; margin-top: 20px;">
+                                <span>⚠️</span>
+                                </div>
+                                <p style="color: #ff6b6b; text-align: center; margin-top: 10px;">
+                                    Please try again later.
+                                    </p>`,
                         };
-                        this.$emit('tab-selected', { content: this.tabContent, cached: false });
-                        console.log("Failed to load content.");
+                        this.$emit('tab-selected', { content: this.tab.content });
+                        console.log("Failed to load Content");
                     })
                     .finally(() => {
                         this.loading = false;
                     });
-            // }
-        },
-        setContent(content) {
-            this.tabContent = content;
-            this.$emit('tab-selected', { content: content, cached: true });
+            }
         }
     },
 };

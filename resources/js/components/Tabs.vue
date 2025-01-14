@@ -10,34 +10,14 @@
                     class="focus:outline-none px-4 py-2 text-gray-300" role="tab" :aria-selected="tab === activeTab"
                     @click="selectTab(tab)">
                     {{ tab.title }}
-                    <span :class="tabCacheStatus[tab.id] ? 'dot-green' : 'dot-red'" class="ml-2"></span>
+                    <span :class="tab.content ? 'dot-green' : 'dot-red'" class="ml-2"></span>
                 </button>
             </li>
         </ul>
 
         <div v-for="tab in tabs" :key="tab.id">
-            <tab :tab="tab" :contentCache="contentCache" @tab-selected="handleTabSelected" :ref="'tab-' + tab.slug"
-                v-show="tab === activeTab" />
+            <tab :tab="tab" @tab-selected="handleTabSelected" :ref="'tab-' + tab.slug" v-show="tab === activeTab" />
         </div>
-<!-- 
-        <div v-if="loading" class="container loader p-2 items-centers mt-20 mb-20">
-            <span class="text-white">Loading...</span>
-        </div>
-        <div v-else-if="activeTabContent" class="p-4 rounded-lg" role="tabpanel">
-            <div>
-                <h2 class="text-2xl font-bold mb-4 text-white" v-text="activeTabContent.title"></h2>
-                <p class="mb-4 text-white" v-text="activeTabContent.content"></p>
-                <ul class="list-disc pl-6">
-                    <li v-for="(item, index) in activeTabContent.items" :key="index" class="mb-2 text-white">
-                        {{ item }}
-                    </li>
-                </ul>
-            </div>
-        </div>
-        <div v-else class="text-center text-gray-400 p-4">
-            Select a category to view details.
-        </div> -->
-
     </div>
 </template>
 
@@ -58,41 +38,35 @@ export default {
     data() {
         return {
             activeTab: null,
-            activeTabContent: null,
-            loading: false,
-            tabCacheStatus: {},
-            contentCache: {},
         };
     },
     methods: {
         selectTab(tab) {
             this.activeTab = tab;
-            if (!this.tabCacheStatus[tab.id]) {
+            if (!tab.content) {
                 this.$refs[`tab-${tab.slug}`][0].loadTabContent();
             }
         },
-        handleTabSelected({ content, cached }) {
-            this.activeTabContent = content;
-            this.tabCacheStatus[this.activeTab.id] = cached;
+        handleTabSelected({ content }) {
+            this.activeTab.content = content;
             this.$forceUpdate();
         },
         preloadTabs() {
             const preloadSlugs = ['electronics', 'movies'];
             preloadSlugs.forEach(slug => {
                 const tab = this.tabs.find(t => t.slug === slug);
-                if (tab && !this.tabCacheStatus[tab.id]) {
+                if (tab && !tab.content) {
                     axios.get(`/tabs/${tab.slug}/content`)
                         .then(response => {
-                            this.tabCacheStatus[tab.id] = true;
-                            this.contentCache[tab.id] = response.data;
+                            tab.content = response.data;
                             this.$refs[`tab-${tab.slug}`][0].setContent(response.data);
                         })
-                        .catch(() => {
-                            console.log(`Failed to preload content for ${slug}`);
+                        .catch((error) => {
+                            console.log(`Failed to preload content for ${slug}`, error);
                         });
                 }
             });
-        },
+        }
     },
     watch: {
         activeTab(newTab) {
