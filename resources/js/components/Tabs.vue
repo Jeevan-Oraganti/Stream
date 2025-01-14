@@ -1,6 +1,5 @@
 <template>
     <div>
-        <!-- Tab Navigation -->
         <ul class="flex flex-wrap mb-4 border-b border-gray-400 justify-around" role="tablist">
             <li v-for="(tab, index) in tabs" :key="index" class="cursor-pointer" :class="{
                 'border border-b-0 rounded-t-lg bg-white shadow-md': tab === activeTab,
@@ -59,7 +58,7 @@ export default {
                     axios.get(`/tabs/${tab.slug}/content`)
                         .then(response => {
                             tab.content = response.data;
-                            this.$refs[`tab-${tab.slug}`][0].setContent(response.data);
+                            // this.$refs[`tab-${tab.slug}`][0].setContent(response.data);
                         })
                         .catch((error) => {
                             console.log(`Failed to preload content for ${slug}`, error);
