@@ -49,10 +49,10 @@ export default {
                         this.tab.content = {
                             title: "Error",
                             content: `<div style="color: red; font-weight: bold; text-align: center; margin-top: 20px;">
-                                <span>⚠️</span>
+                                <span style="color: yellow;">⚠ </span>
                                 </div>
                                 <p style="color: #ff6b6b; text-align: center; margin-top: 10px;">
-                                    Please try again later.
+                                    An error occurred while loading the content. Please try again later.
                                     </p>`,
                         };
                         this.$emit('tab-selected', { content: this.tab.content });

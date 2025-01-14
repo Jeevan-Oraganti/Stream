@@ -75,6 +75,7 @@ export default {
     },
     mounted() {
         if (this.tabs.length > 0) {
+            this.selectTab(this.tabs[3]);
             this.selectTab(this.tabs[0]);
             this.preloadTabs();
         }
