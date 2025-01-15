@@ -18,18 +18,6 @@
             <tab :tab="tab" @tab-selected="handleTabSelected" :ref="'tab-' + tab.slug" v-show="tab === activeTab"/>
         </div>
 
-<!--        <div v-if="activeTab.content" class="p-4 rounded-lg" role="tabpanel">-->
-<!--            <div>-->
-<!--                <h2 class="text-2xl font-bold mb-4 text-white" v-html="activeTab.content.title"></h2>-->
-<!--                <p class="mb-4 text-white" v-html="activeTab.content.content"></p>-->
-<!--                <ul class="list-disc pl-6">-->
-<!--                    <li v-for="(item, index) in activeTab.content.items" :key="index" class="mb-2 text-white">-->
-<!--                        {{ item }}-->
-<!--                    </li>-->
-<!--                </ul>-->
-<!--            </div>-->
-<!--        </div>-->
-
     </div>
 </template>
 

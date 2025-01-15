@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div id="push-to-stream" class="border border-gray-500 mb-12 rounded-xl p-4 rounded-lg mb-4 rounded-lg">
+        <div id="push-to-stream" class="border border-gray-500 mb-12 rounded-xl p-4">
             <div class="font-bold text-lg text-gray-100 mb-4">
                 Push to the Stream...
             </div>
@@ -10,12 +10,9 @@
                     <p class="control">
                         <textarea
                             class="textarea w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 placeholder-gray-500"
-                            placeholder="I have something to say..."
-                            v-model="form.body">
+                            placeholder="I have something to say..." v-model="form.body">
                         </textarea>
-                        <span
-                            class="help text-red-500 text-sm mt-1 block"
-                            v-if="form.errors.has('body')"
+                        <span class="help text-red-500 text-sm mt-1 block" v-if="form.errors.has('body')"
                             v-text="form.errors.get('body')">
                         </span>
                     </p>
@@ -51,13 +48,3 @@ export default {
     }
 }
 </script>
-
-<!--<style>-->
-<!--textarea::placeholder {-->
-<!--    color: #888 !important;-->
-<!--}-->
-
-<!--textarea {-->
-<!--    color: #333;-->
-<!--}-->
-<!--</style>-->

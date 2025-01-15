@@ -3,7 +3,7 @@
         <div v-if="loading" class="container loader p-2 items-centers mt-20 mb-20"></div>
         <div v-else-if="tab.content" class="p-4 rounded-lg" role="tabpanel">
             <div>
-                <h2 class="text-2xl font-bold mb-4 text-white" v-html="tab.content.title"></h2>
+                <h2 class="text-2xl font-bold mb-4 text-white" v-html="tab.title"></h2>
                 <p class="mb-4 text-white" v-html="tab.content.description"></p>
                 <ul class="list-disc pl-6">
                     <li v-for="(item, index) in tab.content.items" :key="index" class="mb-2 text-white">
@@ -48,7 +48,7 @@ export default {
                     .catch(() => {
                         this.tab.content = {
                             title: "Error",
-                            content: `<div style="color: red; font-weight: bold; text-align: center; margin-top: 20px;">
+                            description: `<div style="color: red; font-weight: bold; text-align: center; margin-top: 20px;">
                                 <span style="color: yellow;">⚠ </span>
                                 </div>
                                 <p style="color: #ff6b6b; text-align: center; margin-top: 10px;">

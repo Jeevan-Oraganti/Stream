@@ -9,7 +9,7 @@ class TabController extends Controller
 {
     public function getContent($slug)
     {
-        $tabsContent = TabContent::select('title', 'description', 'items')
+        $tabsContent = TabContent::select('description', 'items')
             ->where('slug', $slug)
             ->first();
 
