@@ -6,8 +6,8 @@
                 'hover:bg-gray-200 hover:rounded-t-lg hover:text-black': tab !== activeTab
             }" :style="tab === activeTab ? 'margin-bottom: -1px' : ''" role="presentation">
                 <button :class="{ 'text-black font-bold': tab === activeTab, 'hover:text-black': tab !== activeTab }"
-                    class="focus:outline-none px-4 py-2 text-gray-300" role="tab" :aria-selected="tab === activeTab"
-                    @click="selectTab(tab)">
+                        class="focus:outline-none px-4 py-2 text-gray-300" role="tab" :aria-selected="tab === activeTab"
+                        @mouseover="selectTab(tab)">
                     {{ tab.title }}
                     <span :class="tab.content ? 'dot-green' : 'dot-red'" class="ml-2"></span>
                 </button>
@@ -15,8 +15,21 @@
         </ul>
 
         <div v-for="tab in tabs" :key="tab.id">
-            <tab :tab="tab" @tab-selected="handleTabSelected" :ref="'tab-' + tab.slug" v-show="tab === activeTab" />
+            <tab :tab="tab" @tab-selected="handleTabSelected" :ref="'tab-' + tab.slug" v-show="tab === activeTab"/>
         </div>
+
+<!--        <div v-if="activeTab.content" class="p-4 rounded-lg" role="tabpanel">-->
+<!--            <div>-->
+<!--                <h2 class="text-2xl font-bold mb-4 text-white" v-html="activeTab.content.title"></h2>-->
+<!--                <p class="mb-4 text-white" v-html="activeTab.content.content"></p>-->
+<!--                <ul class="list-disc pl-6">-->
+<!--                    <li v-for="(item, index) in activeTab.content.items" :key="index" class="mb-2 text-white">-->
+<!--                        {{ item }}-->
+<!--                    </li>-->
+<!--                </ul>-->
+<!--            </div>-->
+<!--        </div>-->
+
     </div>
 </template>
 
@@ -46,7 +59,7 @@ export default {
                 this.$refs[`tab-${tab.slug}`][0].loadTabContent();
             }
         },
-        handleTabSelected({ content }) {
+        handleTabSelected({content}) {
             this.activeTab.content = content;
             this.$forceUpdate();
         },
@@ -90,8 +103,7 @@ export default {
     border-radius: 50%;
     display: inline-block;
     margin-left: 8px;
-    box-shadow:
-        0 0 8px rgba(255, 77, 77, 0.6), 0 0 3px rgba(255, 0, 0, 0.4);
+    box-shadow: 0 0 8px rgba(255, 77, 77, 0.6), 0 0 3px rgba(255, 0, 0, 0.4);
     animation: pulse-red 2s infinite;
 }
 

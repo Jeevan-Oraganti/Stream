@@ -36,7 +36,7 @@ export default {
     methods: {
         loadTabContent() {
             if (this.tab.content) {
-                this.$emit('tab-selected', { content: this.tab.content });
+                this.$emit('tab-selected', { content: this.tab.content.content });
             } else {
                 this.loading = true;
                 axios
