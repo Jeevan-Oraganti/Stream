@@ -7,7 +7,7 @@
             }" :style="tab === activeTab ? 'margin-bottom: -1px' : ''" role="presentation">
                 <button :class="{ 'text-black font-bold': tab === activeTab, 'hover:text-black': tab !== activeTab }"
                         class="focus:outline-none px-4 py-2 text-gray-300" role="tab" :aria-selected="tab === activeTab"
-                        @mouseover="selectTab(tab)">
+                        @click="selectTab(tab)">
                     {{ tab.title }}
                     <span :class="tab.content ? 'dot-green' : 'dot-red'" class="ml-2"></span>
                 </button>

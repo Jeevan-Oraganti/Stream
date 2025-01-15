@@ -9,7 +9,10 @@ class TabController extends Controller
 {
     public function getContent($slug)
     {
-        $tabsContent = TabContent::where('slug', $slug)->first();
+        $tabsContent = TabContent::select('title', 'description', 'items')
+            ->where('slug', $slug)
+            ->first();
+
         if ($tabsContent) {
             return response()->json($tabsContent);
         } else {

@@ -4,7 +4,7 @@
         <div v-else-if="tab.content" class="p-4 rounded-lg" role="tabpanel">
             <div>
                 <h2 class="text-2xl font-bold mb-4 text-white" v-html="tab.content.title"></h2>
-                <p class="mb-4 text-white" v-html="tab.content.content"></p>
+                <p class="mb-4 text-white" v-html="tab.content.description"></p>
                 <ul class="list-disc pl-6">
                     <li v-for="(item, index) in tab.content.items" :key="index" class="mb-2 text-white">
                         {{ item }}
@@ -62,7 +62,11 @@ export default {
                         this.loading = false;
                     });
             }
-        }
+        },
+        setContent(content) {
+            this.tab.content = content;
+            this.$emit('tab-selected', { content: content, cached: true });
+        },
     },
 };
 </script>

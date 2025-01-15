@@ -16,7 +16,7 @@ class TabsContentSeeder extends Seeder
             1 => [
                 'title' => 'Electronics',
                 'slug' => 'electronics',
-                'content' => 'Discover the latest gadgets and tech innovations.',
+                'description' => 'Discover the latest gadgets and tech innovations.',
                 'items' => json_encode([
                     'Smartphone - Samsung Galaxy S23',
                     'Laptop - MacBook Pro 16"',
@@ -38,7 +38,7 @@ class TabsContentSeeder extends Seeder
             2 => [
                 'title' => 'Clothing',
                 'slug' => 'clothing',
-                'content' => 'Explore the trendiest outfits and fashion accessories.',
+                'description' => 'Explore the trendiest outfits and fashion accessories.',
                 'items' => json_encode([
                     'Men’s Jacket - North Face Apex',
                     'Women’s Dress - Zara Evening Gown',
@@ -60,7 +60,7 @@ class TabsContentSeeder extends Seeder
             3 => [
                 'title' => 'Books',
                 'slug' => 'books',
-                'content' => 'Immerse yourself in captivating stories and insightful reads.',
+                'description' => 'Immerse yourself in captivating stories and insightful reads.',
                 'items' => json_encode([
                     'Fiction - "The Midnight Library" by Matt Haig',
                     'Self-Help - "Atomic Habits" by James Clear',
@@ -82,7 +82,7 @@ class TabsContentSeeder extends Seeder
             4 => [
                 'title' => 'Movies',
                 'slug' => 'movies',
-                'content' => 'Get recommendations on the latest movies.',
+                'description' => 'Get recommendations on the latest movies.',
                 'items' => json_encode([
                     'The Martian - A survivor from Mars',
                     'Big Hero 6 - A tech geek lost his brother tries to take revenge on the killer',
@@ -104,7 +104,7 @@ class TabsContentSeeder extends Seeder
             5 => [
                 'title' => 'Travel',
                 'slug' => 'travel',
-                'content' => 'Plan your next adventure with these travel destinations.',
+                'description' => 'Plan your next adventure with these travel destinations.',
                 'items' => json_encode([
                     'Paris, France - The city of lights and romance',
                     'Tokyo, Japan - A blend of tradition and modernity',
@@ -126,7 +126,7 @@ class TabsContentSeeder extends Seeder
             6 => [
                 'title' => 'Food',
                 'slug' => 'food',
-                'content' => 'Delight your taste buds with these culinary picks.',
+                'description' => 'Delight your taste buds with these culinary picks.',
                 'items' => json_encode([
                     'Pizza - Authentic Neapolitan Pizza',
                     'Sushi - Fresh Tuna Nigiri',
@@ -148,7 +148,7 @@ class TabsContentSeeder extends Seeder
             7 => [
                 'title' => 'Fitness',
                 'slug' => 'fitness',
-                'content' => 'Gear up for a healthy lifestyle with these essentials.',
+                'description' => 'Gear up for a healthy lifestyle with these essentials.',
                 'items' => json_encode([
                     'Dumbbells - Adjustable Weight Set',
                     'Yoga Mat - Non-Slip Eco-Friendly Mat',
@@ -170,7 +170,7 @@ class TabsContentSeeder extends Seeder
             8 => [
                 'title' => 'Gaming',
                 'slug' => 'gaming',
-                'content' => 'Level up your gaming experience with these top picks.',
+                'description' => 'Level up your gaming experience with these top picks.',
                 'items' => json_encode([
                     'Console - PlayStation 5',
                     'Game - "The Legend of Zelda: Breath of the Wild"',
