@@ -18,6 +18,7 @@ import FAQ from "./views/FAQ.vue";
 import Tooltippy from "./components/Tooltippy.vue";
 import PinnedToTop from "./components/PinnedToTop.vue";
 import "tippy.js/dist/tippy.css";
+import AnalyticsDashboard from "./components/AnalyticsDashboard.vue";
 
 Vue.component("Carousel", Carousel);
 Vue.component("SeriesDropdown", SeriesDropdown);
@@ -35,6 +36,7 @@ Vue.component("PinnedToTop", PinnedToTop);
 Vue.component("Tooltippy", Tooltippy);
 Vue.component("Tabs", Tabs);
 Vue.component("Tab", Tab);
+Vue.component("AnalyticsDashboard", AnalyticsDashboard);
 
 new Vue({
     el: "#app",

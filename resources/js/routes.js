@@ -4,6 +4,7 @@ import Home from "./views/Home.vue";
 import About from "./views/About.vue";
 import Contact from "./views/Contact.vue";
 import FAQ from "./views/FAQ.vue";
+import AnalyticsDashboard from "./components/AnalyticsDashboard.vue";
 
 
 let routes = [
@@ -23,6 +24,10 @@ let routes = [
         path: "/contact",
         component: Contact,
     },
+    {
+        path: "/analytics",
+        component: AnalyticsDashboard,
+    }
 ];
 export default new VueRouter({
     routes,

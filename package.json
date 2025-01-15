@@ -17,6 +17,8 @@
     "dependencies": {
         "@vitejs/plugin-vue2": "^2.3.3",
         "autoprefixer": "^10.4.20",
+        "chart.js": "^4.4.7",
+        "chartjs-adapter-moment": "^1.0.1",
         "flickity": "^3.0.0",
         "in-viewport": "^3.6.0",
         "lodash": "^4.17.21",
