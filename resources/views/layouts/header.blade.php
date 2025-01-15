@@ -1,6 +1,7 @@
 <section class="hero text-white is-small"
     style="background: conic-gradient(from 300deg, #3d52a0, #7091e6, #ede8f5); justify-content: center;">
     <!-- Hero head: Navigation -->
+    <!-- <dark-mode-toggle></dark-mode-toggle> -->
     <div class="hero-head">
         <nav class="navbar">
             <div class="container flex justify-between items-center">
@@ -16,27 +17,27 @@
 
 
                         <div class=" absolute bg-white text-gray-700 rounded shadow-lg mt-2 ml-6">
-                                <a href="/" class="block text-sm px-4 py-2 hover:bg-gray-200 rounded-md">Home</a>
-                                <a href="#/about" class="block text-sm px-4 py-2 hover:bg-gray-200 rounded-md">About</a>
-                                <a href="#/faq" class="block text-sm px-4 py-2 hover:bg-gray-200 rounded-md">FAQ</a>
-                                <a href="#/contact" class="block text-sm px-4 py-2 hover:bg-gray-200 rounded-md">Contact</a>
+                            <a href="/" class="block text-sm px-4 py-2 hover:bg-gray-200 rounded-md">Home</a>
+                            <a href="#/about" class="block text-sm px-4 py-2 hover:bg-gray-200 rounded-md">About</a>
+                            <a href="#/faq" class="block text-sm px-4 py-2 hover:bg-gray-200 rounded-md">FAQ</a>
+                            <a href="#/contact" class="block text-sm px-4 py-2 hover:bg-gray-200 rounded-md">Contact</a>
+                        </div>
+                    </dropdown>
                 </div>
-                </dropdown>
-            </div>
 
-            <div id="navbarMenuHeroA" class="navbar-menu flex items-center mt-4">
-                <div class="navbar-end flex space-x-4">
-                    <catalog-dropdown></catalog-dropdown>
-                    <series-dropdown></series-dropdown>
-                    <podcasts-dropdown></podcasts-dropdown>
+                <div id="navbarMenuHeroA" class="navbar-menu flex items-center mt-4">
+                    <div class="navbar-end flex space-x-4">
+                        <catalog-dropdown></catalog-dropdown>
+                        <series-dropdown></series-dropdown>
+                        <podcasts-dropdown></podcasts-dropdown>
+                    </div>
                 </div>
             </div>
-    </div>
-    </nav>
+        </nav>
 
-    <portal-target name="nav-catalog"></portal-target>
-    <portal-target name="nav-series"></portal-target>
-    <portal-target name="nav-podcasts"></portal-target>
+        <portal-target name="nav-catalog"></portal-target>
+        <portal-target name="nav-series"></portal-target>
+        <portal-target name="nav-podcasts"></portal-target>
     </div>
 
     <!-- Hero content: Centered Carousel -->
