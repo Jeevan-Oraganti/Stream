@@ -1,23 +1,33 @@
 <template>
     <div>
+        <!-- Search Bar -->
+        <div class="mb-4">
+            <input type="text" v-model="TabSearchQuery" placeholder="Search..."
+                class="w-full p-4 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none"
+                @input="searchTabs" />
+        </div>
+
+        <!-- Tabs -->
         <ul class="flex flex-wrap mb-4 border-b border-gray-400 justify-around" role="tablist">
             <li v-for="(tab, index) in tabs" :key="index" class="cursor-pointer" :class="{
                 'border border-b-0 rounded-t-lg bg-white shadow-md': tab === activeTab,
-                'hover:bg-gray-200 hover:rounded-t-lg hover:text-black': tab !== activeTab
+                'hover:bg-gray-200 hover:rounded-t-lg hover:text-black': tab !== activeTab,
             }" :style="tab === activeTab ? 'margin-bottom: -1px' : ''" role="presentation">
-                <button :class="{ 'text-black font-bold': tab === activeTab, 'hover:text-black': tab !== activeTab }"
-                        class="focus:outline-none px-4 py-2 text-gray-300" role="tab" :aria-selected="tab === activeTab"
-                        @click="selectTab(tab)">
+                <button :class="{
+                    'text-black font-bold': tab === activeTab,
+                    'hover:text-black': tab !== activeTab,
+                }" class="focus:outline-none px-4 py-2 text-gray-300" role="tab" :aria-selected="tab === activeTab"
+                    @click="selectTab(tab)">
                     {{ tab.title }}
                     <span :class="tab.content ? 'dot-green' : 'dot-red'" class="ml-2"></span>
                 </button>
             </li>
         </ul>
 
-        <div v-for="tab in tabs" :key="tab.id">
-            <tab :tab="tab" @tab-selected="handleTabSelected" :ref="'tab-' + tab.slug" v-show="tab === activeTab"/>
+        <!-- Tab Content -->
+        <div v-for="tab in tabs" :key="tab.slug">
+            <tab :tab="tab" @tab-selected="handleTabSelected" :ref="'tab-' + tab.slug" v-show="tab === activeTab" />
         </div>
-
     </div>
 </template>
 
@@ -38,6 +48,8 @@ export default {
     data() {
         return {
             activeTab: null,
+            TabSearchQuery: '',
+            initialTabs: ['electronics', 'movies'], // Tabs to load initially
         };
     },
     methods: {
@@ -47,7 +59,7 @@ export default {
                 this.$refs[`tab-${tab.slug}`][0].loadTabContent();
             }
         },
-        handleTabSelected({content}) {
+        handleTabSelected({ content }) {
             this.activeTab.content = content;
             this.$forceUpdate();
         },
@@ -59,19 +71,49 @@ export default {
                     axios.get(`/tabs/${tab.slug}/content`)
                         .then(response => {
                             tab.content = response.data;
-                            // this.$refs[`tab-${tab.slug}`][0].setContent(response.data);
+                            // this.$refs[tab-${tab.slug}][0].setContent(response.data);
                         })
                         .catch((error) => {
-                            console.log(`Failed to preload content for ${slug}`, error);
+                            console.log('Failed to preload content for ${ slug }, error');
                         });
                 }
             });
-        }
-    },
-    watch: {
-        activeTab(newTab) {
-            document.title = `Category - ${newTab.title}`;
-        }
+        },
+        async searchTabs() {
+            const query = this.TabSearchQuery.toLowerCase();
+
+            // Step 1: Load content for all tabs missing it
+            const contentLoadPromises = this.tabs.map(async (tab) => {
+                if (!tab.content) {
+                    try {
+                        const response = await axios.get(`/tabs/${tab.slug}/content`);
+                        tab.content = response.data; // Set the content once fetched
+                    } catch (error) {
+                        console.error(`Failed to load content for ${tab.slug}`, error);
+                    }
+                }
+                return tab;
+            });
+
+            await Promise.all(contentLoadPromises);
+
+            // Step 2: Search for a match in titles or content
+            let matchedTab = this.tabs.find(tab => tab.title.toLowerCase().includes(query));
+
+            if (!matchedTab) {
+                matchedTab = this.tabs.find(tab =>
+                    tab.content && JSON.stringify(tab.content).toLowerCase().includes(query)
+                );
+            }
+
+            // Step 3: Switch to the matched tab if found
+            if (matchedTab) {
+                this.selectTab(matchedTab);
+            } else {
+                console.log('No matching tab found.');
+            }
+            this.$forceUpdate();
+        },
     },
     mounted() {
         if (this.tabs.length > 0) {
@@ -79,7 +121,7 @@ export default {
             this.selectTab(this.tabs[0]);
             this.preloadTabs();
         }
-    }
+    },
 };
 </script>
 

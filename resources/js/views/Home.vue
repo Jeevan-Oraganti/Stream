@@ -31,21 +31,26 @@
                     <!-- Search Input Field -->
                     <div class="mb-4">
                         <input type="text" v-model="searchQuery" placeholder="Search for a status..."
-                            class="w-full p-4 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none" />
+                               class="w-full p-4 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none"/>
                     </div>
 
                     <div class="mb-8">
-                        <div v-for="status in filteredStatuses" :key="status.id"
-                            class="transition-transform duration-300 hover:scale-105 border border-gray-500 p-4 rounded-lg mb-4">
-                            <div v-if="status.user" class="flex justify-between items-center mb-3">
-                                <p class="text-lg font-medium">{{ status.user.name }} said...</p>
-                                <p class="text-sm text-gray-400">{{ status.created_at | ago | capitalize }}</p>
+                        <div v-if="filteredStatuses.length > 0">
+                            <div v-for="status in filteredStatuses" :key="status.id"
+                                 class="transition-transform duration-300 hover:scale-105 border border-gray-500 p-4 rounded-lg mb-4">
+                                <div v-if="status.user" class="flex justify-between items-center mb-3">
+                                    <p class="text-lg font-medium">{{ status.user.name }} said...</p>
+                                    <p class="text-sm text-gray-400">{{ status.created_at | ago | capitalize }}</p>
+                                </div>
+                                <div v-else class="flex justify-between items-center mb-3">
+                                    <p class="text-lg font-medium">Anonymous said...</p>
+                                    <p class="text-sm text-gray-400">{{ status.created_at | ago | capitalize }}</p>
+                                </div>
+                                <div class="text-gray-300 text-base" v-text="status.body"></div>
                             </div>
-                            <div v-else class="flex justify-between items-center mb-3">
-                                <p class="text-lg font-medium">Anonymous said...</p>
-                                <p class="text-sm text-gray-400">{{ status.created_at | ago | capitalize }}</p>
-                            </div>
-                            <div class="text-gray-300 text-base" v-text="status.body"></div>
+                        </div>
+                        <div v-else>
+                            <p class="text-lg font-medium">No related Status update.</p>
                         </div>
                     </div>
 
@@ -57,10 +62,10 @@
             <conditional-render when-hidden="#push-to-stream">
                 <div class="participate-button fixed bottom-10 right-6 z-50">
                     <a class="bg-blue-500 text-white text-xs hover:bg-white hover:text-blue-500 rounded-full w-36 h-12 text-center flex items-center justify-center shadow-lg"
-                        @click="scrollToPush">
+                       @click="scrollToPush">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white mr-1" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+                             viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
                         </svg>
                         Add to Stream
                     </a>
@@ -80,7 +85,7 @@ import Tabs from "../components/Tabs.vue";
 import DarkModeToggle from '../components/DarkModeToggle.vue';
 
 export default {
-    components: { AddToStream, Tabs, DarkModeToggle },
+    components: {AddToStream, Tabs, DarkModeToggle},
     data() {
         return {
             statuses: [],

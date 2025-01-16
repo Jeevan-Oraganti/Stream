@@ -1,7 +1,7 @@
 <template>
     <div>
-        <h1 class="text-2xl font-bold mb-4">Analytics Dashboard</h1>
         <div>
+        <h1 class="text-2xl font-bold mb-4">Analytics Dashboard</h1>
             <canvas id="combinedChart" class="bg-gray-900 p-4 rounded-lg"></canvas>
         </div>
     </div>
@@ -17,7 +17,7 @@ export default {
         return {
             statusesData: [],
             usersData: [],
-            chartType: 'scatter',
+            chartType: 'line',
         };
     },
     mounted() {
@@ -97,7 +97,16 @@ export default {
                                 color: 'rgba(200, 200, 200, 0.2)'
                             }
                         }
-                    }
+                    },
+                    // animations: {
+                    //     tension: {
+                    //         duration: 1000,
+                    //         easing: 'scatter',
+                    //         from: 0,
+                    //         to: 1,
+                    //         loop: true
+                    //     }
+                    // }
                 }
             });
         }

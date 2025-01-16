@@ -19,4 +19,15 @@ class TabController extends Controller
             return response()->json(['error' => 'Tab not found.'], 404);
         }
     }
+
+    public function getAll()
+    {
+        $tabsContent = TabContent::all();
+
+        if ($tabsContent) {
+            return response()->json($tabsContent);
+        } else {
+            return response()->json(['error' => 'Error fetching all tabs content'], 404);
+        }
+    }
 }

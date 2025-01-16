@@ -1,7 +1,7 @@
-class Status {
+class Tabs {
     static all(then) {
-        return axios.get("/statuses").then(({ data }) => then(data));
+        return axios.get("/tabs").then(({ data }) => then(data));
     }
 }
 
-export default Status;
+export default Tabs;
