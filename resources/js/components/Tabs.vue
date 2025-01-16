@@ -7,7 +7,7 @@
                 @input="searchTabs" />
         </div>
         <div v-show="check">
-            <h1 class="text-center text-gray-500 text-xl mt-4">No matching content.</h1>
+            <h1 class="text-center text-red-500 text-xl mt-4 mb-8">No matching content found. Please rephrase.</h1>
         </div>
 
         <!-- Tabs -->
