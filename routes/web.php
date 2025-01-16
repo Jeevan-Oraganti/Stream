@@ -16,6 +16,5 @@ Route::get('/statuses', [StatusController::class, 'index']);
 Route::post('/statuses', [StatusController::class, 'store']);
 
 Route::get('/tabs/{slug}/content', [TabController::class, 'getContent']);
-Route::get('/tabs', [TabController::class, 'getAll']);
 
 Route::get('/analytics', [AnalyticsController::class, 'index']);

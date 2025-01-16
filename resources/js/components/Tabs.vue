@@ -5,6 +5,7 @@
                 class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none"
                 @input="searchTabs" />
         </div>
+
         <div v-show="check">
             <h1 class="text-center text-red-500 text-xl mt-4 mb-8">No matching content found. Please rephrase.</h1>
         </div>
