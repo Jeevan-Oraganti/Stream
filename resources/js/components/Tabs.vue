@@ -1,6 +1,5 @@
 <template>
     <div>
-        <!-- Search Bar -->
         <div class="mb-4">
             <input type="text" v-model="TabSearchQuery" placeholder="Search..."
                 class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none"
@@ -10,7 +9,6 @@
             <h1 class="text-center text-red-500 text-xl mt-4 mb-8">No matching content found. Please rephrase.</h1>
         </div>
 
-        <!-- Tabs -->
         <ul class="flex flex-wrap mb-4 border-b border-gray-400 justify-around" role="tablist">
             <li v-for="(tab, index) in tabs" :key="index" class="cursor-pointer" :class="{
                 'border border-b-0 rounded-t-lg bg-white shadow-md': tab === activeTab,
@@ -27,7 +25,6 @@
             </li>
         </ul>
 
-        <!-- Tab Content -->
         <div v-for="tab in tabs" :key="tab.slug">
             <tab :tab="tab" :query="TabSearchQuery" @tab-selected="handleTabSelected" :ref="'tab-' + tab.slug"
                 v-show="tab === activeTab" />
@@ -88,7 +85,6 @@ export default {
         async searchTabs() {
             const query = this.TabSearchQuery.toLowerCase();
 
-            // Step 1: Load content for all tabs missing it
             const contentLoadPromises = this.tabs.map(async (tab) => {
                 if (!tab.content) {
                     try {
@@ -103,7 +99,6 @@ export default {
 
             await Promise.all(contentLoadPromises);
 
-            // Step 2: Search for a match in titles or content
             let matchedTab = this.tabs.find(tab => tab.title.toLowerCase().includes(query));
 
             if (!matchedTab) {
@@ -112,7 +107,6 @@ export default {
                 );
             }
 
-            // Step 3: Switch to the matched tab if found
             if (matchedTab) {
                 this.selectTab(matchedTab);
             } else {

@@ -79,7 +79,6 @@ export default {
         'query': {
             handler(newVal, oldVa) {
                 this.currentTab = this.tab
-                console.log(this.tab.content)
             }
         }
 
