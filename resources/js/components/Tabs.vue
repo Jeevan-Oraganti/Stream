@@ -3,8 +3,11 @@
         <!-- Search Bar -->
         <div class="mb-4">
             <input type="text" v-model="TabSearchQuery" placeholder="Search..."
-                class="w-full p-4 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none"
+                class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none"
                 @input="searchTabs" />
+        </div>
+        <div v-show="check">
+            <h1 class="text-center text-gray-500 text-xl mt-4">No matching content.</h1>
         </div>
 
         <!-- Tabs -->
@@ -26,7 +29,8 @@
 
         <!-- Tab Content -->
         <div v-for="tab in tabs" :key="tab.slug">
-            <tab :tab="tab" @tab-selected="handleTabSelected" :ref="'tab-' + tab.slug" v-show="tab === activeTab" />
+            <tab :tab="tab" :query="TabSearchQuery" @tab-selected="handleTabSelected" :ref="'tab-' + tab.slug"
+                v-show="tab === activeTab" />
         </div>
     </div>
 </template>
@@ -49,7 +53,8 @@ export default {
         return {
             activeTab: null,
             TabSearchQuery: '',
-            initialTabs: ['electronics', 'movies'], // Tabs to load initially
+            initialTabs: ['electronics', 'movies'],
+            check: false,
         };
     },
     methods: {
@@ -58,6 +63,7 @@ export default {
             if (!tab.content) {
                 this.$refs[`tab-${tab.slug}`][0].loadTabContent();
             }
+            this.check = false;
         },
         handleTabSelected({ content }) {
             this.activeTab.content = content;
@@ -87,7 +93,7 @@ export default {
                 if (!tab.content) {
                     try {
                         const response = await axios.get(`/tabs/${tab.slug}/content`);
-                        tab.content = response.data; // Set the content once fetched
+                        tab.content = response.data;
                     } catch (error) {
                         console.error(`Failed to load content for ${tab.slug}`, error);
                     }
@@ -111,6 +117,7 @@ export default {
                 this.selectTab(matchedTab);
             } else {
                 console.log('No matching tab found.');
+                this.check = true;
             }
             this.$forceUpdate();
         },

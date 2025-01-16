@@ -1,12 +1,12 @@
 <template>
     <div>
         <div v-if="loading" class="container loader p-2 items-centers mt-20 mb-20"></div>
-        <div v-else-if="tab.content" class="p-4 rounded-lg" role="tabpanel">
+        <div v-else-if="currentTab.content" class="p-4 rounded-lg" role="tabpanel">
             <div>
-                <h2 class="text-2xl font-bold mb-4 text-white" v-html="tab.title"></h2>
-                <p class="mb-4 text-white" v-html="tab.content.description"></p>
+                <h2 class="text-2xl font-bold mb-4 text-white" v-html="currentTab.title"></h2>
+                <p class="mb-4 text-white" v-html="currentTab.content.description"></p>
                 <ul class="list-disc pl-6">
-                    <li v-for="(item, index) in tab.content.items" :key="index" class="mb-2 text-white">
+                    <li v-for="(item, index) in currentTab.content.items" :key="index" class="mb-2 text-white">
                         {{ item }}
                     </li>
                 </ul>
@@ -27,23 +27,30 @@ export default {
             type: Object,
             required: true,
         },
+        query: {
+            type: String
+        }
     },
     data() {
         return {
             loading: false,
+            currentTab: this.tab
         };
+    },
+    mounted() {
+        console.log(this.tab.content);
     },
     methods: {
         loadTabContent() {
             if (this.tab.content) {
-                this.$emit('tab-selected', { content: this.tab.content.content });
+                this.$emit('tab-selected', {content: this.tab.content.content});
             } else {
                 this.loading = true;
                 axios
                     .get(`/tabs/${this.tab.slug}/content`)
                     .then((response) => {
                         this.tab.content = response.data;
-                        this.$emit('tab-selected', { content: response.data });
+                        this.$emit('tab-selected', {content: response.data});
                     })
                     .catch(() => {
                         this.tab.content = {
@@ -55,7 +62,7 @@ export default {
                                     An error occurred while loading the content. Please try again later.
                                     </p>`,
                         };
-                        this.$emit('tab-selected', { content: this.tab.content });
+                        this.$emit('tab-selected', {content: this.tab.content});
                         console.log("Failed to load Content");
                     })
                     .finally(() => {
@@ -65,9 +72,18 @@ export default {
         },
         setContent(content) {
             this.tab.content = content;
-            this.$emit('tab-selected', { content: content, cached: true });
+            this.$emit('tab-selected', {content: content, cached: true});
         },
     },
+    watch: {
+        'query': {
+            handler(newVal, oldVa) {
+                this.currentTab = this.tab
+                console.log(this.tab.content)
+            }
+        }
+
+    }
 };
 </script>
 
