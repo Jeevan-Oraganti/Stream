@@ -7,7 +7,10 @@
         </div>
 
         <div v-show="check">
-            <h1 class="text-center text-red-500 text-xl mt-4 mb-8">No matching content found. Please rephrase.</h1>
+            <div class="flex flex-col items-center justify-center mt-4 mb-8">
+                <h1 class="text-center text-red-500 text-lg">No matching content found.</h1>
+                <p class="text-center text-red-300">Try adjusting your search to find what you're looking for.</p>
+            </div>
         </div>
 
         <ul class="flex flex-wrap mb-4 border-b border-gray-400 justify-around" role="tablist">
