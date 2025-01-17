@@ -27,18 +27,12 @@ export default {
             type: Object,
             required: true,
         },
-        query: {
-            type: String
-        }
     },
     data() {
         return {
             loading: false,
             currentTab: this.tab
         };
-    },
-    mounted() {
-        console.log(this.tab.content);
     },
     methods: {
         loadTabContent() {
@@ -75,14 +69,6 @@ export default {
             this.$emit('tab-selected', {content: content, cached: true});
         },
     },
-    watch: {
-        'query': {
-            handler(newVal, oldVa) {
-                this.currentTab = this.tab
-            }
-        }
-
-    }
 };
 </script>
 

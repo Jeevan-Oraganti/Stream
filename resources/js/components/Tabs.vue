@@ -1,15 +1,17 @@
 <template>
     <div>
         <div class="mb-4">
-            <input type="text" v-model="TabSearchQuery" placeholder="Search..."
-                class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none"
-                @input="searchTabs" />
-        </div>
+            <div class="flex items-center">
+                <input type="text" v-model="TabSearchQuery" placeholder="Search..."
+                    class="w-full mb-2 p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    @input="searchTabs" />
+                <span v-if="loading" class="loader absolute right-20 mb-2"></span>
+            </div>
 
-        <div v-show="check">
-            <div class="flex flex-col items-center justify-center mt-4 mb-8">
-                <h1 class="text-center text-red-500 text-lg">No matching content found.</h1>
-                <p class="text-center text-red-300">Try adjusting your search to find what you're looking for.</p>
+
+            <div v-show="check" class="flex flex-col justify-center mt-2 mb-8 text-sm">
+                <h1 class="text-red-500">No matching content found.</h1>
+                <!--<p class="text-yellow-500">Try adjusting your search to find what you're looking for.</p>-->
             </div>
         </div>
 
@@ -30,8 +32,7 @@
         </ul>
 
         <div v-for="tab in tabs" :key="tab.slug">
-            <tab :tab="tab" :query="TabSearchQuery" @tab-selected="handleTabSelected" :ref="'tab-' + tab.slug"
-                v-show="tab === activeTab" />
+            <tab :tab="tab" @tab-selected="handleTabSelected" :ref="'tab-' + tab.slug" v-show="tab === activeTab" />
         </div>
     </div>
 </template>
@@ -56,6 +57,7 @@ export default {
             TabSearchQuery: '',
             initialTabs: ['electronics', 'movies'],
             check: false,
+            loading: false,
         };
     },
     methods: {
@@ -80,13 +82,14 @@ export default {
                             tab.content = response.data;
                             // this.$refs[tab-${tab.slug}][0].setContent(response.data);
                         })
-                        .catch((error) => {
-                            console.log('Failed to preload content for ${ slug }, error');
+                        .catch(() => {
+                            console.log(`Failed to preload content for ${slug}`);
                         });
                 }
             });
         },
         async searchTabs() {
+            this.loading = true;
             const query = this.TabSearchQuery.toLowerCase();
 
             const contentLoadPromises = this.tabs.map(async (tab) => {
@@ -101,7 +104,7 @@ export default {
                 return tab;
             });
 
-            await Promise.all(contentLoadPromises);
+            // await Promise.all(contentLoadPromises);
 
             let matchedTab = this.tabs.find(tab => tab.title.toLowerCase().includes(query));
 
@@ -113,10 +116,16 @@ export default {
 
             if (matchedTab) {
                 this.selectTab(matchedTab);
+                // this.loading = false;
             } else {
                 console.log('No matching tab found.');
                 this.check = true;
+                this.loading = false;
             }
+
+            await Promise.all(contentLoadPromises);
+
+            this.loading = false;
             this.$forceUpdate();
         },
     },
@@ -151,5 +160,23 @@ export default {
     margin-left: 8px;
     box-shadow: 0 0 8px rgba(76, 175, 80, 0.6), 0 0 3px rgba(0, 255, 0, 0.4);
     animation: pulse-green 2s infinite;
+}
+
+.loader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 30px;
+    height: 30px;
+    border: 4px solid rgba(255, 255, 255, 0.2);
+    border-top-color: #4caf50;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
 }
 </style>
