@@ -82,8 +82,8 @@ export default {
                             tab.content = response.data;
                             // this.$refs[tab-${tab.slug}][0].setContent(response.data);
                         })
-                        .catch(() => {
-                            console.log(`Failed to preload content for ${slug}`);
+                        .catch((error) => {
+                            console.log('Failed to preload content for ${ slug }, error');
                         });
                 }
             });
@@ -91,39 +91,31 @@ export default {
         async searchTabs() {
             this.loading = true;
             const query = this.TabSearchQuery.toLowerCase();
+            let matchedTab = null;
 
-            const contentLoadPromises = this.tabs.map(async (tab) => {
+            for (const tab of this.tabs) {
                 if (!tab.content) {
                     try {
                         const response = await axios.get(`/tabs/${tab.slug}/content`);
                         tab.content = response.data;
                     } catch (error) {
-                        console.error(`Failed to load content for ${tab.slug}`, error);
+                        console.error('Failed to load content for ${ tab.slug }', error);
                     }
                 }
-                return tab;
-            });
 
-            // await Promise.all(contentLoadPromises);
-
-            let matchedTab = this.tabs.find(tab => tab.title.toLowerCase().includes(query));
-
-            if (!matchedTab) {
-                matchedTab = this.tabs.find(tab =>
-                    tab.content && JSON.stringify(tab.content).toLowerCase().includes(query)
-                );
+                if (tab.title.toLowerCase().includes(query) ||
+                    (tab.content && JSON.stringify(tab.content).toLowerCase().includes(query))) {
+                    matchedTab = tab;
+                    break;
+                }
             }
 
             if (matchedTab) {
                 this.selectTab(matchedTab);
-                // this.loading = false;
             } else {
                 console.log('No matching tab found.');
                 this.check = true;
-                this.loading = false;
             }
-
-            await Promise.all(contentLoadPromises);
 
             this.loading = false;
             this.$forceUpdate();
