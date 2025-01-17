@@ -4,7 +4,7 @@
             <div class="flex items-center">
                 <input type="text" v-model="TabSearchQuery" placeholder="Search..."
                     class="w-full mb-2 p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    @input="searchTabs" />
+                    @input="searchTabs1" />
                 <span v-if="loading" class="loader absolute right-20 mb-2"></span>
             </div>
 
@@ -88,12 +88,74 @@ export default {
                 }
             });
         },
-        async searchTabs() {
+        async searchTabs1() {
             this.loading = true;
+            this.check = false;
             const query = this.TabSearchQuery.toLowerCase();
             let matchedTab = null;
+            let matchFound = false;
+
+
+            if (query === '') {
+                this.activeTab = this.tabs[0];
+                this.check = false;
+                this.loading = false;
+                return;
+            }
+
+            const processTab = async (tab) => {
+                if (matchFound) return;
+
+                if (!tab.content) {
+                    try {
+                        const response = await axios.get(`/tabs/${tab.slug}/content`);
+                        tab.content = response.data;
+                    } catch (error) {
+                        console.error(`Failed to load content for ${tab.slug}`, error);
+                    }
+                }
+
+                if (
+                    tab.title.toLowerCase().includes(query) ||
+                    (tab.content && JSON.stringify(tab.content).toLowerCase().includes(query))
+                ) {
+                    matchedTab = tab;
+                    matchFound = true;
+                    this.selectTab(matchedTab);
+                }
+            };
 
             for (const tab of this.tabs) {
+                await processTab(tab);
+                if (matchFound) break;
+            }
+
+            if (!matchedTab) {
+                console.log('No matching tab found.');
+                this.check = true;
+            }
+
+            // await Promise.all(this.tabs.map(tab =>
+            //     tab.content ? Promise.resolve() : axios
+            //         .get(`/tabs/${tab.slug}/content`)
+            //         .then(response => tab.content = response.data)));
+
+            this.loading = false;
+            this.$forceUpdate();
+        },
+
+        async searchTabs2() {
+            this.loading = true;
+            const query = this.TabSearchQuery.toLowerCase();
+
+            if (query === '') {
+                this.activeTab = this.tabs[0];
+                this.check = false;
+                this.loading = false;
+                return;
+            }
+
+            const contentLoadPromises = this.tabs.map(async (tab) => {
                 if (!tab.content) {
                     try {
                         const response = await axios.get(`/tabs/${tab.slug}/content`);
@@ -102,20 +164,28 @@ export default {
                         console.error('Failed to load content for ${ tab.slug }', error);
                     }
                 }
+                return tab;
+            });
 
-                if (tab.title.toLowerCase().includes(query) ||
-                    (tab.content && JSON.stringify(tab.content).toLowerCase().includes(query))) {
-                    matchedTab = tab;
-                    break;
-                }
+
+            let matchedTab = this.tabs.find(tab => tab.title.toLowerCase().includes(query));
+
+            if (!matchedTab) {
+                matchedTab = this.tabs.find(tab =>
+                    tab.content && JSON.stringify(tab.content).toLowerCase().includes(query)
+                );
             }
 
             if (matchedTab) {
                 this.selectTab(matchedTab);
-            } else {
+            }
+            if (!matchedTab && this.tabs.every(tab => tab.content)) {
                 console.log('No matching tab found.');
                 this.check = true;
+                this.activeTab = this.tabs[0];
             }
+
+            await Promise.all(contentLoadPromises);
 
             this.loading = false;
             this.$forceUpdate();
