@@ -19,6 +19,7 @@ import Tooltippy from "./components/Tooltippy.vue";
 import PinnedToTop from "./components/PinnedToTop.vue";
 import "tippy.js/dist/tippy.css";
 import AnalyticsDashboard from "./components/AnalyticsDashboard.vue";
+import SearchBar from "./components/SearchBar.vue";
 
 Vue.component("Carousel", Carousel);
 Vue.component("SeriesDropdown", SeriesDropdown);
@@ -37,6 +38,7 @@ Vue.component("Tooltippy", Tooltippy);
 Vue.component("Tabs", Tabs);
 Vue.component("Tab", Tab);
 Vue.component("AnalyticsDashboard", AnalyticsDashboard);
+Vue.component("SearchBar", SearchBar);
 
 new Vue({
     el: "#app",

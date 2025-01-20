@@ -1,21 +1,21 @@
 <template>
     <div>
         <div class="mb-4">
+            <!-- <search-bar :tabs="tabs" @search="searchTabs" ref="searchBar" /> -->
             <div class="flex items-center">
                 <input type="text" v-model="TabSearchQuery" placeholder="Search..."
                     class="w-full mb-2 p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    @input="searchTabs1" />
+                    @input="searchTabs" />
                 <span v-if="loading" class="loader absolute right-20 mb-2"></span>
             </div>
 
 
             <div v-show="check" class="flex flex-col justify-center mt-2 mb-8 text-sm">
                 <h1 class="text-red-500">No matching content found.</h1>
-                <!--<p class="text-yellow-500">Try adjusting your search to find what you're looking for.</p>-->
             </div>
         </div>
 
-        <ul class="flex flex-wrap mb-4 border-b border-gray-400 justify-around" role="tablist">
+        <ul class="flex flex-wrap mb-4 border-b border-gray-400 justify-around" role="tab-list">
             <li v-for="(tab, index) in tabs" :key="index" class="cursor-pointer" :class="{
                 'border border-b-0 rounded-t-lg bg-white shadow-md': tab === activeTab,
                 'hover:bg-gray-200 hover:rounded-t-lg hover:text-black': tab !== activeTab,
@@ -55,7 +55,6 @@ export default {
         return {
             activeTab: null,
             TabSearchQuery: '',
-            initialTabs: ['electronics', 'movies'],
             check: false,
             loading: false,
         };
@@ -80,7 +79,6 @@ export default {
                     axios.get(`/tabs/${tab.slug}/content`)
                         .then(response => {
                             tab.content = response.data;
-                            // this.$refs[tab-${tab.slug}][0].setContent(response.data);
                         })
                         .catch((error) => {
                             console.log('Failed to preload content for ${ slug }, error');
@@ -88,7 +86,8 @@ export default {
                 }
             });
         },
-        async searchTabs1() {
+
+        async searchTabs() {
             this.loading = true;
             this.check = false;
             const query = this.TabSearchQuery.toLowerCase();
@@ -100,7 +99,6 @@ export default {
                 this.activeTab = this.tabs[0];
                 this.check = false;
                 this.loading = false;
-                return;
             }
 
             const processTab = async (tab) => {
@@ -115,10 +113,9 @@ export default {
                     }
                 }
 
-                if (
-                    tab.title.toLowerCase().includes(query) ||
-                    (tab.content && JSON.stringify(tab.content).toLowerCase().includes(query))
-                ) {
+                if (tab.title.toLowerCase().includes(query) ||
+                    (tab.content && JSON.stringify(tab.content).toLowerCase().includes(query)))
+                {
                     matchedTab = tab;
                     matchFound = true;
                     this.selectTab(matchedTab);
@@ -127,7 +124,10 @@ export default {
 
             for (const tab of this.tabs) {
                 await processTab(tab);
-                if (matchFound) break;
+                if (matchFound) {
+                    this.loading = false;
+                    // break;
+                }
             }
 
             if (!matchedTab) {
@@ -135,57 +135,16 @@ export default {
                 this.check = true;
             }
 
-            // await Promise.all(this.tabs.map(tab =>
-            //     tab.content ? Promise.resolve() : axios
-            //         .get(`/tabs/${tab.slug}/content`)
-            //         .then(response => tab.content = response.data)));
-
-            this.loading = false;
-            this.$forceUpdate();
-        },
-
-        async searchTabs2() {
-            this.loading = true;
-            const query = this.TabSearchQuery.toLowerCase();
-
-            if (query === '') {
-                this.activeTab = this.tabs[0];
-                this.check = false;
-                this.loading = false;
-                return;
-            }
-
-            const contentLoadPromises = this.tabs.map(async (tab) => {
+            for (const tab of this.tabs) {
                 if (!tab.content) {
                     try {
                         const response = await axios.get(`/tabs/${tab.slug}/content`);
                         tab.content = response.data;
                     } catch (error) {
-                        console.error('Failed to load content for ${ tab.slug }', error);
+                        console.error(`Failed to load content for ${tab.slug}`, error);
                     }
                 }
-                return tab;
-            });
-
-
-            let matchedTab = this.tabs.find(tab => tab.title.toLowerCase().includes(query));
-
-            if (!matchedTab) {
-                matchedTab = this.tabs.find(tab =>
-                    tab.content && JSON.stringify(tab.content).toLowerCase().includes(query)
-                );
             }
-
-            if (matchedTab) {
-                this.selectTab(matchedTab);
-            }
-            if (!matchedTab && this.tabs.every(tab => tab.content)) {
-                console.log('No matching tab found.');
-                this.check = true;
-                this.activeTab = this.tabs[0];
-            }
-
-            await Promise.all(contentLoadPromises);
 
             this.loading = false;
             this.$forceUpdate();
@@ -198,6 +157,11 @@ export default {
             this.preloadTabs();
         }
     },
+    watch: {
+        activeTab(newTab) {
+            document.title = 'Category - ' + newTab.title;
+        }
+    }
 };
 </script>
 
