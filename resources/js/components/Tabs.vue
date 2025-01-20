@@ -2,11 +2,23 @@
     <div>
         <div class="mb-4">
             <!-- <search-bar :tabs="tabs" @search="searchTabs" ref="searchBar" /> -->
-            <div class="flex items-center">
-                <input type="text" v-model="TabSearchQuery" placeholder="Search..."
-                    class="w-full mb-2 p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    @input="searchTabs" />
-                <span v-if="loading" class="loader absolute right-20 mb-2"></span>
+            <div class="flex items-center mb-4">
+                <div class="relative w-full">
+                    <input type="text" v-model="TabSearchQuery" placeholder="Search..."
+                        class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        @input="searchTabs" />
+                    <span v-if="loading" class="loader absolute right-4 top-3"></span>
+                </div>
+                <div class="flex items-center ml-4">
+                    <label class="text-white text-xs mr-2">
+                        <input type="checkbox" v-model="searchInTitles" class="mr-1" />
+                        Titles
+                    </label>
+                    <label class="text-white text-xs">
+                        <input type="checkbox" v-model="searchInContent" class="mr-1" />
+                        Content
+                    </label>
+                </div>
             </div>
 
 
@@ -57,6 +69,8 @@ export default {
             TabSearchQuery: '',
             check: false,
             loading: false,
+            searchInTitles: false,
+            searchInContent: false,
         };
     },
     methods: {
@@ -113,9 +127,9 @@ export default {
                     }
                 }
 
-                if (tab.title.toLowerCase().includes(query) ||
-                    (tab.content && JSON.stringify(tab.content).toLowerCase().includes(query)))
-                {
+                if ((this.searchInTitles && tab.title.toLowerCase().includes(query)) ||
+                    (this.searchInContent && tab.content && JSON.stringify(tab.content).toLowerCase().includes(query)) ||
+                    (!this.searchInTitles && !this.searchInContent && (tab.title.toLowerCase().includes(query) || (tab.content && JSON.stringify(tab.content).toLowerCase().includes(query))))) {
                     matchedTab = tab;
                     matchFound = true;
                     this.selectTab(matchedTab);
@@ -201,7 +215,11 @@ export default {
 }
 
 @keyframes spin {
-    to {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
         transform: rotate(360deg);
     }
 }
