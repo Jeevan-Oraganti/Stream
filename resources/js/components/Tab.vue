@@ -20,6 +20,7 @@
 
 <script>
 import axios from "axios";
+import { sleep } from '../utilities/sleep.js'
 
 export default {
     props: {
@@ -35,7 +36,7 @@ export default {
         };
     },
     methods: {
-        loadTabContent() {
+        async loadTabContent() {
             if (this.tab.content) {
                 this.$emit('tab-selected', {content: this.tab.content.content});
             } else {

@@ -1,27 +1,13 @@
 <template>
     <div>
         <div class="mb-4">
-            <!-- <search-bar :tabs="tabs" @search="searchTabs" ref="searchBar" /> -->
             <div class="flex items-center mb-4">
+                
                 <div class="relative w-full">
                     <input type="text" v-model="TabSearchQuery" placeholder="Search..."
-                        class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        @input="searchTabs" />
+                           class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                           @input="searchTabs"/>
                     <span v-if="loading" class="loader absolute right-4 top-2"></span>
-                </div>
-                <div class="flex items-center ml-4">
-                    <label class="text-white text-xs">
-                        <input type="checkbox" v-model="searchInTitles" class="mr-1" />
-                        Titles
-                    </label>
-                    <label class="text-white text-xs">
-                        <input type="checkbox" v-model="searchInContent" class="mr-1" />
-                        Content
-                    </label>
-                    <label class="text-white text-xs">
-                        <input type="checkbox" v-model="searchAll" class="mr-1" />
-                        All
-                    </label>
                 </div>
             </div>
 
@@ -39,7 +25,7 @@
                     'text-black font-bold': tab === activeTab,
                     'hover:text-black': tab !== activeTab,
                 }" class="focus:outline-none px-4 py-2 text-gray-300" role="tab" :aria-selected="tab === activeTab"
-                    @click="selectTab(tab)">
+                        @click="selectTab(tab)">
                     {{ tab.title }}
                     <span :class="tab.content ? 'dot-green' : 'dot-red'" class="ml-2"></span>
                 </button>
@@ -47,7 +33,7 @@
         </ul>
 
         <div v-for="tab in tabs" :key="tab.slug">
-            <tab :tab="tab" @tab-selected="handleTabSelected" :ref="'tab-' + tab.slug" v-show="tab === activeTab" />
+            <tab :tab="tab" @tab-selected="handleTabSelected" :ref="'tab-' + tab.slug" v-show="tab === activeTab"/>
         </div>
     </div>
 </template>
@@ -55,7 +41,7 @@
 <script>
 import Tab from './Tab.vue';
 import axios from 'axios';
-import { sleep } from '../utilities/sleep.js'
+import {sleep} from "../utilities/sleep.js";
 
 export default {
     components: {
@@ -73,9 +59,6 @@ export default {
             TabSearchQuery: '',
             check: false,
             loading: false,
-            searchInTitles: false,
-            searchInContent: false,
-            searchAll: true,
         };
     },
     methods: {
@@ -86,7 +69,7 @@ export default {
             }
             this.check = false;
         },
-        handleTabSelected({ content }) {
+        handleTabSelected({content}) {
             this.activeTab.content = content;
             this.$forceUpdate();
         },
@@ -122,15 +105,14 @@ export default {
 
             for (const tab of this.tabs) {
                 this.loading = true;
-                await sleep(300);
-                if (tab.title.toLowerCase().includes(query)) {
+                if ((tab.title).toLowerCase().includes(query)) {
                     matchedTab = tab;
                     matchFound = true;
                     this.selectTab(matchedTab);
-                    this.loading - false;
                     break;
                 }
             }
+
             if (!matchFound) {
                 const processTab = async (tab) => {
                     if (matchFound) return;
@@ -143,14 +125,14 @@ export default {
                             console.error(`Failed to load content for ${tab.slug}`, error);
                         }
                     }
-                    this.loading = true;
-                    await sleep(300);
-                    if (JSON.stringify(tab.content).toLowerCase().includes(query)) {
+
+                    if ((tab.content && JSON.stringify(tab.content).toLowerCase().includes(query))) {
                         matchedTab = tab;
                         matchFound = true;
                         this.selectTab(matchedTab);
                     }
                 };
+
 
                 for (const tab of this.tabs) {
                     await processTab(tab);
@@ -158,7 +140,7 @@ export default {
                         this.loading = false;
                     }
                 }
-            };
+            }
 
             if (!matchedTab) {
                 console.log('No matching tab found.');
