@@ -7,7 +7,7 @@
                     <input type="text" v-model="TabSearchQuery" placeholder="Search..."
                         class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
                         @input="searchTabs" />
-                    <span v-if="loading" class="loader absolute right-4 top-3"></span>
+                    <span v-if="loading" class="loader absolute right-4 top-2"></span>
                 </div>
                 <div class="flex items-center ml-4">
                     <label class="text-white text-xs">
@@ -24,7 +24,6 @@
                     </label>
                 </div>
             </div>
-
 
             <div v-show="check" class="flex flex-col justify-center mt-2 mb-8 text-sm">
                 <h1 class="text-red-500">No matching content found.</h1>
@@ -56,6 +55,7 @@
 <script>
 import Tab from './Tab.vue';
 import axios from 'axios';
+import { sleep } from '../utilities/sleep.js'
 
 export default {
     components: {
@@ -120,34 +120,45 @@ export default {
                 this.loading = false;
             }
 
-            const processTab = async (tab) => {
-                if (matchFound) return;
-
-                if (!tab.content) {
-                    try {
-                        const response = await axios.get(`/tabs/${tab.slug}/content`);
-                        tab.content = response.data;
-                    } catch (error) {
-                        console.error(`Failed to load content for ${tab.slug}`, error);
-                    }
-                }
-
-                if ((this.searchInTitles && tab.title.toLowerCase().includes(query)) ||
-                    (this.searchInContent && tab.content && JSON.stringify(tab.content).toLowerCase().includes(query)) ||
-                    (this.searchAll && (tab.title.toLowerCase().includes(query) || (tab.content && JSON.stringify(tab.content).toLowerCase().includes(query))))) {
+            for (const tab of this.tabs) {
+                this.loading = true;
+                await sleep(300);
+                if (tab.title.toLowerCase().includes(query)) {
                     matchedTab = tab;
                     matchFound = true;
                     this.selectTab(matchedTab);
-                }
-            };
-
-            for (const tab of this.tabs) {
-                await processTab(tab);
-                if (matchFound) {
-                    this.loading = false;
-                    // break;
+                    this.loading - false;
+                    break;
                 }
             }
+            if (!matchFound) {
+                const processTab = async (tab) => {
+                    if (matchFound) return;
+
+                    if (!tab.content) {
+                        try {
+                            const response = await axios.get(`/tabs/${tab.slug}/content`);
+                            tab.content = response.data;
+                        } catch (error) {
+                            console.error(`Failed to load content for ${tab.slug}`, error);
+                        }
+                    }
+                    this.loading = true;
+                    await sleep(300);
+                    if (JSON.stringify(tab.content).toLowerCase().includes(query)) {
+                        matchedTab = tab;
+                        matchFound = true;
+                        this.selectTab(matchedTab);
+                    }
+                };
+
+                for (const tab of this.tabs) {
+                    await processTab(tab);
+                    if (matchFound) {
+                        this.loading = false;
+                    }
+                }
+            };
 
             if (!matchedTab) {
                 console.log('No matching tab found.');
