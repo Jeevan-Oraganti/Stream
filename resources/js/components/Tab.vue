@@ -20,7 +20,6 @@
 
 <script>
 import axios from "axios";
-import { sleep } from '../utilities/sleep.js'
 
 export default {
     props: {
