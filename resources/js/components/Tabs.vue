@@ -4,15 +4,15 @@
             <div class="flex items-center mb-4">
                 <div class="relative w-full">
                     <input type="text" v-model="TabSearchQuery" placeholder="Search..."
-                           class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                           @input="searchTabs"/>
+                        class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        @input="searchTabs" />
                     <span v-if="loading" class="loader absolute right-3 top-3 items-center"></span>
 
                     <span v-if="!loading" class="absolute right-3 top-1/2 transform -translate-y-1/2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400" fill="none"
-                             viewBox="0 0 24 26" stroke="currentColor">
+                            viewBox="0 0 24 26" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
-                                  d="M10 2a9 9 0 100 18 9 9 0 000-18zM23 21l-5-5"/>
+                                d="M10 2a9 9 0 100 18 9 9 0 000-18zM23 21l-5-5" />
                         </svg>
                     </span>
 
@@ -33,7 +33,7 @@
                     'text-black font-bold': tab === activeTab,
                     'hover:text-black': tab !== activeTab,
                 }" class="focus:outline-none px-4 py-2 text-gray-300" role="tab" :aria-selected="tab === activeTab"
-                        @click="selectTab(tab)">
+                    @click="selectTab(tab)">
                     {{ tab.title }}
                     <span :class="tab.content ? 'dot-green' : 'dot-red'" class="ml-2"></span>
                 </button>
@@ -41,7 +41,7 @@
         </ul>
 
         <div v-for="tab in tabs" :key="tab.slug">
-            <tab :tab="tab" @tab-selected="handleTabSelected" :ref="'tab-' + tab.slug" v-show="tab === activeTab"/>
+            <tab :tab="tab" @tab-selected="handleTabSelected" :ref="'tab-' + tab.slug" v-show="tab === activeTab" />
         </div>
     </div>
 </template>
@@ -49,7 +49,6 @@
 <script>
 import Tab from './Tab.vue';
 import axios from 'axios';
-import {sleep} from "../utilities/sleep.js";
 
 export default {
     components: {
@@ -67,6 +66,7 @@ export default {
             TabSearchQuery: '',
             check: false,
             loading: false,
+            cancelTokens: [],
         };
     },
     methods: {
@@ -77,7 +77,7 @@ export default {
             }
             this.check = false;
         },
-        handleTabSelected({content}) {
+        handleTabSelected({ content }) {
             this.activeTab.content = content;
             this.$forceUpdate();
         },
@@ -91,13 +91,19 @@ export default {
                             tab.content = response.data;
                         })
                         .catch((error) => {
-                            console.log('Failed to preload content for ${ slug }, error');
+                            console.log(`Failed to preload content for ${slug}`, error);
                         });
                 }
             });
         },
+        cancelPendingRequests() {
+            console.log('AJAX Canceled');
+            this.cancelTokens.forEach(cancel => cancel());
+            this.cancelTokens = [];
+        },
 
         async searchTabs() {
+            this.cancelPendingRequests();
             this.loading = true;
             this.check = false;
             const query = this.TabSearchQuery.toLowerCase();
@@ -106,19 +112,19 @@ export default {
 
 
             if (query === '') {
+                this.cancelPendingRequests();
                 this.activeTab = this.tabs[0];
                 this.selectTab(this.tabs[0]);
                 this.check = false;
                 this.loading = false;
+                return;
             }
 
             for (const tab of this.tabs) {
-                this.loading = true;
-                if ((tab.title).toLowerCase().includes(query)) {
+                if (tab.title.toLowerCase().includes(query)) {
                     matchedTab = tab;
                     matchFound = true;
                     this.selectTab(matchedTab);
-                    this.loading = false;
                     break;
                 }
             }
@@ -128,44 +134,41 @@ export default {
                     if (matchFound) return;
 
                     if (!tab.content) {
+                        const source = axios.CancelToken.source();
+                        this.cancelTokens.push(source.cancel);
                         try {
-                            const response = await axios.get(`/tabs/${tab.slug}/content`);
+                            const response = await axios.get(`/tabs/${tab.slug}/content`, {
+                                cancelToken: source.token,
+                            });
                             tab.content = response.data;
+                            console.log(`Content loaded for ${tab.slug}`);
                         } catch (error) {
-                            console.error(`Failed to load content for ${tab.slug}`, error);
+                            if (axios.isCancel(error)) {
+                                console.log(`Request canceled for ${tab.slug}`);
+                            } else {
+                                console.error(`Failed to load content for ${tab.slug}`, error);
+                            }
                         }
                     }
 
-                    if ((tab.content && JSON.stringify(tab.content).toLowerCase().includes(query))) {
+                    if (tab.content && JSON.stringify(tab.content).toLowerCase().includes(query)) {
                         matchedTab = tab;
                         matchFound = true;
                         this.selectTab(matchedTab);
                     }
                 };
 
-
                 for (const tab of this.tabs) {
                     await processTab(tab);
                     if (matchFound) {
-                        this.loading = false;
+                        break;
                     }
                 }
             }
 
-            if (!matchedTab) {
+            if (!matchFound) {
                 console.log('No matching tab found.');
                 this.check = true;
-            }
-
-            for (const tab of this.tabs) {
-                if (!tab.content) {
-                    try {
-                        const response = await axios.get(`/tabs/${tab.slug}/content`);
-                        tab.content = response.data;
-                    } catch (error) {
-                        console.error(`Failed to load content for ${tab.slug}`, error);
-                    }
-                }
             }
 
             this.loading = false;
@@ -230,5 +233,23 @@ export default {
     100% {
         transform: rotate(360deg);
     }
+}
+
+@keyframes bounce {
+    0% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-2px);
+    }
+
+    100% {
+        transform: translateY(0);
+    }
+}
+
+.search-icon {
+    animation: bounce 0.5s infinite;
 }
 </style>

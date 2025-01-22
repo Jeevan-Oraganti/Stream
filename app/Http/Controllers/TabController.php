@@ -9,7 +9,7 @@ class TabController extends Controller
 {
     public function getContent($slug)
     {
-        sleep(1); //to simulate slow connection
+        sleep(5);
         $tabsContent = TabContent::select('description', 'items')
             ->where('slug', $slug)
             ->first();
