@@ -4,15 +4,15 @@
             <div class="flex items-center mb-4">
                 <div class="relative w-full">
                     <input type="text" v-model="TabSearchQuery" placeholder="Search..."
-                           class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                           @input="searchTabs"/>
+                        class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        @input="debouncedSearchTabs" />
                     <span v-if="loading" class="loader absolute right-3 top-3 items-center"></span>
 
                     <span v-if="!loading" class="absolute right-3 top-1/2 transform -translate-y-1/2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400" fill="none"
-                             viewBox="0 0 24 26" stroke="currentColor">
+                            viewBox="0 0 24 26" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
-                                  d="M10 2a9 9 0 100 18 9 9 0 000-18zM23 21l-5-5"/>
+                                d="M10 2a9 9 0 100 18 9 9 0 000-18zM23 21l-5-5" />
                         </svg>
                     </span>
 
@@ -33,7 +33,7 @@
                     'text-black font-bold': tab === activeTab,
                     'hover:text-black': tab !== activeTab,
                 }" class="focus:outline-none px-4 py-2 text-gray-300" role="tab" :aria-selected="tab === activeTab"
-                        @click="selectTab(tab)">
+                    @click="selectTab(tab)">
                     {{ tab.title }}
                     <span :class="tab.content ? 'dot-green' : 'dot-red'" class="ml-2"></span>
                 </button>
@@ -41,7 +41,7 @@
         </ul>
 
         <div v-for="tab in tabs" :key="tab.slug">
-            <tab :tab="tab" @tab-selected="handleTabSelected" :ref="'tab-' + tab.slug" v-show="tab === activeTab"/>
+            <tab :tab="tab" @tab-selected="handleTabSelected" :ref="'tab-' + tab.slug" v-show="tab === activeTab" />
         </div>
     </div>
 </template>
@@ -49,6 +49,7 @@
 <script>
 import Tab from './Tab.vue';
 import axios from 'axios';
+import { debounce } from 'lodash';
 
 export default {
     components: {
@@ -79,7 +80,7 @@ export default {
             }
             this.check = false;
         },
-        handleTabSelected({content}) {
+        handleTabSelected({ content }) {
             this.activeTab.content = content;
             this.$forceUpdate();
         },
@@ -112,7 +113,7 @@ export default {
                 }
             }
 
-            return {matchedTab, matchFound}
+            return { matchedTab, matchFound }
         },
 
         async searchContent(query) {
@@ -128,7 +129,7 @@ export default {
                 }
             }
 
-            return {matchedTab, matchFound}
+            return { matchedTab, matchFound }
         },
 
         async loadContentBySlug(tab) {
@@ -163,7 +164,7 @@ export default {
                 matchFound = searchByContent.matchFound;
             }
 
-            return {matchedTab, matchFound};
+            return { matchedTab, matchFound };
         },
 
         async searchTabs() {
@@ -188,11 +189,6 @@ export default {
                 return;
             }
 
-            // if (query !== '') {
-            //     const keypressSearch = await this.searchOnKeyPress(query);
-            //     matchedTab = keypressSearch.matchedTab;
-            //     matchFound = keypressSearch.matchFound;
-            // }
 
             const searchByTitle = await this.searchTitles(query);
             matchedTab = searchByTitle.matchedTab;
@@ -225,7 +221,11 @@ export default {
 
             this.loading = false;
             this.$forceUpdate();
-        }
+        },
+        debouncedSearchTabs: debounce(function () {
+            this.searchTabs();
+        }, 500),
+
     },
     mounted() {
         if (this.tabs.length > 0) {
