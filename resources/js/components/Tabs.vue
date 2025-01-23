@@ -188,6 +188,11 @@ export default {
                 return;
             }
 
+            // if (query !== '') {
+            //     const keypressSearch = await this.searchOnKeyPress(query);
+            //     matchedTab = keypressSearch.matchedTab;
+            //     matchFound = keypressSearch.matchFound;
+            // }
 
             const searchByTitle = await this.searchTitles(query);
             matchedTab = searchByTitle.matchedTab;
@@ -199,18 +204,9 @@ export default {
 
                     await this.loadContentBySlug(tab);
 
-
-                    if (!this.tabs[0].content) {
-                        const searchByContent = await this.searchContent(query);
-                        matchedTab = searchByContent.matchedTab;
-                        matchFound = searchByContent.matchFound;
-                    }
-
-                     if (query) {
-                        const keypressSearch = await this.searchOnKeyPress(query);
-                        matchedTab = keypressSearch.matchedTab;
-                        matchFound = keypressSearch.matchFound;
-                    }
+                    const searchByContent = await this.searchContent(query);
+                    matchedTab = searchByContent.matchedTab;
+                    matchFound = searchByContent.matchFound;
 
                 };
 
