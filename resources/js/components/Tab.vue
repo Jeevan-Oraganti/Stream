@@ -31,45 +31,62 @@ export default {
     data() {
         return {
             loading: false,
-            currentTab: this.tab
+            currentTab: this.tab,
+            controller: null,
         };
     },
     methods: {
         async loadTabContent() {
             if (this.tab.content) {
-                this.$emit('tab-selected', {content: this.tab.content.content});
-            } else {
-                this.loading = true;
-                axios
-                    .get(`/tabs/${this.tab.slug}/content`)
-                    .then((response) => {
-                        this.tab.content = response.data;
-                        this.$emit('tab-selected', {content: response.data});
-                    })
-                    .catch(() => {
-                        this.tab.content = {
-                            title: "Error",
-                            description: `<div style="color: red; font-weight: bold; text-align: center; margin-top: 20px;">
-                                <span style="color: yellow;">⚠ </span>
-                                </div>
-                                <p style="color: #ff6b6b; text-align: center; margin-top: 10px;">
-                                    An error occurred while loading the content. Please try again later.
-                                    </p>`,
-                        };
-                        this.$emit('tab-selected', {content: this.tab.content});
-                        console.log("Failed to load Content");
-                    })
-                    .finally(() => {
-                        this.loading = false;
-                    });
+                this.$emit('tab-selected', { content: this.tab.content });
+                return;
+            }
+
+            this.loading = true;
+
+            if (this.controller) {
+                this.controller.abort();
+            }
+
+            this.controller = new AbortController();
+
+            try {
+                const response = await axios.get(`/tabs/${this.tab.slug}/content`, {
+                    signal: this.controller.signal,
+                });
+
+                if (this.tab === this.$parent.activeTab) {
+                    this.tab.content = response.data;
+                    this.$emit('tab-selected', { content: response.data });
+                }
+                else {
+                    this.controller.abort();
+                }
+            } catch (error) {
+                if (axios.isCancel(error)) {
+                    console.log(`Request for ${this.tab.slug} was canceled.`);
+                } else {
+                    this.loading = true;
+                    this.tab.content = {
+                        title: "Error",
+                        description: `<div style="color: red; font-weight: bold; text-align: center; margin-top: 20px;">
+                        <span style="color: yellow;">⚠ </span> An error occurred while loading the content.
+                        </div>`,
+                    };
+                    this.$emit('tab-selected', { content: this.tab.content });
+                    console.error("Failed to load content", error);
+                }
+            } finally {
+                this.loading = false;
             }
         },
+
         setContent(content) {
             this.tab.content = content;
-            this.$emit('tab-selected', {content: content, cached: true});
+            this.$emit('tab-selected', { content: content, cached: true });
         },
     },
-};
+}
 </script>
 
 <style>

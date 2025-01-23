@@ -5,7 +5,7 @@
                 <div class="relative w-full">
                     <input type="text" v-model="TabSearchQuery" placeholder="Search..."
                         class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        @input="debounced" />
+                        @input="searchTabs" />
                     <span v-if="loading" class="loader absolute right-3 top-3 items-center"></span>
 
                     <span v-if="!loading" class="absolute right-3 top-1/2 transform -translate-y-1/2">
@@ -74,12 +74,20 @@ export default {
     },
     methods: {
         selectTab(tab) {
+            if (this.controller) {
+                this.controller.abort();
+            }
+
             this.activeTab = tab;
+
             if (!tab.content) {
                 this.$refs[`tab-${tab.slug}`][0].loadTabContent();
             }
+
             this.check = false;
+            this.loading = false;
         },
+
         handleTabSelected({ content }) {
             this.activeTab.content = content;
             this.$forceUpdate();
@@ -135,11 +143,16 @@ export default {
         async loadContentBySlug(tab) {
             if (!tab.content) {
                 try {
+
+                    const currentActiveTab = this.activeTab;
+
                     const response = await axios.get(`/tabs/${tab.slug}/content`, {
                         signal: this.controller.signal
                     });
-                    tab.content = response.data;
-                    console.log(`Content loaded for ${tab.slug}`);
+                    if (currentActiveTab === tab) {
+                        tab.content = response.data;
+                        console.log(`Content loaded for ${tab.slug}`);
+                    }
                 } catch (error) {
                     if (axios.isCancel(error)) {
                         console.log(`Request canceled for ${tab.slug}`);
