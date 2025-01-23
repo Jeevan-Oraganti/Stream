@@ -5,7 +5,7 @@
                 <div class="relative w-full">
                     <input type="text" v-model="TabSearchQuery" placeholder="Search..."
                         class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        @input="debouncedSearchTabs" />
+                        @input="debounced" />
                     <span v-if="loading" class="loader absolute right-3 top-3 items-center"></span>
 
                     <span v-if="!loading" class="absolute right-3 top-1/2 transform -translate-y-1/2">
@@ -222,7 +222,7 @@ export default {
             this.loading = false;
             this.$forceUpdate();
         },
-        debouncedSearchTabs: debounce(function () {
+        debounced: debounce(function () {
             this.searchTabs();
         }, 500),
 
