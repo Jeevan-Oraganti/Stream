@@ -4,15 +4,15 @@
             <div class="flex items-center mb-4">
                 <div class="relative w-full">
                     <input type="text" v-model="TabSearchQuery" placeholder="Search..."
-                        class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        @input="searchTabs" />
+                           class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                           @input="searchTabs"/>
                     <span v-if="loading" class="loader absolute right-3 top-3 items-center"></span>
 
                     <span v-if="!loading" class="absolute right-3 top-1/2 transform -translate-y-1/2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400" fill="none"
-                            viewBox="0 0 24 26" stroke="currentColor">
+                             viewBox="0 0 24 26" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
-                                d="M10 2a9 9 0 100 18 9 9 0 000-18zM23 21l-5-5" />
+                                  d="M10 2a9 9 0 100 18 9 9 0 000-18zM23 21l-5-5"/>
                         </svg>
                     </span>
 
@@ -28,28 +28,34 @@
             <select aria-label="Select a tab"
                 class="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-2 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
                 @change="selectTab(tabs[$event.target.selectedIndex])">
-                <option v-for="(tab, index) in tabs" :key="index" :selected="tab === activeTab">{{ tab.title }}</option>
+            <option v-for="(tab, index) in tabs" :key="index" :selected="tab === activeTab">
+                {{ tab.title }}
+                <span :class="tab.content ? 'dot-green' : 'dot-red'"></span>
+            </option>
             </select>
             <svg xmlns="http://www.w3.org/2000/svg"
-                class="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end fill-gray-500"
-                aria-hidden="true" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd"
-                    d="M10 3a1 1 0 01.707.293l5 5a1 1 0 01-1.414 1.414L10 5.414 5.707 9.707A1 1 0 014.293 8.293l5-5A1 1 0 0110 3z"
-                    clip-rule="evenodd" />
+             class="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end fill-gray-500"
+             aria-hidden="true" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd"
+                  d="M10 3a1 1 0 01.707.293l5 5a1 1 0 01-1.414 1.414L10 5.414 5.707 9.707A1 1 0 014.293 8.293l5-5A1 1 0 0110 3z"
+                  clip-rule="evenodd"/>
             </svg>
         </div>
         <div class="hidden sm:block">
             <div class="border-b border-gray-200">
-                <nav class="-mb-px flex space-x-8" aria-label="Tabs">
-                    <a v-for="(tab, index) in tabs" :key="index" href="#" @click.prevent="selectTab(tab)"
-                        :class="[tab === activeTab ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium']"
-                        :aria-current="tab === activeTab ? 'page' : undefined">{{ tab.title }}</a>
-                </nav>
+            <nav class="-mb-px flex space-x-8 justify-around" aria-label="Tabs">
+                <a v-for="(tab, index) in tabs" :key="index" href="#" @click.prevent="selectTab(tab)"
+                   :class="[tab === activeTab ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-300', 'whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium']"
+                   :aria-current="tab === activeTab ? 'page' : undefined">
+                {{ tab.title }}
+                <span :class="tab.content ? 'dot-green' : 'dot-red'"></span>
+                </a>
+            </nav>
             </div>
         </div>
 
         <div v-for="tab in tabs" :key="tab.slug">
-            <tab :tab="tab" @tab-selected="handleTabSelected" :ref="'tab-' + tab.slug" v-show="tab === activeTab" />
+            <tab :tab="tab" @tab-selected="handleTabSelected" :ref="'tab-' + tab.slug" v-show="tab === activeTab"/>
         </div>
     </div>
 </template>
@@ -57,7 +63,7 @@
 <script>
 import Tab from './Tab.vue';
 import axios from 'axios';
-import { debounce } from 'lodash';
+import {debounce} from 'lodash';
 
 export default {
     components: {
@@ -96,7 +102,7 @@ export default {
             this.loading = false;
         },
 
-        handleTabSelected({ content }) {
+        handleTabSelected({content}) {
             this.activeTab.content = content;
             this.$forceUpdate();
         },
@@ -129,7 +135,7 @@ export default {
                 }
             }
 
-            return { matchedTab, matchFound }
+            return {matchedTab, matchFound}
         },
 
         async searchContent(query) {
@@ -145,7 +151,7 @@ export default {
                 }
             }
 
-            return { matchedTab, matchFound }
+            return {matchedTab, matchFound}
         },
 
         async loadContentBySlug(tab) {
@@ -185,7 +191,7 @@ export default {
                 matchFound = searchByContent.matchFound;
             }
 
-            return { matchedTab, matchFound };
+            return {matchedTab, matchFound};
         },
 
         async searchTabs() {
