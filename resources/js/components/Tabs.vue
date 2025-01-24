@@ -24,21 +24,29 @@
             </div>
         </div>
 
-        <ul class="flex flex-wrap mb-4 border-b border-gray-400 justify-around" role="tab-list">
-            <li v-for="(tab, index) in tabs" :key="index" class="cursor-pointer" :class="{
-                'border border-b-0 rounded-t-lg bg-white shadow-md': tab === activeTab,
-                'hover:bg-gray-200 hover:rounded-t-lg hover:text-black': tab !== activeTab,
-            }" :style="tab === activeTab ? 'margin-bottom: -1px' : ''" role="presentation">
-                <button :class="{
-                    'text-black font-bold': tab === activeTab,
-                    'hover:text-black': tab !== activeTab,
-                }" class="focus:outline-none px-4 py-2 text-gray-300" role="tab" :aria-selected="tab === activeTab"
-                    @click="selectTab(tab)">
-                    {{ tab.title }}
-                    <span :class="tab.content ? 'dot-green' : 'dot-red'" class="ml-2"></span>
-                </button>
-            </li>
-        </ul>
+        <div class="grid grid-cols-1 sm:hidden">
+            <select aria-label="Select a tab"
+                class="col-start-1 row-start-1 w-full appearance-none rounded-md bg-white py-2 pl-3 pr-8 text-base text-gray-900 outline outline-1 -outline-offset-1 outline-gray-300 focus:outline focus:outline-2 focus:-outline-offset-2 focus:outline-indigo-600"
+                @change="selectTab(tabs[$event.target.selectedIndex])">
+                <option v-for="(tab, index) in tabs" :key="index" :selected="tab === activeTab">{{ tab.title }}</option>
+            </select>
+            <svg xmlns="http://www.w3.org/2000/svg"
+                class="pointer-events-none col-start-1 row-start-1 mr-2 size-5 self-center justify-self-end fill-gray-500"
+                aria-hidden="true" viewBox="0 0 20 20" fill="currentColor">
+                <path fill-rule="evenodd"
+                    d="M10 3a1 1 0 01.707.293l5 5a1 1 0 01-1.414 1.414L10 5.414 5.707 9.707A1 1 0 014.293 8.293l5-5A1 1 0 0110 3z"
+                    clip-rule="evenodd" />
+            </svg>
+        </div>
+        <div class="hidden sm:block">
+            <div class="border-b border-gray-200">
+                <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+                    <a v-for="(tab, index) in tabs" :key="index" href="#" @click.prevent="selectTab(tab)"
+                        :class="[tab === activeTab ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700', 'whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium']"
+                        :aria-current="tab === activeTab ? 'page' : undefined">{{ tab.title }}</a>
+                </nav>
+            </div>
+        </div>
 
         <div v-for="tab in tabs" :key="tab.slug">
             <tab :tab="tab" @tab-selected="handleTabSelected" :ref="'tab-' + tab.slug" v-show="tab === activeTab" />
@@ -266,8 +274,8 @@ export default {
 
 <style scoped>
 .dot-red {
-    height: 10px;
-    width: 10px;
+    height: 6px;
+    width: 6px;
     background: linear-gradient(135deg, #ff4d4d, #ff0000);
     border-radius: 50%;
     display: inline-block;
@@ -277,8 +285,8 @@ export default {
 }
 
 .dot-green {
-    height: 10px;
-    width: 10px;
+    height: 6px;
+    width: 6px;
     background: linear-gradient(135deg, #4caf50, #2e7d32);
     border-radius: 50%;
     display: inline-block;
