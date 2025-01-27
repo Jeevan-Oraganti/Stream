@@ -1,6 +1,6 @@
 <template>
     <div>
-
+        <!-- Loading Bar -->
         <div v-if="loading" class="loading-bar" :style="{ width: progress + '%' }"></div>
 
         <div class="mb-4">
@@ -8,7 +8,7 @@
                 <div class="relative w-full">
                     <input type="text" v-model="TabSearchQuery" placeholder="Search..."
                         class="w-full p-2 text-sm rounded-lg bg-gray-300 text-black border border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                        @input="searchTabs" />
+                        @input="debouncedSearchTabs" />
                     <span v-if="loading" class="loader absolute right-3 top-2 items-center"></span>
 
                     <span v-if="!loading" class="absolute right-3 top-1/2 transform -translate-y-1/2">
@@ -168,9 +168,15 @@ export default {
                         }
                     }, 100);
 
-
                     const response = await axios.get(`/tabs/${tab.slug}/content`, {
-                        signal: this.controller.signal
+                        signal: this.controller.signal,
+                        responseType: 'json',
+                        onDownloadProgress: (progressEvent) => {
+                            if (progressEvent.total > 0) {
+                                this.progress = Math.floor((progressEvent.loaded / progressEvent.total) * 100);
+                            }
+                        }
+
                     });
                     tab.content = response.data;
                     console.log(`Content loaded for ${tab.slug}`);
@@ -183,9 +189,8 @@ export default {
                         this.progress = 0;
                     }, 500);
 
-
                 } catch (error) {
-                    clearInterval(this.interval);
+                    clearInterval(interval);
                     this.loading = false;
                     this.progress = 0;
 
@@ -237,7 +242,6 @@ export default {
                 return;
             }
 
-
             const searchByTitle = await this.searchTitles(query);
             matchedTab = searchByTitle.matchedTab;
             matchFound = searchByTitle.matchFound;
@@ -270,7 +274,7 @@ export default {
             this.loading = false;
             this.$forceUpdate();
         },
-        debounced: debounce(function () {
+        debouncedSearchTabs: debounce(function () {
             this.searchTabs();
         }, 500),
 
@@ -345,22 +349,6 @@ export default {
         background-position: 0 0;
     }
 }
-
-
-@keyframes loading-bar {
-    0% {
-        left: -100%;
-    }
-
-    50% {
-        left: 0;
-    }
-
-    100% {
-        left: 100%;
-    }
-}
-
 
 @keyframes spin {
     0% {

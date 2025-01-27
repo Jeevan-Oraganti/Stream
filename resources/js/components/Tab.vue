@@ -2,7 +2,7 @@
     <div>
         <div v-if="loading" class="loading-bar" :style="{ width: progress + '%' }"></div>
 
-        <div v-if="!currentTab.content || loading" class="container loader p-2 items-centers mt-20 mb-20"></div>
+        <div v-if="loading" class="container loader p-2 items-centers mt-20 mb-20"></div>
         <div v-else-if="currentTab.content" class="p-4 rounded-lg" role="tabpanel">
             <div>
                 <h2 class="text-sm font-bold mb-4 text-gray-700" v-html="currentTab.title"></h2>
@@ -55,8 +55,6 @@ export default {
             this.controller = new AbortController();
 
             try {
-
-                this.loading = true;
                 this.progress = 0;
 
                 const interval = setInterval(() => {
@@ -65,9 +63,14 @@ export default {
                     }
                 }, 100);
 
-
                 const response = await axios.get(`/tabs/${this.tab.slug}/content`, {
                     signal: this.controller.signal,
+                    responseType: 'json',
+                    onDownloadProgress: (progressEvent) => {
+                        if (progressEvent.total > 0) {
+                            this.progress = Math.floor((progressEvent.loaded / progressEvent.total) * 100);
+                        }
+                    }
                 });
 
                 if (this.tab === this.$parent.activeTab) {
@@ -85,9 +88,8 @@ export default {
                     this.progress = 0;
                 }, 500);
 
-
             } catch (error) {
-                clearInterval(this.interval);
+                clearInterval(interval);
                 this.loading = false;
                 this.progress = 0;
 
@@ -97,10 +99,10 @@ export default {
                     this.tab.content = {
                         title: "Error",
                         description: `
-                    <div style="color: red; font-weight: bold; text-align: center; margin-top: 20px;">
-                        <span style="color: yellow;">⚠ </span> An error occurred while loading the content.
-                    </div>
-                `,
+                            <div style="color: red; font-weight: bold; text-align: center; margin-top: 20px;">
+                                <span style="color: yellow;">⚠ </span> An error occurred while loading the content.
+                            </div>
+                        `,
                     };
                     this.$emit('tab-selected', { content: this.tab.content });
                     console.error("Failed to load content", error);
@@ -118,7 +120,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .loader {
     display: flex;
     justify-content: center;
@@ -159,21 +161,6 @@ export default {
 
     to {
         background-position: 0 0;
-    }
-}
-
-
-@keyframes loading-bar {
-    0% {
-        left: -100%;
-    }
-
-    50% {
-        left: 0;
-    }
-
-    100% {
-        left: 100%;
     }
 }
 </style>
