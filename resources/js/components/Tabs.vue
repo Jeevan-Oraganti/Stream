@@ -164,9 +164,9 @@ export default {
 
                     const interval = setInterval(() => {
                         if (this.progress < 95) {
-                            this.progress += 5;
+                            this.progress += 1;
                         }
-                    }, 200);
+                    }, 50);
 
 
                     const response = await axios.get(`/tabs/${tab.slug}/content`, {
@@ -177,12 +177,18 @@ export default {
 
                     clearInterval(interval);
                     this.progress = 100;
+
                     setTimeout(() => {
                         this.loading = false;
-                    }, 300);
+                        this.progress = 0;
+                    }, 500);
 
 
                 } catch (error) {
+                    clearInterval(interval);
+                    this.loading = false;
+                    this.progress = 0;
+
                     if (axios.isCancel(error)) {
                         console.log(`Request canceled for ${tab.slug}`);
                     } else {
@@ -320,22 +326,21 @@ export default {
     top: 0;
     left: 0;
     height: 4px;
-    background: linear-gradient(
-        90deg,
-        rgba(76, 175, 80, 1) 25%,
-        rgba(255, 255, 255, 0.8) 50%,
-        rgba(76, 175, 80, 1) 75%
-    );
+    background: linear-gradient(90deg,
+            rgba(76, 175, 80, 1) 25%,
+            rgba(255, 255, 255, 0.8) 50%,
+            rgba(76, 175, 80, 1) 75%);
     background-size: 200% 100%;
     z-index: 1000;
-    transition: width 0.2s ease;
-    animation: shine 1.5s linear infinite;
+    transition: width 0.2s ease, background-position 0.5s ease;
+    animation: shine 2s linear infinite;
 }
 
 @keyframes shine {
     from {
         background-position: 200% 0;
     }
+
     to {
         background-position: 0 0;
     }
