@@ -1,18 +1,21 @@
 <template>
     <div>
+
+        <div v-if="loading" class="loading-bar"></div>
+
         <div class="mb-4">
             <div class="flex items-center mb-4">
                 <div class="relative w-full">
                     <input type="text" v-model="TabSearchQuery" placeholder="Search..."
-                           class="w-full p-2 text-sm rounded-lg bg-gray-300 text-black border border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                           @input="searchTabs"/>
+                        class="w-full p-2 text-sm rounded-lg bg-gray-300 text-black border border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        @input="searchTabs" />
                     <span v-if="loading" class="loader absolute right-3 top-2 items-center"></span>
 
                     <span v-if="!loading" class="absolute right-3 top-1/2 transform -translate-y-1/2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none"
-                             viewBox="0 0 24 26" stroke="currentColor">
+                            viewBox="0 0 24 26" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
-                                  d="M10 2a9 9 0 100 18 9 9 0 000-18zM23 21l-5-5"/>
+                                d="M10 2a9 9 0 100 18 9 9 0 000-18zM23 21l-5-5" />
                         </svg>
                     </span>
                 </div>
@@ -28,8 +31,8 @@
                 <div class="border-b border-gray-500">
                     <nav class="-mb-px flex space-x-8 justify-around" aria-label="Tabs">
                         <a v-for="(tab, index) in tabs" :key="index" @click.prevent="selectTab(tab)"
-                           :class="[tab === activeTab ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-400 hover:text-gray-600', 'whitespace-nowrap border-b-2 px-1 py-2 text-sm font-medium']"
-                           :aria-current="tab === activeTab ? 'page' : undefined">
+                            :class="[tab === activeTab ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-400 hover:text-gray-600', 'whitespace-nowrap border-b-2 px-1 py-2 text-sm font-medium']"
+                            :aria-current="tab === activeTab ? 'page' : undefined">
                             {{ tab.title }}
                             <span :class="tab.content ? 'dot-green' : 'dot-red'"></span>
                         </a>
@@ -40,7 +43,7 @@
             <div class="sm:hidden">
                 <div class="relative">
                     <select @change="selectTab(tabs[$event.target.selectedIndex])"
-                            class="w-full py-2 pl-3 pr-8 text-base text-gray-900 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        class="w-full py-2 pl-3 pr-8 text-base text-gray-900 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
                         <option v-for="(tab, index) in tabs" :key="index" :selected="tab === activeTab">
                             {{ tab.title }}
                         </option>
@@ -52,7 +55,7 @@
 
 
         <div v-for="tab in tabs" :key="tab.slug">
-            <tab :tab="tab" @tab-selected="handleTabSelected" :ref="'tab-' + tab.slug" v-show="tab === activeTab"/>
+            <tab :tab="tab" @tab-selected="handleTabSelected" :ref="'tab-' + tab.slug" v-show="tab === activeTab" />
         </div>
     </div>
 </template>
@@ -99,7 +102,7 @@ export default {
             this.loading = false;
         },
 
-        handleTabSelected({content}) {
+        handleTabSelected({ content }) {
             this.activeTab.content = content;
             this.$forceUpdate();
         },
@@ -132,7 +135,7 @@ export default {
                 }
             }
 
-            return {matchedTab, matchFound}
+            return { matchedTab, matchFound }
         },
 
         async searchContent(query) {
@@ -148,7 +151,7 @@ export default {
                 }
             }
 
-            return {matchedTab, matchFound}
+            return { matchedTab, matchFound }
         },
 
         async loadContentBySlug(tab) {
@@ -161,8 +164,8 @@ export default {
                         signal: this.controller.signal
                     });
                     // if (currentActiveTab === tab) {
-                        tab.content = response.data;
-                        console.log(`Content loaded for ${tab.slug}`);
+                    tab.content = response.data;
+                    console.log(`Content loaded for ${tab.slug}`);
                     // }
                 } catch (error) {
                     if (axios.isCancel(error)) {
@@ -188,7 +191,7 @@ export default {
                 matchFound = searchByContent.matchFound;
             }
 
-            return {matchedTab, matchFound};
+            return { matchedTab, matchFound };
         },
 
         async searchTabs() {
@@ -256,16 +259,6 @@ export default {
             this.selectTab(this.tabs[0]);
             this.preloadTabs();
         }
-
-
-        //search
-        //loadContentBySlug
-        //first time page reload
-        //search the content and title
-        //keypress (assume everything is cached)
-        //search the titles first
-        //another loop for the content
-
     },
     watch: {
         activeTab(newTab) {
@@ -308,9 +301,33 @@ export default {
     animation: spin 1s linear infinite;
 }
 
-label {
-    padding-right: 10px;
-    font-size: 1rem;
+.loading-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background-color: #4caf50;
+    animation: loading-bar 2s linear infinite;
+    display: none;
+}
+
+.loading-bar.active {
+    display: block;
+}
+
+@keyframes loading-bar {
+    0% {
+        left: -100%;
+    }
+
+    50% {
+        left: 0;
+    }
+
+    100% {
+        left: 100%;
+    }
 }
 
 

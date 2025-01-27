@@ -1,5 +1,7 @@
 <template>
     <div>
+        <div v-if="loading" class="loading-bar"></div>
+
         <div v-if="!currentTab.content || loading" class="container loader p-2 items-centers mt-20 mb-20"></div>
         <div v-else-if="currentTab.content" class="p-4 rounded-lg" role="tabpanel">
             <div>
@@ -105,6 +107,30 @@ export default {
 @keyframes spin {
     to {
         transform: rotate(360deg);
+    }
+}
+
+.loading-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background-color: #4caf50;
+    animation: loading 2s linear infinite;
+}
+
+@keyframes loading-bar {
+    0% {
+        left: -100%;
+    }
+
+    50% {
+        left: 0;
+    }
+
+    100% {
+        left: 100%;
     }
 }
 </style>

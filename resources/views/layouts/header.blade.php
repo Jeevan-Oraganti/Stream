@@ -87,7 +87,7 @@
     </tooltippy>
 
     <!-- Pinned Footer Navigation -->
-    <pinned-to-top>
+    <!-- <pinned-to-top> -->
         <div ref="menu-banner-meta" class="hero-foot">
             <nav class="tabs is-boxed is-fullwidth">
                 <div class="container">
@@ -126,5 +126,5 @@
                 </div>
             </nav>
         </div>
-    </pinned-to-top>
+    <!-- </pinned-to-top> -->
 </section>
