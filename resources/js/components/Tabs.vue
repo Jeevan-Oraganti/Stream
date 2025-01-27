@@ -4,18 +4,17 @@
             <div class="flex items-center mb-4">
                 <div class="relative w-full">
                     <input type="text" v-model="TabSearchQuery" placeholder="Search..."
-                           class="w-full p-3 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                           class="w-full p-2 text-sm rounded-lg bg-gray-300 text-black border border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
                            @input="searchTabs"/>
-                    <span v-if="loading" class="loader absolute right-3 top-3 items-center"></span>
+                    <span v-if="loading" class="loader absolute right-3 top-2 items-center"></span>
 
                     <span v-if="!loading" class="absolute right-3 top-1/2 transform -translate-y-1/2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-400" fill="none"
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none"
                              viewBox="0 0 24 26" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
                                   d="M10 2a9 9 0 100 18 9 9 0 000-18zM23 21l-5-5"/>
                         </svg>
                     </span>
-
                 </div>
             </div>
 
@@ -24,18 +23,33 @@
             </div>
         </div>
 
-        <div class="hidden sm:block">
-            <div class="border-b border-gray-200">
-                <nav class="-mb-px flex space-x-8 justify-around" aria-label="Tabs">
-                    <a v-for="(tab, index) in tabs" :key="index" @click.prevent="selectTab(tab)"
-                       :class="[tab === activeTab ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-300', 'whitespace-nowrap border-b-2 px-1 py-4 text-sm font-medium']"
-                       :aria-current="tab === activeTab ? 'page' : undefined">
-                        {{ tab.title }}
-                        <span :class="tab.content ? 'dot-green' : 'dot-red'"></span>
-                    </a>
-                </nav>
+        <div>
+            <div class="hidden sm:block">
+                <div class="border-b border-gray-500">
+                    <nav class="-mb-px flex space-x-8 justify-around" aria-label="Tabs">
+                        <a v-for="(tab, index) in tabs" :key="index" @click.prevent="selectTab(tab)"
+                           :class="[tab === activeTab ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-400 hover:text-gray-600', 'whitespace-nowrap border-b-2 px-1 py-2 text-sm font-medium']"
+                           :aria-current="tab === activeTab ? 'page' : undefined">
+                            {{ tab.title }}
+                            <span :class="tab.content ? 'dot-green' : 'dot-red'"></span>
+                        </a>
+                    </nav>
+                </div>
             </div>
+
+            <div class="sm:hidden">
+                <div class="relative">
+                    <select @change="selectTab(tabs[$event.target.selectedIndex])"
+                            class="w-full py-2 pl-3 pr-8 text-base text-gray-900 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                        <option v-for="(tab, index) in tabs" :key="index" :selected="tab === activeTab">
+                            {{ tab.title }}
+                        </option>
+                    </select>
+                </div>
+            </div>
+
         </div>
+
 
         <div v-for="tab in tabs" :key="tab.slug">
             <tab :tab="tab" @tab-selected="handleTabSelected" :ref="'tab-' + tab.slug" v-show="tab === activeTab"/>
@@ -46,7 +60,7 @@
 <script>
 import Tab from './Tab.vue';
 import axios from 'axios';
-import {debounce} from 'lodash';
+import { debounce } from 'lodash';
 
 export default {
     components: {
@@ -141,15 +155,15 @@ export default {
             if (!tab.content) {
                 try {
 
-                    const currentActiveTab = this.activeTab;
+                    // const currentActiveTab = this.activeTab;
 
                     const response = await axios.get(`/tabs/${tab.slug}/content`, {
                         signal: this.controller.signal
                     });
-                    if (currentActiveTab === tab) {
+                    // if (currentActiveTab === tab) {
                         tab.content = response.data;
                         console.log(`Content loaded for ${tab.slug}`);
-                    }
+                    // }
                 } catch (error) {
                     if (axios.isCancel(error)) {
                         console.log(`Request canceled for ${tab.slug}`);
@@ -269,8 +283,7 @@ export default {
     border-radius: 50%;
     display: inline-block;
     margin-left: 8px;
-    box-shadow: 0 0 8px rgba(255, 77, 77, 0.6), 0 0 3px rgba(255, 0, 0, 0.4);
-    animation: pulse-red 2s infinite;
+    /*box-shadow: 0 0 8px rgba(255, 77, 77, 0.6), 0 0 3px rgba(255, 0, 0, 0.4);*/
 }
 
 .dot-green {
@@ -280,21 +293,26 @@ export default {
     border-radius: 50%;
     display: inline-block;
     margin-left: 8px;
-    box-shadow: 0 0 8px rgba(76, 175, 80, 0.6), 0 0 3px rgba(0, 255, 0, 0.4);
-    animation: pulse-green 2s infinite;
+    /*box-shadow: 0 0 8px rgba(76, 175, 80, 0.6), 0 0 3px rgba(0, 255, 0, 0.4);*/
 }
 
 .loader {
     display: flex;
     justify-content: center;
     align-items: center;
-    width: 30px;
-    height: 30px;
+    width: 25px;
+    height: 25px;
     border: 4px solid rgba(255, 255, 255, 0.2);
     border-top-color: #4caf50;
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
+
+label {
+    padding-right: 10px;
+    font-size: 1rem;
+}
+
 
 @keyframes spin {
     0% {
@@ -304,23 +322,5 @@ export default {
     100% {
         transform: rotate(360deg);
     }
-}
-
-@keyframes bounce {
-    0% {
-        transform: translateY(0);
-    }
-
-    50% {
-        transform: translateY(-2px);
-    }
-
-    100% {
-        transform: translateY(0);
-    }
-}
-
-.search-icon {
-    animation: bounce 0.5s infinite;
 }
 </style>

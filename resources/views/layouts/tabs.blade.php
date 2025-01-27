@@ -14,9 +14,9 @@ $tabs = [
 ?>
 
 <section>
-    <div class="p-8">
-        <div class="border border-gray-200 p-5 mb-10 rounded-xl">
-            <h1 class="text-3xl font-semibold mb-8">Explore Categories</h1>
+    <div class="p-8 bg-white">
+        <div class="border border-gray-400 p-5 mb-10 rounded-xl">
+            <h1 class="text-xl font-semibold mb-8 text-gray-500">Explore Categories</h1>
             <tabs :tabs='@json($tabs)' />
         </div>
     </div>

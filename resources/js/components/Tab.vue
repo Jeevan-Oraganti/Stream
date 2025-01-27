@@ -1,12 +1,12 @@
 <template>
     <div>
-        <div v-if="loading" class="container loader p-2 items-centers mt-20 mb-20"></div>
+        <div v-if="!currentTab.content || loading" class="container loader p-2 items-centers mt-20 mb-20"></div>
         <div v-else-if="currentTab.content" class="p-4 rounded-lg" role="tabpanel">
             <div>
-                <h2 class="text-2xl font-bold mb-4 text-white" v-html="currentTab.title"></h2>
-                <p class="mb-4 text-white" v-html="currentTab.content.description"></p>
+                <h2 class="text-sm font-bold mb-4 text-gray-700" v-html="currentTab.title"></h2>
+                <p class="text-sm mb-4 text-gray-700" v-html="currentTab.content.description"></p>
                 <ul class="list-disc pl-6">
-                    <li v-for="(item, index) in currentTab.content.items" :key="index" class="mb-2 text-white">
+                    <li v-for="(item, index) in currentTab.content.items" :key="index" class="mb-2 text-gray-600 text-sm">
                         {{ item }}
                     </li>
                 </ul>
@@ -38,7 +38,7 @@ export default {
     methods: {
         async loadTabContent() {
             if (this.tab.content) {
-                this.$emit('tab-selected', { content: this.tab.content });
+                this.$emit('tab-selected', {content: this.tab.content});
                 return;
             }
 
@@ -57,23 +57,23 @@ export default {
 
                 if (this.tab === this.$parent.activeTab) {
                     this.tab.content = response.data;
-                    this.$emit('tab-selected', { content: response.data });
-                }
-                else {
+                    this.$emit('tab-selected', {content: response.data});
+                } else {
                     this.controller.abort();
                 }
             } catch (error) {
                 if (axios.isCancel(error)) {
                     console.log(`Request for ${this.tab.slug} was canceled.`);
                 } else {
-                    this.loading = true;
                     this.tab.content = {
                         title: "Error",
-                        description: `<div style="color: red; font-weight: bold; text-align: center; margin-top: 20px;">
+                        description: `
+                    <div style="color: red; font-weight: bold; text-align: center; margin-top: 20px;">
                         <span style="color: yellow;">⚠ </span> An error occurred while loading the content.
-                        </div>`,
+                    </div>
+                `,
                     };
-                    this.$emit('tab-selected', { content: this.tab.content });
+                    this.$emit('tab-selected', {content: this.tab.content});
                     console.error("Failed to load content", error);
                 }
             } finally {
@@ -83,9 +83,9 @@ export default {
 
         setContent(content) {
             this.tab.content = content;
-            this.$emit('tab-selected', { content: content, cached: true });
-        },
-    },
+            this.$emit('tab-selected', {content: content, cached: true});
+        }
+    }
 }
 </script>
 
