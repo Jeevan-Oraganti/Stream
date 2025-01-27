@@ -1,7 +1,8 @@
 <template>
     <div>
 
-        <div v-if="loading" class="loading-bar"></div>
+        <div v-if="loading" class="loading-bar" :style="{ width: progress + '%' }"></div>
+
 
         <div class="mb-4">
             <div class="flex items-center mb-4">
@@ -84,6 +85,7 @@ export default {
             controller: null,
             matchedTab: null,
             matchFound: false,
+            progress: 0,
         };
     },
     methods: {
@@ -157,16 +159,29 @@ export default {
         async loadContentBySlug(tab) {
             if (!tab.content) {
                 try {
+                    this.loading = true;
+                    this.progress = 0;
 
-                    // const currentActiveTab = this.activeTab;
+                    const interval = setInterval(() => {
+                        if (this.progress < 95) {
+                            this.progress += 5; // Increment progress
+                        }
+                    }, 200);
+
 
                     const response = await axios.get(`/tabs/${tab.slug}/content`, {
                         signal: this.controller.signal
                     });
-                    // if (currentActiveTab === tab) {
                     tab.content = response.data;
                     console.log(`Content loaded for ${tab.slug}`);
-                    // }
+
+                    clearInterval(interval);
+                    this.progress = 100; // Set progress to 100%
+                    setTimeout(() => {
+                        this.loading = false; // Hide loading bar after a short delay
+                    }, 300);
+
+
                 } catch (error) {
                     if (axios.isCancel(error)) {
                         console.log(`Request canceled for ${tab.slug}`);
@@ -259,6 +274,16 @@ export default {
             this.selectTab(this.tabs[0]);
             this.preloadTabs();
         }
+
+
+        //search
+        //loadContentBySlug
+        //first time page reload
+        //search the content and title
+        //keypress (assume everything is cached)
+        //search the titles first
+        //another loop for the content
+
     },
     watch: {
         activeTab(newTab) {
@@ -305,15 +330,10 @@ export default {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
     height: 4px;
     background-color: #4caf50;
-    animation: loading-bar 2s linear infinite;
-    display: none;
-}
-
-.loading-bar.active {
-    display: block;
+    transition: width 0.3s ease;
+    z-index: 1000;
 }
 
 @keyframes loading-bar {

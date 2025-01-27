@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div v-if="loading" class="loading-bar"></div>
+        <div v-if="loading" class="loading-bar" :style="{ width: progress + '%' }"></div>
 
         <div v-if="!currentTab.content || loading" class="container loader p-2 items-centers mt-20 mb-20"></div>
         <div v-else-if="currentTab.content" class="p-4 rounded-lg" role="tabpanel">
@@ -8,7 +8,8 @@
                 <h2 class="text-sm font-bold mb-4 text-gray-700" v-html="currentTab.title"></h2>
                 <p class="text-sm mb-4 text-gray-700" v-html="currentTab.content.description"></p>
                 <ul class="list-disc pl-6">
-                    <li v-for="(item, index) in currentTab.content.items" :key="index" class="mb-2 text-gray-600 text-sm">
+                    <li v-for="(item, index) in currentTab.content.items" :key="index"
+                        class="mb-2 text-gray-600 text-sm">
                         {{ item }}
                     </li>
                 </ul>
@@ -35,12 +36,13 @@ export default {
             loading: false,
             currentTab: this.tab,
             controller: null,
+            progress: 0,
         };
     },
     methods: {
         async loadTabContent() {
             if (this.tab.content) {
-                this.$emit('tab-selected', {content: this.tab.content});
+                this.$emit('tab-selected', { content: this.tab.content });
                 return;
             }
 
@@ -53,16 +55,34 @@ export default {
             this.controller = new AbortController();
 
             try {
+
+                this.loading = true;
+                this.progress = 0;
+
+                const interval = setInterval(() => {
+                    if (this.progress < 95) {
+                        this.progress += 5; // Increment progress
+                    }
+                }, 200);
+
                 const response = await axios.get(`/tabs/${this.tab.slug}/content`, {
                     signal: this.controller.signal,
                 });
 
                 if (this.tab === this.$parent.activeTab) {
                     this.tab.content = response.data;
-                    this.$emit('tab-selected', {content: response.data});
+                    this.$emit('tab-selected', { content: response.data });
                 } else {
                     this.controller.abort();
                 }
+
+                clearInterval(interval);
+                this.progress = 100; // Set progress to 100%
+                setTimeout(() => {
+                    this.loading = false; // Hide loading bar after a short delay
+                }, 300);
+
+
             } catch (error) {
                 if (axios.isCancel(error)) {
                     console.log(`Request for ${this.tab.slug} was canceled.`);
@@ -75,7 +95,7 @@ export default {
                     </div>
                 `,
                     };
-                    this.$emit('tab-selected', {content: this.tab.content});
+                    this.$emit('tab-selected', { content: this.tab.content });
                     console.error("Failed to load content", error);
                 }
             } finally {
@@ -85,7 +105,7 @@ export default {
 
         setContent(content) {
             this.tab.content = content;
-            this.$emit('tab-selected', {content: content, cached: true});
+            this.$emit('tab-selected', { content: content, cached: true });
         }
     }
 }
@@ -114,10 +134,10 @@ export default {
     position: fixed;
     top: 0;
     left: 0;
-    width: 100%;
     height: 4px;
     background-color: #4caf50;
-    animation: loading 2s linear infinite;
+    transition: width 0.3s ease;
+    z-index: 1000;
 }
 
 @keyframes loading-bar {
