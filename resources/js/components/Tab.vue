@@ -61,7 +61,7 @@ export default {
 
                 const interval = setInterval(() => {
                     if (this.progress < 95) {
-                        this.progress += 1;
+                        this.progress++;
                     }
                 }, 50);
 
