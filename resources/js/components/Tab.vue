@@ -61,7 +61,7 @@ export default {
 
                 const interval = setInterval(() => {
                     if (this.progress < 95) {
-                        this.progress += 5; // Increment progress
+                        this.progress += 5;
                     }
                 }, 200);
 
@@ -77,9 +77,9 @@ export default {
                 }
 
                 clearInterval(interval);
-                this.progress = 100; // Set progress to 100%
+                this.progress = 100;
                 setTimeout(() => {
-                    this.loading = false; // Hide loading bar after a short delay
+                    this.loading = false;
                 }, 300);
 
 
