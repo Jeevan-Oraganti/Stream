@@ -42,7 +42,7 @@ export default {
     methods: {
         async loadTabContent() {
             if (this.tab.content) {
-                this.$emit('tab-selected', { content: this.tab.content });
+                this.$emit('tab-selected', {content: this.tab.content});
                 return;
             }
 
@@ -71,7 +71,7 @@ export default {
 
                 if (this.tab === this.$parent.activeTab) {
                     this.tab.content = response.data;
-                    this.$emit('tab-selected', { content: response.data });
+                    this.$emit('tab-selected', {content: response.data});
                 } else {
                     this.controller.abort();
                 }
@@ -95,7 +95,7 @@ export default {
                     </div>
                 `,
                     };
-                    this.$emit('tab-selected', { content: this.tab.content });
+                    this.$emit('tab-selected', {content: this.tab.content});
                     console.error("Failed to load content", error);
                 }
             } finally {
@@ -105,7 +105,7 @@ export default {
 
         setContent(content) {
             this.tab.content = content;
-            this.$emit('tab-selected', { content: content, cached: true });
+            this.$emit('tab-selected', {content: content, cached: true});
         }
     }
 }
@@ -135,10 +135,27 @@ export default {
     top: 0;
     left: 0;
     height: 4px;
-    background-color: #4caf50;
-    transition: width 0.3s ease;
+    background: linear-gradient(
+        90deg,
+        rgba(76, 175, 80, 1) 25%,
+        rgba(255, 255, 255, 0.8) 50%,
+        rgba(76, 175, 80, 1) 75%
+    );
+    background-size: 200% 100%;
     z-index: 1000;
+    transition: width 0.2s ease;
+    animation: shine 1.5s linear infinite;
 }
+
+@keyframes shine {
+    from {
+        background-position: 200% 0;
+    }
+    to {
+        background-position: 0 0;
+    }
+}
+
 
 @keyframes loading-bar {
     0% {

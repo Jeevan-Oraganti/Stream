@@ -164,7 +164,7 @@ export default {
 
                     const interval = setInterval(() => {
                         if (this.progress < 95) {
-                            this.progress += 5; // Increment progress
+                            this.progress += 5;
                         }
                     }, 200);
 
@@ -176,9 +176,9 @@ export default {
                     console.log(`Content loaded for ${tab.slug}`);
 
                     clearInterval(interval);
-                    this.progress = 100; // Set progress to 100%
+                    this.progress = 100;
                     setTimeout(() => {
-                        this.loading = false; // Hide loading bar after a short delay
+                        this.loading = false;
                     }, 300);
 
 
@@ -275,15 +275,6 @@ export default {
             this.preloadTabs();
         }
 
-
-        //search
-        //loadContentBySlug
-        //first time page reload
-        //search the content and title
-        //keypress (assume everything is cached)
-        //search the titles first
-        //another loop for the content
-
     },
     watch: {
         activeTab(newTab) {
@@ -301,7 +292,6 @@ export default {
     border-radius: 50%;
     display: inline-block;
     margin-left: 8px;
-    /*box-shadow: 0 0 8px rgba(255, 77, 77, 0.6), 0 0 3px rgba(255, 0, 0, 0.4);*/
 }
 
 .dot-green {
@@ -311,7 +301,6 @@ export default {
     border-radius: 50%;
     display: inline-block;
     margin-left: 8px;
-    /*box-shadow: 0 0 8px rgba(76, 175, 80, 0.6), 0 0 3px rgba(0, 255, 0, 0.4);*/
 }
 
 .loader {
@@ -331,10 +320,27 @@ export default {
     top: 0;
     left: 0;
     height: 4px;
-    background-color: #4caf50;
-    transition: width 0.3s ease;
+    background: linear-gradient(
+        90deg,
+        rgba(76, 175, 80, 1) 25%,
+        rgba(255, 255, 255, 0.8) 50%,
+        rgba(76, 175, 80, 1) 75%
+    );
+    background-size: 200% 100%;
     z-index: 1000;
+    transition: width 0.2s ease;
+    animation: shine 1.5s linear infinite;
 }
+
+@keyframes shine {
+    from {
+        background-position: 200% 0;
+    }
+    to {
+        background-position: 0 0;
+    }
+}
+
 
 @keyframes loading-bar {
     0% {
