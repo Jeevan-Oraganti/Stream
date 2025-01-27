@@ -3,7 +3,6 @@
 
         <div v-if="loading" class="loading-bar" :style="{ width: progress + '%' }"></div>
 
-
         <div class="mb-4">
             <div class="flex items-center mb-4">
                 <div class="relative w-full">
@@ -32,7 +31,7 @@
                 <div class="border-b border-gray-500">
                     <nav class="-mb-px flex space-x-8 justify-around" aria-label="Tabs">
                         <a v-for="(tab, index) in tabs" :key="index" @click.prevent="selectTab(tab)"
-                            :class="[tab === activeTab ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-400 hover:text-gray-600', 'whitespace-nowrap border-b-2 px-1 py-2 text-sm font-medium']"
+                            :class="[tab === activeTab ? 'border-indigo-500 text-indigo-600' : 'border-transparent text-gray-500 hover:border-gray-700 hover:text-gray-700', 'whitespace-nowrap border-b-2 px-1 py-2 text-sm font-medium']"
                             :aria-current="tab === activeTab ? 'page' : undefined">
                             {{ tab.title }}
                             <span :class="tab.content ? 'dot-green' : 'dot-red'"></span>
@@ -47,6 +46,7 @@
                         class="w-full py-2 pl-3 pr-8 text-base text-gray-900 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
                         <option v-for="(tab, index) in tabs" :key="index" :selected="tab === activeTab">
                             {{ tab.title }}
+                            <span :class="tab.content ? 'dot-green' : 'dot-red'"></span>
                         </option>
                     </select>
                 </div>
@@ -164,9 +164,9 @@ export default {
 
                     const interval = setInterval(() => {
                         if (this.progress < 95) {
-                            this.progress += 1;
+                            this.progress += 5;
                         }
-                    }, 50);
+                    }, 100);
 
 
                     const response = await axios.get(`/tabs/${tab.slug}/content`, {
@@ -185,7 +185,7 @@ export default {
 
 
                 } catch (error) {
-                    clearInterval(interval);
+                    clearInterval(this.interval);
                     this.loading = false;
                     this.progress = 0;
 
@@ -331,7 +331,7 @@ export default {
             rgba(255, 255, 255, 0.8) 50%,
             rgba(76, 175, 80, 1) 75%);
     background-size: 200% 100%;
-    z-index: 1000;
+    z-index: 11;
     transition: width 0.2s ease, background-position 0.5s ease;
     animation: shine 2s linear infinite;
 }

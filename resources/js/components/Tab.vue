@@ -61,9 +61,10 @@ export default {
 
                 const interval = setInterval(() => {
                     if (this.progress < 95) {
-                        this.progress++;
+                        this.progress += 5;
                     }
-                }, 50);
+                }, 100);
+
 
                 const response = await axios.get(`/tabs/${this.tab.slug}/content`, {
                     signal: this.controller.signal,
@@ -86,7 +87,7 @@ export default {
 
 
             } catch (error) {
-                clearInterval(interval);
+                clearInterval(this.interval);
                 this.loading = false;
                 this.progress = 0;
 
