@@ -1,5 +1,5 @@
 <section class="hero text-white is-small"
-    style="background: conic-gradient(from 300deg, #3d52a0, #7091e6, #ede8f5); justify-content: center;">
+    style="justify-content: center;">
     <!-- Hero head: Navigation -->
     <!-- <dark-mode-toggle></dark-mode-toggle> -->
     <div class="hero-head">
