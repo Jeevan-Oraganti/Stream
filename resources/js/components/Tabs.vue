@@ -1,6 +1,5 @@
 <template>
     <div>
-        <!-- Loading Bar -->
         <div v-if="loading" class="loading-bar" :style="{ width: progress + '%' }"></div>
 
         <div class="mb-4">
@@ -86,6 +85,7 @@ export default {
             matchedTab: null,
             matchFound: false,
             progress: 0,
+            interval: null,
         };
     },
     methods: {
@@ -101,7 +101,6 @@ export default {
             }
 
             this.check = false;
-            this.loading = false;
         },
 
         handleTabSelected({ content }) {
@@ -159,15 +158,6 @@ export default {
         async loadContentBySlug(tab) {
             if (!tab.content) {
                 try {
-                    this.loading = true;
-                    this.progress = 0;
-
-                    const interval = setInterval(() => {
-                        if (this.progress < 95) {
-                            this.progress += 5;
-                        }
-                    }, 100);
-
                     const response = await axios.get(`/tabs/${tab.slug}/content`, {
                         signal: this.controller.signal,
                         responseType: 'json',
@@ -176,24 +166,10 @@ export default {
                                 this.progress = Math.floor((progressEvent.loaded / progressEvent.total) * 100);
                             }
                         }
-
                     });
                     tab.content = response.data;
                     console.log(`Content loaded for ${tab.slug}`);
-
-                    clearInterval(interval);
-                    this.progress = 100;
-
-                    setTimeout(() => {
-                        this.loading = false;
-                        this.progress = 0;
-                    }, 500);
-
                 } catch (error) {
-                    clearInterval(interval);
-                    this.loading = false;
-                    this.progress = 0;
-
                     if (axios.isCancel(error)) {
                         console.log(`Request canceled for ${tab.slug}`);
                     } else {
@@ -242,6 +218,14 @@ export default {
                 return;
             }
 
+            if (!this.interval) {
+                this.interval = setInterval(() => {
+                    if (this.progress < 95) {
+                        this.progress += 5;
+                    }
+                }, 100);
+            }
+
             const searchByTitle = await this.searchTitles(query);
             matchedTab = searchByTitle.matchedTab;
             matchFound = searchByTitle.matchFound;
@@ -271,7 +255,15 @@ export default {
                 this.check = true;
             }
 
-            this.loading = false;
+            clearInterval(this.interval);
+            this.interval = null;
+            this.progress = 100;
+
+            setTimeout(() => {
+                this.progress = 0;
+                this.loading = false;
+            }, 500);
+
             this.$forceUpdate();
         },
         debouncedSearchTabs: debounce(function () {
