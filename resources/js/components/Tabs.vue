@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div v-if="loading" class="loading-bar" :style="{ width: progress + '%' }"></div>
+        <div class="loading-bar" :style="{ width: progress + '%' }" :class="{ complete: progress === 100 }"></div>
 
         <div class="mb-4">
             <div class="flex items-center mb-4">
@@ -260,7 +260,7 @@ export default {
             this.progress = 100;
 
             setTimeout(() => {
-                this.progress = 0;
+                // this.progress = 0;
                 this.loading = false;
             }, 500);
 
@@ -321,16 +321,20 @@ export default {
     position: fixed;
     top: 0;
     left: 0;
-    height: 4px;
-    background: linear-gradient(90deg,
-            rgba(76, 175, 80, 1) 25%,
-            rgba(255, 255, 255, 0.8) 50%,
-            rgba(76, 175, 80, 1) 75%);
-    background-size: 200% 100%;
+    height: 2px;
+    width: 0;
+    background: linear-gradient(90deg, #3490dc, #6574cd);
+    box-shadow: 0 0 5px #3490dc, 0 0 10px #3490dc;
+    transition: width 0.3s ease, opacity 0.3s ease;
     z-index: 11;
-    transition: width 0.2s ease, background-position 0.5s ease;
-    animation: shine 2s linear infinite;
+    opacity: 1;
 }
+
+.loading-bar.complete {
+    opacity: 0;
+    transition: opacity 0.5s ease;
+}
+
 
 @keyframes shine {
     from {

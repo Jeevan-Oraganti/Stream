@@ -1,6 +1,6 @@
 <template>
     <div>
-        <div v-if="loading" class="loading-bar" :style="{ width: progress + '%' }"></div>
+        <div class="loading-bar" :style="{ width: progress + '%' }" :class="{ complete: progress === 100 }"></div>
 
         <div v-if="loading" class="container loader p-2 items-centers mt-20 mb-20"></div>
         <div v-else-if="currentTab.content" class="p-4 rounded-lg" role="tabpanel">
@@ -85,13 +85,13 @@ export default {
 
                 setTimeout(() => {
                     this.loading = false;
-                    this.progress = 0;
+                    // this.progress = 0;
                 }, 500);
 
             } catch (error) {
                 clearInterval(interval);
                 this.loading = false;
-                this.progress = 0;
+                // this.progress = 0;
 
                 if (axios.isCancel(error)) {
                     console.log(`Request for ${this.tab.slug} was canceled.`);
@@ -143,15 +143,18 @@ export default {
     position: fixed;
     top: 0;
     left: 0;
-    height: 4px;
-    background: linear-gradient(90deg,
-            rgba(76, 175, 80, 1) 25%,
-            rgba(255, 255, 255, 0.8) 50%,
-            rgba(76, 175, 80, 1) 75%);
-    background-size: 200% 100%;
-    z-index: 1000;
-    transition: width 0.2s ease, background-position 0.5s ease;
-    animation: shine 2s linear infinite;
+    height: 2px;
+    width: 0;
+    background: linear-gradient(90deg, #3490dc, #6574cd);
+    box-shadow: 0 0 5px #3490dc, 0 0 10px #3490dc;
+    transition: width 0.3s ease, opacity 0.3s ease;
+    z-index: 11;
+    opacity: 1;
+}
+
+.loading-bar.complete {
+    opacity: 0;
+    transition: opacity 0.5s ease;
 }
 
 @keyframes shine {
