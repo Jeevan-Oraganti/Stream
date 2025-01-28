@@ -85,13 +85,12 @@ export default {
 
                 setTimeout(() => {
                     this.loading = false;
-                    // this.progress = 0;
                 }, 500);
 
             } catch (error) {
                 clearInterval(interval);
                 this.loading = false;
-                // this.progress = 0;
+                this.progress = 0;
 
                 if (axios.isCancel(error)) {
                     console.log(`Request for ${this.tab.slug} was canceled.`);
@@ -128,7 +127,7 @@ export default {
     width: 50px;
     height: 50px;
     border: 5px solid rgba(255, 255, 255, 0.2);
-    border-top-color: #4caf50;
+    border-top-color: #3490dc;
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
@@ -143,27 +142,19 @@ export default {
     position: fixed;
     top: 0;
     left: 0;
-    height: 2px;
+    height: 3px;
     width: 0;
-    background: linear-gradient(90deg, #3490dc, #6574cd);
-    box-shadow: 0 0 5px #3490dc, 0 0 10px #3490dc;
+    background: rgb(57,166,255);
+    background: linear-gradient(90deg, rgba(50,137,240,1) 0%, rgba(50,137,240,1) 50%, rgba(37,197,239,1) 100%);
     transition: width 0.3s ease, opacity 0.3s ease;
     z-index: 11;
     opacity: 1;
 }
 
 .loading-bar.complete {
+    box-shadow: 0 0 10px rgba(50,137,240,1), 0 0 10px rgba(37,197,239,1);
     opacity: 0;
-    transition: opacity 1s ease;
+    transition: opacity 0.5s ease;
 }
 
-@keyframes shine {
-    from {
-        background-position: 200% 0;
-    }
-
-    to {
-        background-position: 0 0;
-    }
-}
 </style>
