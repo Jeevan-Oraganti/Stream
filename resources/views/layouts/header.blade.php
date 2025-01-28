@@ -9,7 +9,7 @@
                     <dropdown class="relative">
                         <template v-slot:trigger>
                             <button
-                                class="text-white font-bold uppercase flex items-center transition-transform duration-300 ease-in-out hover:scale-105 space-x-1 border border-gray-500 px-4 py-2 rounded-lg" style="background: linear-gradient(45deg, #3d52a0, #7091e6, #ede8f5);">
+                                class="text-white font-bold uppercase flex items-center transition-transform duration-300 ease-in-out hover:scale-105 space-x-1 border border-gray-500 px-4 py-2 rounded-lg" style="background: rgba(50,137,240,1);">
                                 <span>My</span>
                                 <span>Stream</span>
                             </button>
