@@ -2,6 +2,7 @@
     <div>
         <LoadingBar :progress="progress" />
 
+
         <div class="mb-4">
             <div class="flex items-center mb-4">
                 <div class="relative w-full">
@@ -62,12 +63,14 @@
 
 <script>
 import Tab from './Tab.vue';
+import LoadingBar from './LoadingBar.vue'
 import axios from 'axios';
 import { debounce } from 'lodash';
 
 export default {
     components: {
         Tab,
+        LoadingBar,
     },
     props: {
         tabs: {

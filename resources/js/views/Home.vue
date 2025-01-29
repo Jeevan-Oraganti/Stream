@@ -1,6 +1,5 @@
 <template>
     <div>
-        <!-- <dark-mode-toggle></dark-mode-toggle> -->
         <div id="home" class="container mx-auto py-8 px-4 bg-gray-900 text-white rounded-lg">
             <h1 class="text-2xl text-center font-semibold mb-6 mt-4" title="Hard coding">
 
@@ -28,10 +27,9 @@
             <div class="columns is-centered">
                 <div class="column is-8">
 
-                    <!-- Search Input Field -->
                     <div class="mb-4">
                         <input type="text" v-model="searchQuery" placeholder="Search for a status..."
-                               class="w-full p-4 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none"/>
+                               class="w-full p-4 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
                     </div>
 
                     <div class="mb-8">

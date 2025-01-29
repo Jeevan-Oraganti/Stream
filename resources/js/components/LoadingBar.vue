@@ -20,7 +20,7 @@ export default {
     position: fixed;
     top: 0;
     left: 0;
-    height: 2px;
+    height: 3px;
     width: 0;
     background: rgb(57, 166, 255);
     background: linear-gradient(90deg, rgba(50, 137, 240, 1) 0%, rgba(50, 137, 240, 1) 70%, rgba(37, 197, 239, 1) 100%);
