@@ -22,8 +22,7 @@ export default {
     left: 0;
     height: 3px;
     width: 0;
-    background: rgb(57, 166, 255);
-    background: linear-gradient(90deg, rgba(50, 137, 240, 1) 0%, rgba(50, 137, 240, 1) 70%, rgba(37, 197, 239, 1) 100%);
+    background: linear-gradient(90deg, rgba(50, 137, 240, 1) 0%, rgba(50, 137, 240, 1) 80%, rgba(37, 197, 239, 1) 100%);
     transition: width 0.3s ease, opacity 0.3s ease;
     z-index: 11;
     opacity: 1;
