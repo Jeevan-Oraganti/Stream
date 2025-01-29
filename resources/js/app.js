@@ -20,6 +20,7 @@ import PinnedToTop from "./components/PinnedToTop.vue";
 import "tippy.js/dist/tippy.css";
 import AnalyticsDashboard from "./components/AnalyticsDashboard.vue";
 import SearchBar from "./components/SearchBar.vue";
+import LoadingBar from "./components/LoadingBar.vue";
 
 Vue.component("Carousel", Carousel);
 Vue.component("SeriesDropdown", SeriesDropdown);
@@ -39,6 +40,7 @@ Vue.component("Tabs", Tabs);
 Vue.component("Tab", Tab);
 Vue.component("AnalyticsDashboard", AnalyticsDashboard);
 Vue.component("SearchBar", SearchBar);
+Vue.component("LoadingBar", LoadingBar);
 
 new Vue({
     el: "#app",
