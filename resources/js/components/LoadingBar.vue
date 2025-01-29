@@ -6,7 +6,6 @@
 
 <script>
 export default {
-    name: "LoadingBar",
     props: {
         progress: {
             type: Number,
