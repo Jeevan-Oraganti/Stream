@@ -104,7 +104,6 @@ export default {
             } finally {
                 this.loading = false;
                 this.$emit('progress-bar', this.progressBarFlag = false)
-
             }
         },
 

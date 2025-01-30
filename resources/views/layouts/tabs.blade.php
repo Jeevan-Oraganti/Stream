@@ -8,7 +8,7 @@ $tabs = [
     ['title' => 'Food', 'slug' => 'food', 'content' => null],
     ['title' => 'Fitness', 'slug' => 'fitness', 'content' => null],
     ['title' => 'Gaming', 'slug' => 'gaming', 'content' => null],
-      ['title' => 'Grocery', 'slug' => 'grocery', 'content' => null],
+//      ['title' => 'Grocery', 'slug' => 'grocery', 'content' => null],
     //  ['title' => 'Other', 'slug' => 'other', 'content' => null],
 ];
 ?>
