@@ -55,10 +55,12 @@ export default {
             this.controller = new AbortController();
 
             try {
+                let progressBarFlag;
+                this.$emit('progress-bar', progressBarFlag = true)
                 const interval = setInterval(() => {
                     if (this.progress < 95) {
                         this.progress += 5;
-                        this.$emit('progress', this.progress);
+                        // this.$emit('progress', this.progress);
                     }
                 }, 100);
 
@@ -76,7 +78,8 @@ export default {
 
                 clearInterval(interval);
                 this.progress = 100;
-                this.$emit('progress', this.progress);
+                // this.$emit('progress', this.progress);
+                this.$emit('progress-bar', progressBarFlag = false)
 
                 setTimeout(() => {
                     this.loading = false;
