@@ -1,9 +1,7 @@
 <template>
     <div>
-        <LoadingBar :progress="progress" />
-
         <div v-if="loading" class="container loader p-2 items-centers mt-20 mb-20"></div>
-        <div v-else-if="currentTab.content" class="p-4 rounded-lg" role="tabpanel">
+        <div v-else-if="currentTab.content" class="p-4 rounded-lg" role="tab-panel">
             <div>
                 <h2 class="text-sm font-bold mb-4 text-gray-700" v-html="currentTab.title"></h2>
                 <p class="text-sm mb-4 text-gray-700" v-html="currentTab.content.description"></p>
@@ -41,6 +39,8 @@ export default {
     },
     methods: {
         async loadTabContent() {
+            this.progress = 0;
+
             if (this.tab.content) {
                 this.$emit('tab-selected', { content: this.tab.content });
                 return;
@@ -55,11 +55,10 @@ export default {
             this.controller = new AbortController();
 
             try {
-                this.progress = 0;
-
                 const interval = setInterval(() => {
                     if (this.progress < 95) {
                         this.progress += 5;
+                        this.$emit('progress', this.progress);
                     }
                 }, 100);
 
@@ -77,15 +76,16 @@ export default {
 
                 clearInterval(interval);
                 this.progress = 100;
+                this.$emit('progress', this.progress);
 
                 setTimeout(() => {
                     this.loading = false;
+                    this.$parent.progress = 0;
                 }, 500);
 
             } catch (error) {
-                clearInterval(interval);
+                clearInterval(this.interval);
                 this.loading = false;
-                this.progress = 0;
 
                 if (axios.isCancel(error)) {
                     console.log(`Request for ${this.tab.slug} was canceled.`);
@@ -110,7 +110,7 @@ export default {
             this.tab.content = content;
             this.$emit('tab-selected', { content: content, cached: true });
         }
-    }
+    },
 }
 </script>
 

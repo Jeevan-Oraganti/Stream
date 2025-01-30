@@ -7,7 +7,7 @@
             <div class="flex items-center mb-4">
                 <div class="relative w-full">
                     <input type="text" v-model="TabSearchQuery" placeholder="Search..."
-                        class="w-full p-2 text-sm rounded-lg bg-gray-300 text-black border border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        class="w-full p-2 text-sm rounded-lg bg-gray-200 text-black border border-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
                         @input="debouncedSearchTabs" />
                     <span v-if="loading" class="loader absolute right-3 top-2 items-center"></span>
 
@@ -46,7 +46,6 @@
                         class="w-full py-2 pl-3 pr-8 text-base text-gray-900 bg-white border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500">
                         <option v-for="(tab, index) in tabs" :key="index" :selected="tab === activeTab">
                             {{ tab.title }}
-                            <span :class="tab.content ? 'dot-green' : 'dot-red'"></span>
                         </option>
                     </select>
                 </div>
@@ -54,9 +53,9 @@
 
         </div>
 
-
         <div v-for="tab in tabs" :key="tab.slug">
-            <tab :tab="tab" @tab-selected="handleTabSelected" :ref="'tab-' + tab.slug" v-show="tab === activeTab" />
+            <tab :tab="tab" @tab-selected="handleTabSelected" @progress="updateProgress" :ref="'tab-' + tab.slug"
+                v-show="tab === activeTab" />
         </div>
     </div>
 </template>
@@ -97,6 +96,7 @@ export default {
                 this.controller.abort();
             }
 
+            this.progress = 0;
             this.activeTab = tab;
 
             if (!tab.content) {
@@ -258,6 +258,7 @@ export default {
 
             setTimeout(() => {
                 this.loading = false;
+                this.progress = 0;
             }, 500);
 
             this.$forceUpdate();
@@ -265,6 +266,10 @@ export default {
         debouncedSearchTabs: debounce(function () {
             this.searchTabs();
         }, 500),
+
+        updateProgress(progress) {
+            this.progress = progress;
+        },
 
     },
     mounted() {
