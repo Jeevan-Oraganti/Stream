@@ -1,4 +1,4 @@
-export default class GlobalStore {
+export default class GlobalLoadingBar {
     static loadingStack = [];
 
     static addLoadingRequest(requestId) {
