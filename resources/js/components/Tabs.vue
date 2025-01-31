@@ -54,8 +54,8 @@
 
         <div v-for="tab in tabs" :key="tab.slug">
             <tab :tab="tab" @tab-selected="handleTabSelected" @progress="updateProgress"
-                @loading-updated="updateLoadingState" @progress-bar="progressBarUpdate" @stack-length="stackSize"
-                :ref="'tab-' + tab.slug" v-show="tab === activeTab" />
+                @progress-bar="progressBarUpdate" @stack-length="stackSize" :ref="'tab-' + tab.slug"
+                v-show="tab === activeTab" />
         </div>
     </div>
 </template>
@@ -65,7 +65,7 @@ import Tab from './Tab.vue';
 import LoadingBar from './LoadingBar.vue'
 import axios from 'axios';
 import { debounce } from 'lodash';
-import GlobalStore from "../utilities/GlobalStore.js";
+import GlobalLoadingBar from "../utilities/GlobalLoadingBar.js";
 
 export default {
     components: {
@@ -94,17 +94,21 @@ export default {
     },
     methods: {
         stackSize() {
-            if (this.loadingStack.length === 0) {
+            const stackLength = GlobalLoadingBar.getLoadingStackLength();
+
+            if (stackLength === 0) {
                 clearInterval(this.interval);
                 this.interval = null;
                 this.progress = 100;
 
                 setTimeout(() => {
                     this.loading = false;
-                    this.progress = 0;
                 }, 500);
             } else {
-                if (!this.interval) {
+                if (!this.interval && this.progress === 0) {
+                    // this.loading = true;
+                    this.progress = 5;
+
                     this.interval = setInterval(() => {
                         if (this.progress < 95) {
                             this.progress += 5;

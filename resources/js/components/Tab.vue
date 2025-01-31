@@ -21,16 +21,12 @@
 
 <script>
 import axios from "axios";
-import GlobalStore from "../utilities/GlobalStore.js";
+import GlobalLoadingBar from "../utilities/GlobalLoadingBar.js";
 
 export default {
     props: {
         tab: {
             type: Object,
-            required: true,
-        },
-        loadingStack: {
-            type: Array,
             required: true,
         },
     },
@@ -62,9 +58,12 @@ export default {
             this.controller = new AbortController();
 
             try {
-                let uniqueId = Symbol();
-                this.$emit('progress-bar', this.progressBarFlag = true);
-                GlobalStore.addLoadingRequest(this.uniqueId);
+                this.requestId = Symbol();
+                this.$emit('progress-bar', (this.progressBarFlag = true));
+                GlobalLoadingBar.addLoadingRequest(this.requestId);
+                this.$emit('stack-length');
+                console.log(GlobalLoadingBar.getLoadingStackLength());
+
                 const interval = setInterval(() => {
                     if (this.progress < 95) {
                         this.progress += 5;
@@ -86,18 +85,17 @@ export default {
                 clearInterval(interval);
                 this.progress = 100;
                 this.$emit('progress', this.progress);
-                this.$emit('progress-bar', this.progressBarFlag = false);
+                this.$emit('progress-bar', (this.progressBarFlag = false));
 
                 setTimeout(() => {
                     this.loading = false;
                     this.progress = 0;
                     this.$parent.progress = 0;
                 }, 500);
-
             } catch (error) {
-                clearInterval(this.interval);
+                clearInterval(interval);
                 this.loading = false;
-                this.$emit('progress-bar', this.progressBarFlag = false);
+                this.$emit('progress-bar', (this.progressBarFlag = false));
 
                 if (axios.isCancel(error)) {
                     console.log(`Request for ${this.tab.slug} was canceled.`);
@@ -105,10 +103,10 @@ export default {
                     this.tab.content = {
                         title: "Error",
                         description: `
-                            <div style="color: red; font-weight: bold; text-align: center; margin-top: 20px;">
-                                <span style="color: yellow;">⚠ </span> An error occurred while loading the content.
-                            </div>
-                        `,
+                        <div style="color: red; font-weight: bold; text-align: center; margin-top: 20px;">
+                            <span style="color: yellow;">⚠ </span> An error occurred while loading the content.
+                        </div>
+                    `,
                     };
                     this.$emit('tab-selected', { content: this.tab.content });
                     console.error("Failed to load content", error);
@@ -116,17 +114,18 @@ export default {
             } finally {
                 this.loading = false;
                 this.progress = 100;
-                this.$emit('progress-bar', this.progressBarFlag = false);
-                GlobalStore.removeLoadingRequest(this.requestId);
-                this.$emit('loading-updated', GlobalStore.isLoading());
-            this.$emit('stack-length', this.loadingStack.length);
+                this.$emit('progress-bar', (this.progressBarFlag = false));
+
+                GlobalLoadingBar.removeLoadingRequest(this.requestId);
+                this.$emit('stack-length');
+                console.log(GlobalLoadingBar.getLoadingStackLength());
             }
         },
 
         setContent(content) {
             this.tab.content = content;
             this.$emit('tab-selected', { content: content, cached: true });
-        }
+        },
     },
 }
 </script>
@@ -139,7 +138,7 @@ export default {
     width: 50px;
     height: 50px;
     border: 5px solid rgba(255, 255, 255, 0.2);
-    border-top-color: rgba(37,197,239,1);
+    border-top-color: rgba(37, 197, 239, 1);
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
@@ -149,5 +148,4 @@ export default {
         transform: rotate(360deg);
     }
 }
-
 </style>
