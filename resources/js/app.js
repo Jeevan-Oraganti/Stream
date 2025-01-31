@@ -21,6 +21,7 @@ import "tippy.js/dist/tippy.css";
 import AnalyticsDashboard from "./components/AnalyticsDashboard.vue";
 import SearchBar from "./components/SearchBar.vue";
 import LoadingBar from "./components/LoadingBar.vue";
+import LoginForm from "./views/session/LoginForm.vue";
 
 Vue.component("Carousel", Carousel);
 Vue.component("SeriesDropdown", SeriesDropdown);
@@ -41,6 +42,7 @@ Vue.component("Tab", Tab);
 Vue.component("AnalyticsDashboard", AnalyticsDashboard);
 Vue.component("SearchBar", SearchBar);
 Vue.component("LoadingBar", LoadingBar);
+Vue.component("LoginForm", LoginForm);
 
 new Vue({
     el: "#app",

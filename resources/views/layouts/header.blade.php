@@ -1,7 +1,6 @@
 <section class="hero text-white is-small"
     style="justify-content: center;">
-    <!-- Hero head: Navigation -->
-    <!-- <dark-mode-toggle></dark-mode-toggle> -->
+
     <div class="hero-head">
         <nav class="navbar">
             <div class="container flex justify-between items-center">
@@ -30,6 +29,12 @@
                         <catalog-dropdown></catalog-dropdown>
                         <series-dropdown></series-dropdown>
                         <podcasts-dropdown></podcasts-dropdown>
+                        <form method="GET" action="/login">
+                            <button type="submit"
+                                class="block md:px-8 md:flex-1 uppercase text-gray-300 font-bold transition-transform duration-300 ease-in-out hover:text-white">
+                                <span>Login</span>
+                            </button>
+                        </form>
                     </div>
                 </div>
             </div>
@@ -88,49 +93,49 @@
 
     <!-- Pinned Footer Navigation -->
     <!-- <pinned-to-top> -->
-        <div ref="menu-banner-meta" class="hero-foot">
-            <nav class="tabs is-boxed is-fullwidth">
-                <div class="container">
-                    <ul class="flex justify-center space-x-6">
-                        <router-link to="/" exact v-slot="{ href, navigate, isActive, isExactActive }" custom>
-                            <li :class="{ 'is-active': isActive, 'exact-active': isExactActive }" class="relative">
-                                <a :href="href" @click="navigate" class="block py-2 px-4 rounded-md"
-                                    :class="{ 'bg-blue-500 text-white': isActive, 'bg-gray-200 text-gray-900': !isActive }">Home</a>
-                            </li>
-                        </router-link>
-                        <router-link to="/about" v-slot="{ href, navigate, isActive, isExactActive }" custom>
-                            <li :class="{ 'is-active': isActive, 'exact-active': isExactActive }" class="relative">
-                                <a :href="href" @click="navigate" class="block py-2 px-4 rounded-md"
-                                    :class="{ 'bg-blue-500 text-white': isActive, 'bg-gray-200 text-gray-900': !isActive }">About</a>
-                            </li>
-                        </router-link>
-                        <router-link to="/faq" v-slot="{ href, navigate, isActive, isExactActive }" custom>
-                            <li :class="{ 'is-active': isActive, 'exact-active': isExactActive }" class="relative">
-                                <a :href="href" @click="navigate" class="block py-2 px-4 rounded-md"
-                                    :class="{ 'bg-blue-500 text-white': isActive, 'bg-gray-200 text-gray-900': !isActive }">FAQ</a>
-                            </li>
-                        </router-link>
-                        <router-link to="/contact" v-slot="{ href, navigate, isActive, isExactActive }" custom>
-                            <li :class="{ 'is-active': isActive, 'exact-active': isExactActive }" class="relative">
-                                <a :href="href" @click="navigate" class="block py-2 px-4 rounded-md"
-                                    :class="{ 'bg-blue-500 text-white': isActive, 'bg-gray-200 text-gray-900': !isActive }">Contact</a>
-                            </li>
-                        </router-link>
-                        <router-link to="/analytics" v-slot="{ href, navigate, isActive, isExactActive }" custom>
-                            <li :class="{ 'is-active': isActive, 'exact-active': isExactActive }" class="relative">
-                                <a :href="href" @click="navigate" class="block py-2 px-4 rounded-md"
-                                    :class="{ 'bg-blue-500 text-white': isActive, 'bg-gray-200 text-gray-900': !isActive }">Analytics</a>
-                            </li>
-                        </router-link>
-                        <router-link to="/tabs" v-slot="{ href, navigate, isActive, isExactActive }" custom>
-                            <li :class="{ 'is-active': isActive, 'exact-active': isExactActive }" class="relative">
-                                <a :href="href" @click="navigate" class="block py-2 px-4 rounded-md"
-                                   :class="{ 'bg-blue-500 text-white': isActive, 'bg-gray-200 text-gray-900': !isActive }">Tabs</a>
-                            </li>
-                        </router-link>
-                    </ul>
-                </div>
-            </nav>
-        </div>
+    <div ref="menu-banner-meta" class="hero-foot">
+        <nav class="tabs is-boxed is-fullwidth">
+            <div class="container">
+                <ul class="flex justify-center space-x-6">
+                    <router-link to="/" exact v-slot="{ href, navigate, isActive, isExactActive }" custom>
+                        <li :class="{ 'is-active': isActive, 'exact-active': isExactActive }" class="relative">
+                            <a :href="href" @click="navigate" class="block py-2 px-4 rounded-md"
+                                :class="{ 'bg-blue-500 text-white': isActive, 'bg-gray-200 text-gray-900': !isActive }">Home</a>
+                        </li>
+                    </router-link>
+                    <router-link to="/about" v-slot="{ href, navigate, isActive, isExactActive }" custom>
+                        <li :class="{ 'is-active': isActive, 'exact-active': isExactActive }" class="relative">
+                            <a :href="href" @click="navigate" class="block py-2 px-4 rounded-md"
+                                :class="{ 'bg-blue-500 text-white': isActive, 'bg-gray-200 text-gray-900': !isActive }">About</a>
+                        </li>
+                    </router-link>
+                    <router-link to="/faq" v-slot="{ href, navigate, isActive, isExactActive }" custom>
+                        <li :class="{ 'is-active': isActive, 'exact-active': isExactActive }" class="relative">
+                            <a :href="href" @click="navigate" class="block py-2 px-4 rounded-md"
+                                :class="{ 'bg-blue-500 text-white': isActive, 'bg-gray-200 text-gray-900': !isActive }">FAQ</a>
+                        </li>
+                    </router-link>
+                    <router-link to="/contact" v-slot="{ href, navigate, isActive, isExactActive }" custom>
+                        <li :class="{ 'is-active': isActive, 'exact-active': isExactActive }" class="relative">
+                            <a :href="href" @click="navigate" class="block py-2 px-4 rounded-md"
+                                :class="{ 'bg-blue-500 text-white': isActive, 'bg-gray-200 text-gray-900': !isActive }">Contact</a>
+                        </li>
+                    </router-link>
+                    <router-link to="/analytics" v-slot="{ href, navigate, isActive, isExactActive }" custom>
+                        <li :class="{ 'is-active': isActive, 'exact-active': isExactActive }" class="relative">
+                            <a :href="href" @click="navigate" class="block py-2 px-4 rounded-md"
+                                :class="{ 'bg-blue-500 text-white': isActive, 'bg-gray-200 text-gray-900': !isActive }">Analytics</a>
+                        </li>
+                    </router-link>
+                    <router-link to="/tabs" v-slot="{ href, navigate, isActive, isExactActive }" custom>
+                        <li :class="{ 'is-active': isActive, 'exact-active': isExactActive }" class="relative">
+                            <a :href="href" @click="navigate" class="block py-2 px-4 rounded-md"
+                                :class="{ 'bg-blue-500 text-white': isActive, 'bg-gray-200 text-gray-900': !isActive }">Tabs</a>
+                        </li>
+                    </router-link>
+                </ul>
+            </div>
+        </nav>
+    </div>
     <!-- </pinned-to-top> -->
 </section>

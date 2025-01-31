@@ -1,8 +1,9 @@
 <template>
     <div>
         <LoadingBar :progress="progress" />
+
         <div class="p-8 bg-white rounded-xl">
-            <div class="border border-gray-400 p-5 mb-10 rounded-xl">
+            <div class="border border-gray-400 p-5 rounded-xl">
                 <h1 class="text-xl font-semibold mb-8 text-gray-500">Explore Categories</h1>
                 <div class="mb-4">
                     <div class="flex items-center mb-4">
@@ -75,12 +76,6 @@ export default {
     components: {
         Tab,
         LoadingBar,
-    },
-    props: {
-        // tabs: {
-        //     type: Array,
-        //     required: true,
-        // },
     },
     data() {
         return {

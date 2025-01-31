@@ -17,10 +17,11 @@
 
 <body>
 
-    <div class="mb-10">
-        {{$slot}}
-    </div>
+    @include('layouts.navbar')
 
+        <div class="mb-10">
+            {{$slot}}
+        </div>
 
     @include('layouts.footer')
 
