@@ -122,6 +122,12 @@
                                     :class="{ 'bg-blue-500 text-white': isActive, 'bg-gray-200 text-gray-900': !isActive }">Analytics</a>
                             </li>
                         </router-link>
+                        <router-link to="/tabs" v-slot="{ href, navigate, isActive, isExactActive }" custom>
+                            <li :class="{ 'is-active': isActive, 'exact-active': isExactActive }" class="relative">
+                                <a :href="href" @click="navigate" class="block py-2 px-4 rounded-md"
+                                   :class="{ 'bg-blue-500 text-white': isActive, 'bg-gray-200 text-gray-900': !isActive }">Tabs</a>
+                            </li>
+                        </router-link>
                     </ul>
                 </div>
             </nav>
