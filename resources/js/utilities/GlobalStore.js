@@ -12,7 +12,7 @@ export default class GlobalStore {
         }
     }
 
-    static isLoading() {
-        return this.loadingStack.length > 0;
+    static getLoadingStackLength() {
+        return this.loadingStack.length;
     }
 }

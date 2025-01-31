@@ -21,6 +21,7 @@
 
 <script>
 import axios from "axios";
+import GlobalStore from "../utilities/GlobalStore.js";
 
 export default {
     props: {
@@ -63,7 +64,7 @@ export default {
             try {
                 let uniqueId = Symbol();
                 this.$emit('progress-bar', this.progressBarFlag = true);
-                this.$emit('stackPush', this.loadingStack.push(uniqueId));
+                GlobalStore.addLoadingRequest(this.uniqueId);
                 const interval = setInterval(() => {
                     if (this.progress < 95) {
                         this.progress += 5;
@@ -116,7 +117,9 @@ export default {
                 this.loading = false;
                 this.progress = 100;
                 this.$emit('progress-bar', this.progressBarFlag = false);
-                this.$emit('stackPop', this.loadingStack.pop());
+                GlobalStore.removeLoadingRequest(this.requestId);
+                this.$emit('loading-updated', GlobalStore.isLoading());
+            this.$emit('stack-length', this.loadingStack.length);
             }
         },
 

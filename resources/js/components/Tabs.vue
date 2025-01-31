@@ -54,7 +54,7 @@
 
         <div v-for="tab in tabs" :key="tab.slug">
             <tab :tab="tab" @tab-selected="handleTabSelected" @progress="updateProgress"
-                @progress-bar="progressBarUpdate" :loadingStack="loadingStack" @stackPush="pushed" @stackPop="popped"
+                @loading-updated="updateLoadingState" @progress-bar="progressBarUpdate" @stack-length="stackSize"
                 :ref="'tab-' + tab.slug" v-show="tab === activeTab" />
         </div>
     </div>
@@ -65,6 +65,7 @@ import Tab from './Tab.vue';
 import LoadingBar from './LoadingBar.vue'
 import axios from 'axios';
 import { debounce } from 'lodash';
+import GlobalStore from "../utilities/GlobalStore.js";
 
 export default {
     components: {
@@ -92,6 +93,27 @@ export default {
         };
     },
     methods: {
+        stackSize() {
+            if (this.loadingStack.length === 0) {
+                clearInterval(this.interval);
+                this.interval = null;
+                this.progress = 100;
+
+                setTimeout(() => {
+                    this.loading = false;
+                    this.progress = 0;
+                }, 500);
+            } else {
+                if (!this.interval) {
+                    this.interval = setInterval(() => {
+                        if (this.progress < 95) {
+                            this.progress += 5;
+                        }
+                    }, 100);
+                }
+            }
+        },
+
         selectTab(tab) {
             if (this.controller) {
                 this.controller.abort();
@@ -296,31 +318,6 @@ export default {
         }
     },
 
-    computed: {
-        isLoading() {
-            if (this.loadingStack.length > 0) {
-                console.log('size of stack if' + this.loadingStack.length);
-                setInterval(() => {
-                    if (this.progress < 95) {
-                        this.progress += 5;
-                    }
-                }, 100);
-            }
-            else {
-                console.log('size of stack else' + this.loadingStack.length);
-                clearInterval(this.interval);
-                this.interval = null;
-                this.progress = 100;
-
-                setTimeout(() => {
-                    this.loading = false;
-                    this.progress = 0;
-                }, 500);
-            }
-
-            return this.progress;
-        },
-    }
 };
 </script>
 
