@@ -107,6 +107,7 @@ export default {
             } else {
                 if (!this.interval && this.progress === 0) {
                     // this.loading = true;
+
                     this.progress = 5;
 
                     this.interval = setInterval(() => {
