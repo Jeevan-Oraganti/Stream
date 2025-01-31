@@ -22,6 +22,7 @@ import AnalyticsDashboard from "./components/AnalyticsDashboard.vue";
 import SearchBar from "./components/SearchBar.vue";
 import LoadingBar from "./components/LoadingBar.vue";
 import LoginForm from "./views/session/LoginForm.vue";
+import RegisterForm from "./views/session/RegisterForm.vue";
 
 Vue.component("Carousel", Carousel);
 Vue.component("SeriesDropdown", SeriesDropdown);
@@ -43,6 +44,7 @@ Vue.component("AnalyticsDashboard", AnalyticsDashboard);
 Vue.component("SearchBar", SearchBar);
 Vue.component("LoadingBar", LoadingBar);
 Vue.component("LoginForm", LoginForm);
+Vue.component("RegisterForm", RegisterForm);
 
 new Vue({
     el: "#app",

@@ -49,19 +49,22 @@ export default {
     },
     methods: {
         register() {
-            axios.post('/register', this.form)
+            axios.post('/register', this.form, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                }
+            })
                 .then(response => {
+                    console.log('Registration successful:', response.data);
+                    alert('Registration successful!');
                     window.location.href = '/';
                 })
                 .catch(error => {
-                    console.error('Registration failed:', error);
-                    alert('Registration failed. Please check your input and try again.');
+                    console.error('Registration failed:', error.response?.data || error);
+                    alert('Registration failed: ' + (error.response?.data?.error || 'Please check your input.'));
                 });
         }
     }
 };
 </script>
-
-<style scoped>
-/* Add any necessary styles here */
-</style>

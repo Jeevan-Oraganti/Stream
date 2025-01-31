@@ -35,24 +35,32 @@ class SessionController extends Controller
         return redirect('/')->with('Success', 'Welcome Back');
     }
 
-    public function register(Request $request)
+    public function store(Request $request)
     {
-        $attributes = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
-        ]);
+        try {
+            $attributes = $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|string|email|max:255|unique:users',
+                'password' => 'required|string|min:8|confirmed',
+            ]);
 
-        $user = User::create([
-            'name' => $attributes['name'],
-            'email' => $attributes['email'],
-            'password' => Hash::make($attributes['password']),
-        ]);
+            $user = User::create([
+                'name' => $attributes['name'],
+                'email' => $attributes['email'],
+                'password' => Hash::make($attributes['password']),
+            ]);
 
-        Auth::login($user);
+            Auth::login($user);
 
-        return redirect('/')->with('success', 'Your account has been created.');
+            return response()->json([
+                'message' => 'Your account has been created.',
+                'user' => $user
+            ], 201);
+        } catch (\Exception $e) {
+            return response()->json(['error' => $e->getMessage()], 500);
+        }
     }
+
 
     public function destroy()
     {

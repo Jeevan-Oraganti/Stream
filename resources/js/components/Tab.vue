@@ -62,7 +62,6 @@ export default {
                 this.$emit('progress-bar', (this.progressBarFlag = true));
                 GlobalLoadingBar.addLoadingRequest(this.requestId);
                 this.$emit('stack-length');
-                console.log(GlobalLoadingBar.getLoadingStackLength());
 
                 const interval = setInterval(() => {
                     if (this.progress < 95) {
@@ -118,7 +117,6 @@ export default {
 
                 GlobalLoadingBar.removeLoadingRequest(this.requestId);
                 this.$emit('stack-length');
-                console.log(GlobalLoadingBar.getLoadingStackLength());
             }
         },
 

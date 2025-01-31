@@ -1,49 +1,49 @@
 <section class="hero text-white is-small"
-    style="justify-content: center;">
+         style="justify-content: center;">
 
-{{--    <div class="hero-head">--}}
-{{--        <nav class="navbar">--}}
-{{--            <div class="container flex justify-between items-center">--}}
-{{--                <div class="navbar-brand flex items-center">--}}
-{{--                    <dropdown class="relative">--}}
-{{--                        <template v-slot:trigger>--}}
-{{--                            <button--}}
-{{--                                class="text-white font-bold uppercase flex items-center transition-transform duration-300 ease-in-out hover:scale-105 space-x-1 border border-gray-500 px-4 py-2 rounded-lg" style="background: rgba(50,137,240,1);">--}}
-{{--                                <span>My</span>--}}
-{{--                                <span>Stream</span>--}}
-{{--                            </button>--}}
-{{--                        </template>--}}
+    {{--    <div class="hero-head">--}}
+    {{--        <nav class="navbar">--}}
+    {{--            <div class="container flex justify-between items-center">--}}
+    {{--                <div class="navbar-brand flex items-center">--}}
+    {{--                    <dropdown class="relative">--}}
+    {{--                        <template v-slot:trigger>--}}
+    {{--                            <button--}}
+    {{--                                class="text-white font-bold uppercase flex items-center transition-transform duration-300 ease-in-out hover:scale-105 space-x-1 border border-gray-500 px-4 py-2 rounded-lg" style="background: rgba(50,137,240,1);">--}}
+    {{--                                <span>My</span>--}}
+    {{--                                <span>Stream</span>--}}
+    {{--                            </button>--}}
+    {{--                        </template>--}}
 
 
-{{--                        <div class=" absolute bg-white text-gray-700 rounded shadow-lg mt-2 ml-6">--}}
-{{--                            <a href="/" class="block text-sm px-4 py-2 hover:bg-gray-200 rounded-md">Home</a>--}}
-{{--                            <a href="#/about" class="block text-sm px-4 py-2 hover:bg-gray-200 rounded-md">About</a>--}}
-{{--                            <a href="#/faq" class="block text-sm px-4 py-2 hover:bg-gray-200 rounded-md">FAQ</a>--}}
-{{--                            <a href="#/contact" class="block text-sm px-4 py-2 hover:bg-gray-200 rounded-md">Contact</a>--}}
-{{--                        </div>--}}
-{{--                    </dropdown>--}}
-{{--                </div>--}}
+    {{--                        <div class=" absolute bg-white text-gray-700 rounded shadow-lg mt-2 ml-6">--}}
+    {{--                            <a href="/" class="block text-sm px-4 py-2 hover:bg-gray-200 rounded-md">Home</a>--}}
+    {{--                            <a href="#/about" class="block text-sm px-4 py-2 hover:bg-gray-200 rounded-md">About</a>--}}
+    {{--                            <a href="#/faq" class="block text-sm px-4 py-2 hover:bg-gray-200 rounded-md">FAQ</a>--}}
+    {{--                            <a href="#/contact" class="block text-sm px-4 py-2 hover:bg-gray-200 rounded-md">Contact</a>--}}
+    {{--                        </div>--}}
+    {{--                    </dropdown>--}}
+    {{--                </div>--}}
 
-{{--                <div id="navbarMenuHeroA" class="navbar-menu flex items-center mt-4">--}}
-{{--                    <div class="navbar-end flex space-x-4">--}}
-{{--                        <catalog-dropdown></catalog-dropdown>--}}
-{{--                        <series-dropdown></series-dropdown>--}}
-{{--                        <podcasts-dropdown></podcasts-dropdown>--}}
-{{--                        <form method="GET" action="/login">--}}
-{{--                            <button type="submit"--}}
-{{--                                class="block md:px-8 md:flex-1 uppercase text-gray-300 font-bold transition-transform duration-300 ease-in-out hover:text-white">--}}
-{{--                                <span>Login</span>--}}
-{{--                            </button>--}}
-{{--                        </form>--}}
-{{--                    </div>--}}
-{{--                </div>--}}
-{{--            </div>--}}
-{{--        </nav>--}}
+    {{--                <div id="navbarMenuHeroA" class="navbar-menu flex items-center mt-4">--}}
+    {{--                    <div class="navbar-end flex space-x-4">--}}
+    {{--                        <catalog-dropdown></catalog-dropdown>--}}
+    {{--                        <series-dropdown></series-dropdown>--}}
+    {{--                        <podcasts-dropdown></podcasts-dropdown>--}}
+    {{--                        <form method="GET" action="/login">--}}
+    {{--                            <button type="submit"--}}
+    {{--                                class="block md:px-8 md:flex-1 uppercase text-gray-300 font-bold transition-transform duration-300 ease-in-out hover:text-white">--}}
+    {{--                                <span>Login</span>--}}
+    {{--                            </button>--}}
+    {{--                        </form>--}}
+    {{--                    </div>--}}
+    {{--                </div>--}}
+    {{--            </div>--}}
+    {{--        </nav>--}}
 
-{{--        <portal-target name="nav-catalog"></portal-target>--}}
-{{--        <portal-target name="nav-series"></portal-target>--}}
-{{--        <portal-target name="nav-podcasts"></portal-target>--}}
-{{--    </div>--}}
+    {{--        <portal-target name="nav-catalog"></portal-target>--}}
+    {{--        <portal-target name="nav-series"></portal-target>--}}
+    {{--        <portal-target name="nav-podcasts"></portal-target>--}}
+    {{--    </div>--}}
 
     <!-- Hero content: Centered Carousel -->
     <div class="hero-body flex justify-center items-center">
@@ -100,39 +100,41 @@
                     <router-link to="/" exact v-slot="{ href, navigate, isActive, isExactActive }" custom>
                         <li :class="{ 'is-active': isActive, 'exact-active': isExactActive }" class="relative">
                             <a :href="href" @click="navigate" class="block py-2 px-4 rounded-md"
-                                :class="{ 'bg-blue-500 text-white': isActive, 'bg-gray-200 text-gray-900': !isActive }">Home</a>
+                               :class="{ 'bg-blue-500 text-white': isActive, 'bg-gray-200 text-gray-900': !isActive }">Home</a>
                         </li>
                     </router-link>
                     <router-link to="/about" v-slot="{ href, navigate, isActive, isExactActive }" custom>
                         <li :class="{ 'is-active': isActive, 'exact-active': isExactActive }" class="relative">
                             <a :href="href" @click="navigate" class="block py-2 px-4 rounded-md"
-                                :class="{ 'bg-blue-500 text-white': isActive, 'bg-gray-200 text-gray-900': !isActive }">About</a>
+                               :class="{ 'bg-blue-500 text-white': isActive, 'bg-gray-200 text-gray-900': !isActive }">About</a>
                         </li>
                     </router-link>
                     <router-link to="/faq" v-slot="{ href, navigate, isActive, isExactActive }" custom>
                         <li :class="{ 'is-active': isActive, 'exact-active': isExactActive }" class="relative">
                             <a :href="href" @click="navigate" class="block py-2 px-4 rounded-md"
-                                :class="{ 'bg-blue-500 text-white': isActive, 'bg-gray-200 text-gray-900': !isActive }">FAQ</a>
+                               :class="{ 'bg-blue-500 text-white': isActive, 'bg-gray-200 text-gray-900': !isActive }">FAQ</a>
                         </li>
                     </router-link>
                     <router-link to="/contact" v-slot="{ href, navigate, isActive, isExactActive }" custom>
                         <li :class="{ 'is-active': isActive, 'exact-active': isExactActive }" class="relative">
                             <a :href="href" @click="navigate" class="block py-2 px-4 rounded-md"
-                                :class="{ 'bg-blue-500 text-white': isActive, 'bg-gray-200 text-gray-900': !isActive }">Contact</a>
-                        </li>
-                    </router-link>
-                    <router-link to="/analytics" v-slot="{ href, navigate, isActive, isExactActive }" custom>
-                        <li :class="{ 'is-active': isActive, 'exact-active': isExactActive }" class="relative">
-                            <a :href="href" @click="navigate" class="block py-2 px-4 rounded-md"
-                                :class="{ 'bg-blue-500 text-white': isActive, 'bg-gray-200 text-gray-900': !isActive }">Analytics</a>
+                               :class="{ 'bg-blue-500 text-white': isActive, 'bg-gray-200 text-gray-900': !isActive }">Contact</a>
                         </li>
                     </router-link>
                     <router-link to="/tabs" v-slot="{ href, navigate, isActive, isExactActive }" custom>
                         <li :class="{ 'is-active': isActive, 'exact-active': isExactActive }" class="relative">
                             <a :href="href" @click="navigate" class="block py-2 px-4 rounded-md"
-                                :class="{ 'bg-blue-500 text-white': isActive, 'bg-gray-200 text-gray-900': !isActive }">Tabs</a>
+                               :class="{ 'bg-blue-500 text-white': isActive, 'bg-gray-200 text-gray-900': !isActive }">Tabs</a>
                         </li>
                     </router-link>
+                    @auth
+                        <router-link to="/analytics" v-slot="{ href, navigate, isActive, isExactActive }" custom>
+                            <li :class="{ 'is-active': isActive, 'exact-active': isExactActive }" class="relative">
+                                <a :href="href" @click="navigate" class="block py-2 px-4 rounded-md"
+                                   :class="{ 'bg-blue-500 text-white': isActive, 'bg-gray-200 text-gray-900': !isActive }">Analytics</a>
+                            </li>
+                        </router-link>
+                    @endauth
                 </ul>
             </div>
         </nav>
