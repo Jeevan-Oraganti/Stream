@@ -21,3 +21,8 @@ Route::get('/tabs/{slug}/content', [TabController::class, 'getContent']);
 Route::get('/analytics', [AnalyticsController::class, 'index']);
 
 Route::get('/login', [SessionController::class, 'login']);
+Route::post('/login', [SessionController::class, 'verify']);
+
+Route::get('/register', function () {
+    return view('session.register');
+});
