@@ -28,14 +28,19 @@ export default {
             type: Object,
             required: true,
         },
+        loadingStack: {
+            type: Array,
+            required: true,
+        },
     },
     data() {
         return {
             loading: false,
             currentTab: this.tab,
             controller: null,
-            progress: 0,
+            // progress: 0,
             progressBarFlag: null,
+            uniqueId: null,
         };
     },
     methods: {
@@ -56,7 +61,9 @@ export default {
             this.controller = new AbortController();
 
             try {
-                this.$emit('progress-bar', this.progressBarFlag = true)
+                let uniqueId = Symbol();
+                this.$emit('progress-bar', this.progressBarFlag = true);
+                this.$emit('stackPush', this.loadingStack.push(uniqueId));
                 const interval = setInterval(() => {
                     if (this.progress < 95) {
                         this.progress += 5;
@@ -66,7 +73,6 @@ export default {
 
                 const response = await axios.get(`/tabs/${this.tab.slug}/content`, {
                     signal: this.controller.signal,
-                    responseType: 'json',
                 });
 
                 if (this.tab === this.$parent.activeTab) {
@@ -79,31 +85,38 @@ export default {
                 clearInterval(interval);
                 this.progress = 100;
                 this.$emit('progress', this.progress);
-                this.$emit('progress-bar', this.progressBarFlag = false)
+                this.$emit('progress-bar', this.progressBarFlag = false);
 
                 setTimeout(() => {
                     this.loading = false;
+                    this.progress = 0;
                     this.$parent.progress = 0;
                 }, 500);
 
             } catch (error) {
                 clearInterval(this.interval);
                 this.loading = false;
-                this.$emit('progress-bar', this.progressBarFlag = false)
+                this.$emit('progress-bar', this.progressBarFlag = false);
 
                 if (axios.isCancel(error)) {
                     console.log(`Request for ${this.tab.slug} was canceled.`);
                 } else {
                     this.tab.content = {
                         title: "Error",
-                        description: '<div style="color: red; font-weight: bold; text-align: center; margin-top: 20px;"><span style="color: orange;">⚠ </span> An error occurred while loading the content.</div>',
+                        description: `
+                            <div style="color: red; font-weight: bold; text-align: center; margin-top: 20px;">
+                                <span style="color: yellow;">⚠ </span> An error occurred while loading the content.
+                            </div>
+                        `,
                     };
                     this.$emit('tab-selected', { content: this.tab.content });
                     console.error("Failed to load content", error);
                 }
             } finally {
                 this.loading = false;
-                this.$emit('progress-bar', this.progressBarFlag = false)
+                this.progress = 100;
+                this.$emit('progress-bar', this.progressBarFlag = false);
+                this.$emit('stackPop', this.loadingStack.pop());
             }
         },
 
@@ -123,7 +136,7 @@ export default {
     width: 50px;
     height: 50px;
     border: 5px solid rgba(255, 255, 255, 0.2);
-    border-top-color: rgba(37, 197, 239, 1);
+    border-top-color: rgba(37,197,239,1);
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
@@ -133,4 +146,5 @@ export default {
         transform: rotate(360deg);
     }
 }
+
 </style>
