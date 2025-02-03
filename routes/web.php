@@ -62,8 +62,9 @@ Route::post('/logout', function (Request $request) {
 })->name('logout');
 
 
-Route::middleware('admin')->group(function () {
+Route::middleware('can:admin')->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard']);
+    Route::get('/analytics', [AnalyticsController::class, 'index']);
 });
 
-Route::middleware('auth')->get('/analytics', [AnalyticsController::class, 'index']);
+//Route::middleware('auth')->get('/analytics', [AnalyticsController::class, 'index']);

@@ -12,12 +12,13 @@ class AdminMiddleware
     /**
      * Handle an incoming request.
      *
-     * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
+     * @param  \Illuminate\Http\Request  $request
+     * @param  \Closure  $next
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!Auth::check() || Auth::user()->name !== 'admin') {
-            return redirect('/')->with('error', 'You do not have admin privileges.');
+        if (auth()->user()?->username != 'Alen') {
+            abort(Response::HTTP_FORBIDDEN);
         }
 
         return $next($request);
