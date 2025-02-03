@@ -5,8 +5,8 @@ import Form from "./utilities/Form";
 import PortalVue from "portal-vue";
 import VModal from "vue-js-modal";
 import inView from "in-viewport";
-import { Chart } from "chart.js";
-import moment from "moment";
+// import { Chart } from "chart.js";
+// import moment from "moment";
 
 window.Vue = Vue;
 Vue.use(VueRouter);

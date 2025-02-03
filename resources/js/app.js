@@ -1,6 +1,7 @@
 import "./bootstrap";
 import router from "./routes";
 import Vue from "vue";
+import Welcome from "@/Pages/Welcome.vue";
 import Carousel from "./components/Carousel.vue";
 import SeriesDropdown from "./components/dropdown/SeriesDropdown.vue";
 import CatalogDropdown from "./components/dropdown/CatalogDropdown.vue";
@@ -24,6 +25,7 @@ import LoadingBar from "./components/LoadingBar.vue";
 import LoginForm from "./views/session/LoginForm.vue";
 import RegisterForm from "./views/session/RegisterForm.vue";
 
+Vue.component("Welcome", Welcome);
 Vue.component("Carousel", Carousel);
 Vue.component("SeriesDropdown", SeriesDropdown);
 Vue.component("CatalogDropdown", CatalogDropdown);

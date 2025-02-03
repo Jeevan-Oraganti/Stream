@@ -3,13 +3,36 @@
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AnalyticsController;
 use App\Http\Controllers\Auth\SessionController;
-use App\Models\Status;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\App;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StatusController;
 use App\Http\Controllers\TabController;
+use Illuminate\Foundation\Application;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
+use Inertia\Inertia;
+
+Route::get('/', function () {
+   return Inertia::render('Welcome', [
+       'canLogin' => Route::has('login'),
+       'canRegister' => Route::has('register'),
+       'laravelVersion' => Application::VERSION,
+       'phpVersion' => PHP_VERSION,
+   ]);
+});
+
+Route::get('/dashboard', function () {
+   return Inertia::render('Dashboard');
+})->middleware(['auth', 'verified'])->name('dashboard');
+
+Route::middleware('auth')->group(function () {
+   Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+   Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+   Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+});
+
+require __DIR__.'/auth.php';
+
 
 Route::get('/', function () {
     return view('welcome');
@@ -24,7 +47,9 @@ Route::get('/tabs/{slug}/content', [TabController::class, 'getContent']);
 Route::get('/login', [SessionController::class, 'login']);
 Route::post('/login', [SessionController::class, 'verify']);
 
-Route::get('/register', function () { return view('session.register');});
+Route::get('/register', function () {
+    return view('session.register');
+});
 
 Route::post('/register', [SessionController::class, 'store']);
 
