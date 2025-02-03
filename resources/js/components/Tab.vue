@@ -35,17 +35,13 @@ export default {
             loading: false,
             currentTab: this.tab,
             controller: null,
-            // progress: 0,
-            progressBarFlag: null,
             uniqueId: null,
         };
     },
     methods: {
         async loadTabContent() {
-            this.progress = 0;
-
             if (this.tab.content) {
-                this.$emit('tab-selected', { content: this.tab.content });
+                this.$emit('tab-selected', {content: this.tab.content});
                 return;
             }
 
@@ -59,16 +55,8 @@ export default {
 
             try {
                 this.requestId = Symbol();
-                this.$emit('progress-bar', (this.progressBarFlag = true));
                 GlobalLoadingBar.addLoadingRequest(this.requestId);
                 this.$emit('stack-length');
-
-                const interval = setInterval(() => {
-                    if (this.progress < 95) {
-                        this.progress += 5;
-                        this.$emit('progress', this.progress);
-                    }
-                }, 100);
 
                 const response = await axios.get(`/tabs/${this.tab.slug}/content`, {
                     signal: this.controller.signal,
@@ -76,25 +64,13 @@ export default {
 
                 if (this.tab === this.$parent.activeTab) {
                     this.tab.content = response.data;
-                    this.$emit('tab-selected', { content: response.data });
+                    this.$emit('tab-selected', {content: response.data});
                 } else {
                     this.controller.abort();
                 }
 
-                clearInterval(interval);
-                this.progress = 100;
-                this.$emit('progress', this.progress);
-                this.$emit('progress-bar', (this.progressBarFlag = false));
-
-                setTimeout(() => {
-                    this.loading = false;
-                    this.progress = 0;
-                    this.$parent.progress = 0;
-                }, 500);
             } catch (error) {
-                clearInterval(interval);
                 this.loading = false;
-                this.$emit('progress-bar', (this.progressBarFlag = false));
 
                 if (axios.isCancel(error)) {
                     console.log(`Request for ${this.tab.slug} was canceled.`);
@@ -107,22 +83,24 @@ export default {
                         </div>
                     `,
                     };
-                    this.$emit('tab-selected', { content: this.tab.content });
+                    this.$emit('tab-selected', {content: this.tab.content});
                     console.error("Failed to load content", error);
                 }
             } finally {
                 this.loading = false;
-                this.progress = 100;
-                this.$emit('progress-bar', (this.progressBarFlag = false));
 
                 GlobalLoadingBar.removeLoadingRequest(this.requestId);
-                this.$emit('stack-length');
+                const stackLength = GlobalLoadingBar.getLoadingStackLength();
+
+                if (stackLength === 0) {
+                    this.$emit('stack-length-zero');
+                }
             }
         },
 
         setContent(content) {
             this.tab.content = content;
-            this.$emit('tab-selected', { content: content, cached: true });
+            this.$emit('tab-selected', {content: content, cached: true});
         },
     },
 }
