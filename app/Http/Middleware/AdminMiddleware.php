@@ -17,7 +17,7 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (auth()->user()?->username != 'Alen') {
+        if (auth()->user()?->username != 'alen') {
             abort(Response::HTTP_FORBIDDEN);
         }
 

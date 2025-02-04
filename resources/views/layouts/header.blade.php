@@ -128,10 +128,10 @@
                         </li>
                     </router-link>
                     @admin
-                        <router-link to="/analytics" v-slot="{ href, navigate, isActive, isExactActive }" custom>
+                        <router-link to="/dashboard" v-slot="{ href, navigate, isActive, isExactActive }" custom>
                             <li :class="{ 'is-active': isActive, 'exact-active': isExactActive }" class="relative">
                                 <a :href="href" @click="navigate" class="block py-2 px-4 rounded-md"
-                                   :class="{ 'bg-blue-500 text-white': isActive, 'bg-gray-200 text-gray-900': !isActive }">Analytics</a>
+                                   :class="{ 'bg-blue-500 text-white': isActive, 'bg-gray-200 text-gray-900': !isActive }">Admin Dashboard</a>
                             </li>
                         </router-link>
                     @endadmin

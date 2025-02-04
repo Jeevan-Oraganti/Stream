@@ -1,5 +1,6 @@
 <template>
     <div>
+        <notification :notices="notices"></notification>
         <div id="home" class="container mx-auto py-8 px-4 bg-gray-900 text-white rounded-lg">
             <h1 class="text-2xl text-center font-semibold mb-6 mt-4" title="Hard coding">
 
@@ -29,13 +30,13 @@
 
                     <div class="mb-4">
                         <input type="text" v-model="searchQuery" placeholder="Search for a status..."
-                               class="w-full p-4 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500"/>
+                            class="w-full p-4 rounded-lg bg-gray-800 text-white border border-gray-700 focus:outline-none focus:ring-2 focus:ring-blue-500" />
                     </div>
 
                     <div class="mb-8">
                         <div v-if="filteredStatuses.length > 0">
                             <div v-for="status in filteredStatuses" :key="status.id"
-                                 class="transition-transform duration-300 hover:scale-105 border border-gray-500 p-4 rounded-lg mb-4">
+                                class="transition-transform duration-300 hover:scale-105 border border-gray-500 p-4 rounded-lg mb-4">
                                 <div v-if="status.user" class="flex justify-between items-center mb-3">
                                     <p class="text-lg font-medium">{{ status.user.name }} said...</p>
                                     <p class="text-sm text-gray-400">{{ status.created_at | ago | capitalize }}</p>
@@ -60,10 +61,10 @@
             <conditional-render when-hidden="#push-to-stream">
                 <div class="participate-button fixed bottom-10 right-6 z-50">
                     <a class="bg-blue-500 text-white text-xs hover:bg-white hover:text-blue-500 rounded-full w-36 h-12 text-center flex items-center justify-center shadow-lg"
-                       @click="scrollToPush">
+                        @click="scrollToPush">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-white mr-1" fill="none"
-                             viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/>
+                            viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
                         </svg>
                         Add to Stream
                     </a>
@@ -78,16 +79,18 @@
 <script>
 import moment from 'moment';
 import Status from '../models/Status';
+import Notification from "@/components/Notification.vue";
 import AddToStream from "../components/AddToStream.vue";
 import Tabs from "../components/Tabs.vue";
 import DarkModeToggle from '../components/DarkModeToggle.vue';
 
 export default {
-    components: {AddToStream, Tabs, DarkModeToggle},
+    components: { AddToStream, Tabs, DarkModeToggle, Notification },
     data() {
         return {
             statuses: [],
             searchQuery: '',
+            notices: [],
         }
     },
     computed: {
@@ -110,8 +113,27 @@ export default {
     },
     created() {
         Status.all(statuses => this.statuses = statuses);
+        this.fetchNotice();
     },
     methods: {
+        async fetchNotice() {
+            try {
+                const dismissedNotice = localStorage.getItem('dismissedNotice');
+                const response = await fetch('/notice');
+                const data = await response.json();
+
+                if (Array.isArray(data)) {
+                    this.notices = data.filter(n => n.id !== parseInt(dismissedNotice));
+                } else if (data && typeof data === 'object') {
+                    this.notices = data.id !== parseInt(dismissedNotice) ? [data] : [];
+                } else {
+                    this.notices = [];
+                }
+            } catch (error) {
+                console.error("Error fetching notices:", error);
+                this.notices = [];
+            }
+        },
         addStatus(status) {
             this.statuses.unshift(status);
 

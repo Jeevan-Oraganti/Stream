@@ -1,6 +1,6 @@
 <nav class="bg-gradient-to-r from-gray-800 via-gray-700 to-gray-600 py-4">
     <div class="container mx-auto flex justify-between items-center">
-        <a class="text-2xl font-bold" href="/">My Stream</a>
+        <a class="text-2xl font-bold text-white" href="/">My Stream</a>
         <button class="md:hidden text-white focus:outline-none">
             <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
                  xmlns="http://www.w3.org/2000/svg">

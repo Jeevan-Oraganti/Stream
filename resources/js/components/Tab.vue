@@ -97,11 +97,6 @@ export default {
                 }
             }
         },
-
-        setContent(content) {
-            this.tab.content = content;
-            this.$emit('tab-selected', {content: content, cached: true});
-        },
     },
 }
 </script>

@@ -2,7 +2,9 @@
 
 namespace App\Providers;
 
+use App\Http\Middleware\AdminMiddleware;
 use App\Models\User;
+use Illuminate\Contracts\Http\Kernel;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\Gate;
@@ -22,11 +24,13 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot(): void
+    public function boot(Kernel $kernel): void
     {
         Vite::prefetch(concurrency: 3);
 
         Model::unguard();
+
+//        $kernel->appendMiddlewareToGroup('web', AdminMiddleware::class);
 
         Gate::define('admin', function (User $user) {
             return $user->name === 'Alen';
