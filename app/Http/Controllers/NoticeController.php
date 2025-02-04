@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Notices;
@@ -19,4 +20,3 @@ class NoticeController extends Controller
         return response()->json($notices);
     }
 }
-
