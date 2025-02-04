@@ -65,8 +65,9 @@ export default {
             }[notice.notification_type_id];
         },
         dismissNotice(noticeId) {
-            this.dismissedNotices.push(noticeId.toString());
-            this.saveDismissedNotices();
+            // this.dismissedNotices.push(noticeId.toString());
+            // this.saveDismissedNotices();
+            this.$emit('dismiss', noticeId);
         },
         saveDismissedNotices() {
             document.cookie = `dismissed_notices=${JSON.stringify(this.dismissedNotices)}; path=/; max-age=86400`;

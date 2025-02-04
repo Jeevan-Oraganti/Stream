@@ -1,6 +1,6 @@
 <template>
     <div>
-        <notification :notices="notices"></notification>
+        <notification :notices="notices" @dismiss="dismissNotice"></notification>
         <div id="home" class="container mx-auto py-8 px-4 bg-gray-900 text-white rounded-lg">
             <h1 class="text-2xl text-center font-semibold mb-6 mt-4" title="Hard coding">
 
@@ -118,7 +118,7 @@ export default {
     methods: {
         async fetchNotice() {
             try {
-                const dismissedNotice = localStorage.getItem('dismissedNotice');
+                const dismissedNotice = this.getCookie('dismissedNotice');
                 const response = await fetch('/notice');
                 const data = await response.json();
 
@@ -133,6 +133,29 @@ export default {
                 console.error("Error fetching notices:", error);
                 this.notices = [];
             }
+        },
+        setCookie(name, value, days) {
+            let expires = "";
+            if (days) {
+                let date = new Date();
+                date.setTime(date.getTime() + days * 24 * 60 * 60 * 1000);
+                expires = "; expires=" + date.toUTCString();
+            }
+            document.cookie = name + "=" + value + "; path=/";
+        },
+        getCookie(name) {
+            let nameEQ = name + "=";
+            let ca = document.cookie.split(';');
+            for (let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+            }
+            return null;
+        },
+        dismissNotice(noticeId) {
+            this.setCookie('dismissedNotice', noticeId, 1);
+            this.notices = this.notices.filter(n => n.id !== noticeId);
         },
         addStatus(status) {
             this.statuses.unshift(status);
