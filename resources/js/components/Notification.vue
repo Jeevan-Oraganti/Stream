@@ -67,17 +67,17 @@ export default {
             }[notice.notification_type_id];
         },
         dismissNotice(noticeId) {
-            if (!this.dismissedNotices.includes(noticeId.toString())) {
-                this.dismissedNotices.push(noticeId.toString());
-                this.saveDismissedNotices();
-            }
+            this.dismissedNotices.push(noticeId.toString());
+
+            document.cookie = `dismissed_notice=${JSON.stringify(this.dismissedNotices)}; path=/; max-age=86400`;
+
+            this.saveDismissedNotices();
         },
         saveDismissedNotices() {
-            document.cookie = `dismissed_notices=${JSON.stringify(this.dismissedNotices)}; path=/; max-age=86400`;
-        },
+            localStorage.setItem('dismissedNotices', JSON.stringify(this.dismissedNotices));
+            },
         getDismissedNotices() {
-            const cookie = document.cookie.split('; ').find(row => row.startsWith('dismissed_notices='));
-            return cookie ? JSON.parse(cookie.split('=')[1]) : [];
+            return JSON.parse(localStorage.getItem('dismissedNotices')) || [];
         }
     }
 };
