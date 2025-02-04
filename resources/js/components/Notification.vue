@@ -1,21 +1,20 @@
 <template>
-    <div v-if="filteredNotices.length > 0" class="fixed inset-0 flex items-start justify-center p-4">
+    <div v-if="filteredNotices.length > 0" class="fixed flex flex-col items-center justify-center p-4 space-y-4">
         <div v-for="notice in filteredNotices" :key="notice.id" class="notice-banner" :class="getNoticeClass(notice)">
             <div class="flex items-center justify-between w-full">
                 <div class="flex items-center">
                     <div class="mr-4">
-                        <svg v-if="notice.notification_type_id === 'announcement'" xmlns="http://www.w3.org/2000/svg"
+                        <svg v-if="notice.notification_type_id === 1" xmlns="http://www.w3.org/2000/svg"
                             class="h-6 w-6 text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M12 8v4l3 3m-6 0h6m-3-3V8m0-4a9 9 0 110 18 9 9 0 010-18z" />
                         </svg>
-                        <svg v-else-if="notice.notification_type_id === 'information'"
-                            xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-blue-500" fill="none"
-                            viewBox="0 0 24 24" stroke="currentColor">
+                        <svg v-else-if="notice.notification_type_id === 2" xmlns="http://www.w3.org/2000/svg"
+                            class="h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M13 16h-1v-4h-1m1-4h.01M12 2a10 10 0 100 20 10 10 0 000-20z" />
                         </svg>
-                        <svg v-else-if="notice.notification_type_id === 'outage'" xmlns="http://www.w3.org/2000/svg"
+                        <svg v-else-if="notice.notification_type_id === 3" xmlns="http://www.w3.org/2000/svg"
                             class="h-6 w-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                 d="M12 8v4l3 3m-6 0h6m-3-3V8m0-4a9 9 0 110 18 9 9 0 010-18z" />
@@ -53,21 +52,25 @@ export default {
     },
     computed: {
         filteredNotices() {
-            return this.notices.filter(notice => !this.dismissedNotices.includes(notice.id.toString()));
+            const currentDate = new Date();
+            return this.notices.filter(notice => {
+                return !this.dismissedNotices.includes(notice.id.toString()) && new Date(notice.expiry_date) > currentDate;
+            });
         }
     },
     methods: {
         getNoticeClass(notice) {
             return {
-                'announcement': 'bg-orange-100 border-l-4 border-orange-500 text-orange-700',
-                'information': 'bg-blue-100 border-l-4 border-blue-500 text-blue-700',
-                'outage': 'bg-red-100 border-l-4 border-red-500 text-red-700'
+                '1': 'bg-orange-100 border-l-4 border-orange-500 text-orange-700',
+                '2': 'bg-blue-100 border-l-4 border-blue-500 text-blue-700',
+                '3': 'bg-red-100 border-l-4 border-red-500 text-red-700'
             }[notice.notification_type_id];
         },
         dismissNotice(noticeId) {
-            // this.dismissedNotices.push(noticeId.toString());
-            // this.saveDismissedNotices();
-            this.$emit('dismiss', noticeId);
+            if (!this.dismissedNotices.includes(noticeId.toString())) {
+                this.dismissedNotices.push(noticeId.toString());
+                this.saveDismissedNotices();
+            }
         },
         saveDismissedNotices() {
             document.cookie = `dismissed_notices=${JSON.stringify(this.dismissedNotices)}; path=/; max-age=86400`;
@@ -82,12 +85,18 @@ export default {
 
 <style>
 .notice-banner {
+    position: fixed;
+    top: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 1000;
     max-width: 600px;
     margin-bottom: 1rem;
     padding: 1rem;
     border-radius: 0.5rem;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, opacity 0.3s ease;
+    width: 100%;
 }
 
 .notice-banner-enter-active,

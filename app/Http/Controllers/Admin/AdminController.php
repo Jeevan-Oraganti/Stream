@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Notices;
+use App\Models\NotificationType;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
@@ -11,7 +12,8 @@ class AdminController extends Controller
     public function noticeIndex()
     {
         $notices = Notices::latest()->get();
-        return view('admin.notices.index', compact('notices'));
+        $notificationTypes = NotificationType::all();
+        return view('admin.notices.index', compact('notices', 'notificationTypes'));
     }
 
     public function noticeStore(Request $request)
@@ -19,7 +21,7 @@ class AdminController extends Controller
         $request->validate([
             'name' => 'required',
             'description' => 'required',
-            'notification_type_id' => 'required|in:announcement,information,outage',
+            'notification_type_id' => 'required|exists:notification_types,id',
             'expiry_date' => 'required|date',
         ]);
 
@@ -33,7 +35,7 @@ class AdminController extends Controller
         $request->validate([
             'name' => 'required',
             'description' => 'required',
-            'notification_type_id' => 'required|in:announcement,information,outage',
+            'notification_type_id' => 'required|exists:notification_types,id',
             'expiry_date' => 'required|date',
         ]);
 
