@@ -1,6 +1,5 @@
 <template>
     <div>
-        <notice></notice>
         <div id="home" class="container mx-auto py-8 px-4 bg-gray-900 text-white rounded-lg">
             <h1 class="text-2xl text-center font-semibold mb-6 mt-4" title="Hard coding">
 
