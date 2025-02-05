@@ -1,6 +1,6 @@
 <template>
     <div>
-        <notification :notices="notices"></notification>
+        <notice></notice>
         <div id="home" class="container mx-auto py-8 px-4 bg-gray-900 text-white rounded-lg">
             <h1 class="text-2xl text-center font-semibold mb-6 mt-4" title="Hard coding">
 
@@ -79,13 +79,13 @@
 <script>
 import moment from 'moment';
 import Status from '../models/Status';
-import Notification from "@/components/Notification.vue";
+import Notice from "@/components/Notice.vue";
 import AddToStream from "../components/AddToStream.vue";
 import Tabs from "../components/Tabs.vue";
 import DarkModeToggle from '../components/DarkModeToggle.vue';
 
 export default {
-    components: { AddToStream, Tabs, DarkModeToggle, Notification },
+    components: { AddToStream, Tabs, DarkModeToggle, Notice },
     data() {
         return {
             statuses: [],
@@ -113,27 +113,8 @@ export default {
     },
     created() {
         Status.all(statuses => this.statuses = statuses);
-        this.fetchNotice();
     },
     methods: {
-        async fetchNotice() {
-            try {
-                const dismissedNotice = localStorage.getItem('dismissedNotice');
-                const response = await fetch('/notice');
-                const data = await response.json();
-
-                if (Array.isArray(data)) {
-                    this.notices = data.filter(n => n.id !== parseInt(dismissedNotice));
-                } else if (data && typeof data === 'object') {
-                    this.notices = data.id !== parseInt(dismissedNotice) ? [data] : [];
-                } else {
-                    this.notices = []
-                }
-            } catch (error) {
-                console.error("Error fetching notices:", error);
-                this.notices = [];
-            }
-        },
         addStatus(status) {
             this.statuses.unshift(status);
 
