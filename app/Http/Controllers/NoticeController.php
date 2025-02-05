@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Notices;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class NoticeController extends Controller
@@ -27,13 +28,15 @@ class NoticeController extends Controller
 
     public function unread()
     {
-        if (auth()->check()) {
-            $userId = auth()->id();
+        if (Auth::check()) {
+            $userId = Auth::id();
 
             $unreadNotices = DB::table('notices')
-                ->leftJoin('user_notices', 'notices.id', '=', 'user_notices.notice_id')
+                ->leftJoin('user_notices', function ($join) use ($userId) {
+                    $join->on('notices.id', '=', 'user_notices.notice_id')
+                        ->where('user_notices.user_id', '=', $userId);
+                })
                 ->whereNull('user_notices.user_id')
-                ->orWhere('user_notices.user_id', '!=', $userId)
                 ->select('notices.*')
                 ->orderBy('created_at')
                 ->get();
