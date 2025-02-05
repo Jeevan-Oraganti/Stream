@@ -18,7 +18,7 @@ class NoticeController extends Controller
                     ->orWhereNull('expiry_date');
             })
             ->whereNotIn('id', $dismissedNotices)
-            ->orderBy('created_at', 'desc')
+            ->orderBy('created_at')
             ->get();
 
         return response()->json($notices);
@@ -35,6 +35,7 @@ class NoticeController extends Controller
                 ->whereNull('user_notices.user_id')
                 ->orWhere('user_notices.user_id', '!=', $userId)
                 ->select('notices.*')
+                ->orderBy('created_at')
                 ->get();
 
             return response()->json($unreadNotices);

@@ -3,14 +3,12 @@ import axios from "axios";
 export default class CNotices {
     static async unreadNotices() {
         try {
-            let notices = [];
             const response = await axios.get("/notices/unread");
             return response.data;
         } catch (error) {
             console.error(error);
             return [];
         }
-        return notices;
     }
 
     static async markAsRead(noticeId) {
