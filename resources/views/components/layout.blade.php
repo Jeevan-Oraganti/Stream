@@ -5,6 +5,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
+    <link rel="preconnect" href="https://fonts.bunny.net">
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/1.0.2/css/bulma.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <script src="https://cdn.tailwindcss.com/"></script>
@@ -12,22 +14,26 @@
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
-
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet"/>
-
     @vite(['resources/js/app.js'])
 
 </head>
 
 <body>
+    <script>
+        window.Laravel = {
+            isLoggedIn: @json(auth()->check()),
+            user: @json(auth()->user())
+        };
+    </script>
 
-@include('layouts.navbar')
-<div>
-    {{$slot}}
-</div>
+    {{--<div id="app"></div>--}}
 
-@include('layouts.footer')
+    @include('layouts.navbar')
+    <div>
+        {{$slot}}
+    </div>
+
+    @include('layouts.footer')
 
 </body>
 

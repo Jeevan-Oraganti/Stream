@@ -22,7 +22,7 @@ class AdminController extends Controller
             'name' => 'required',
             'description' => 'required',
             'notification_type_id' => 'required|exists:notification_types,id',
-            'expiry_date' => 'required|date',
+            'expiry_date' => 'nullable|date',
         ]);
 
         Notices::create($request->except('_token'));
@@ -36,7 +36,7 @@ class AdminController extends Controller
             'name' => 'required',
             'description' => 'required',
             'notification_type_id' => 'required|exists:notification_types,id',
-            'expiry_date' => 'required|date',
+            'expiry_date' => 'date',
         ]);
 
         $notice->update($request->all());
