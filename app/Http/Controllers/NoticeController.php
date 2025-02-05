@@ -10,7 +10,7 @@ class NoticeController extends Controller
 {
     public function getLatestNotice(Request $request)
     {
-        $dismissedNotices = json_decode($request->cookie('dismissed_notice'), true) ?? [];
+        $dismissedNotices = json_decode($request->cookie('dismissed_notice', '[]'), true) ?? [];
 
         $notices = Notices::with('notificationType')
             ->where(function ($query) {
@@ -21,9 +21,9 @@ class NoticeController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-
         return response()->json($notices);
     }
+
 
     public function unread()
     {
