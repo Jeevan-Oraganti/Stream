@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Notices;
+use App\Models\Notice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -13,7 +13,7 @@ class NoticeController extends Controller
     {
         $dismissedNotices = json_decode($request->cookie('dismissed_notice', '[]'), true) ?? [];
 
-        $notices = Notices::with('notificationType')
+        $notices = Notice::with('notificationType')
             ->where(function ($query) {
                 $query->where('expiry_date', '>', now())
                     ->orWhereNull('expiry_date');
@@ -43,11 +43,10 @@ class NoticeController extends Controller
 
             return response()->json($unreadNotices);
         }
-
         return response()->json(['message' => 'Unauthorized'], 401);
     }
 
-    public function markAsRead($noticeId)
+    public function acknowledge($noticeId)
     {
         if (auth()->check()) {
             $userId = auth()->id();
