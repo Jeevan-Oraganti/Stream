@@ -19,7 +19,7 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        DB::table('notification_types')->insert([
+        DB::table('notice_types')->insert([
             ['type' => 'announcement', 'color' => 'blue'],
             ['type' => 'information', 'color' => 'orange'],
             ['type' => 'outage', 'color' => 'red'],
@@ -31,6 +31,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('notification_types');
+        Schema::dropIfExists('notice_types');
     }
 };

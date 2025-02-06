@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Notice;
-use App\Models\NotificationType;
+use App\Models\NoticeType;
 use Illuminate\Http\Request;
 
 class AdminController extends Controller
@@ -12,7 +12,7 @@ class AdminController extends Controller
     public function noticeIndex()
     {
         $notices = Notice::latest()->get();
-        $notificationTypes = NotificationType::all();
+        $notificationTypes = NoticeType::all();
         return view('admin.notices.index', compact('notices', 'notificationTypes'));
     }
 

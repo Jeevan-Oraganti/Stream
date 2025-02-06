@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
-use App\Models\NotificationType;
+use App\Models\NoticeType;
 
 class Notice extends Model
 {
@@ -18,7 +18,7 @@ class Notice extends Model
 
     public function notificationType()
     {
-        return $this->belongsTo(NotificationType::class);
+        return $this->belongsTo(NoticeType::class);
     }
     public function reads()
     {
