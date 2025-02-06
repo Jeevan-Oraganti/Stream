@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export default class CNotices {
+export default class CNotice {
     static async unreadNotices() {
         try {
             const response = await axios.get("/notices/unread");

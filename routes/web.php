@@ -68,7 +68,7 @@ Route::middleware('can:admin')->group(function () {
     Route::get('/analytics', [AnalyticsController::class, 'index']);
 
     Route::get('/admin/notices', [AdminController::class, 'noticeIndex'])->name('admin.notices.index');
-    Route::post('/admin/notices', [AdminController::class, 'noticeStore'])->name('admin.notices.store');
+    Route::post('/admin/notices', [AdminController::class, 'noticeStore'])->name('admin.notice.store');
     Route::put('/admin/notices/{notice}', [AdminController::class, 'noticeUpdate']);
     Route::delete('/admin/notices/{notice}', [AdminController::class, 'noticeDestroy']);
 });
@@ -78,5 +78,5 @@ Route::get('/notice', [NoticeController::class, 'getLatestNotice']);
 
 Route::middleware('auth')->group(function () {
     Route::get('/notices/unread', [NoticeController::class, 'unread']);
-    Route::post('/notices/{noticeId}/mark-as-read', [NoticeController::class, 'markAsRead']);
+    Route::post('/notices/{noticeId}/acknowledge', [NoticeController::class, 'acknowledge']);
 });

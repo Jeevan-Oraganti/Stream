@@ -1,5 +1,5 @@
 <x-layout>
-<div class="flex space-x-12">
+<div class="flex space-x-12 items-start">
     <div class="max-w-6xl ml-auto my-10 p-6 bg-white shadow-lg rounded-md">
         <h2 class="text-xl font-semibold mb-4 text-gray-800">Past Notifications</h2>
         <table class="w-full border-collapse border border-gray-300">
@@ -25,7 +25,7 @@
                         @if($notice->expiry_date != null)
                             {{ \Carbon\Carbon::parse($notice->expiry_date)->format('M d, Y h:i A') }}
                         @else
-                        Null
+                        No Expiry
                         @endif
                     </td>
                     <td class="border p-2">{{ \Carbon\Carbon::parse($notice->created_at)->format('M d, Y h:i A') }}</td>
@@ -36,10 +36,10 @@
     </div>
 
 
-    <div class="max-w-6xl mr-auto my-10 p-6 bg-white shadow-lg rounded-md">
+    <div class="max-w-6xl mr-auto p-6 my-10 bg-white shadow-lg rounded-md">
         <h2 class="text-xl font-semibold mb-4 text-gray-800">Add New Notification</h2>
 
-        <form action="{{ route('admin.notices.store') }}" method="POST" class="space-y-4">
+        <form action="{{ route('admin.notice.store') }}" method="POST" class="space-y-4">
             @csrf
             <div>
                 <label class="block text-sm font-medium text-gray-700">Notice Title</label>

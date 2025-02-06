@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class UserNotices extends Model
+class UserNotice extends Model
 {
     protected $fillable = ['user_id', 'notice_id'];
 
@@ -13,6 +13,6 @@ class UserNotices extends Model
     }
 
     public function notice() {
-        return $this->belongsTo(Notices::class);
+        return $this->belongsTo(Notice::class);
     }
 }

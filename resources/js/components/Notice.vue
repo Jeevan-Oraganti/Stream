@@ -21,7 +21,7 @@
 
 
 <script>
-import CNotices from '@/utilities/CNotices';
+import CNotice from '@/utilities/CNotice.js';
 
 export default {
     data() {
@@ -41,16 +41,18 @@ export default {
     },
     async created() {
         if (this.isLoggedIn) {
-            this.notices = await CNotices.unreadNotices();
+            document.cookie = "dismissed_notice=; expires=Thu, 01 Jan 1970 00:00:00; path=/";
+            localStorage.removeItem('dismissedNotices');
+            this.notices = await CNotice.unreadNotices();
         }
         else {
-            this.notices = await CNotices.fetchNotices();
+            this.notices = await CNotice.fetchNotices();
         }
     },
     methods: {
         handleNotice(noticeId) {
             if (this.isLoggedIn) {
-                CNotices.markAsRead(noticeId);
+                CNotice.acknowledge(noticeId);
                 this.dismissNotice(noticeId);
             }
             else {
