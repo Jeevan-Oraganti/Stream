@@ -11,9 +11,9 @@ export default class CNotices {
         }
     }
 
-    static async markAsRead(noticeId) {
+    static async acknowledge(noticeId) {
         try {
-            await axios.post(`/notices/${noticeId}/mark-as-read`);
+            await axios.post(`/notices/${noticeId}/acknowledge`);
         } catch (error) {
             console.error(error);
         }
