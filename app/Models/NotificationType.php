@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Notices;
+use App\Models\Notice;
 
 class NotificationType extends Model
 {
@@ -14,6 +14,6 @@ class NotificationType extends Model
 
     public function notices()
     {
-        return $this->hasMany(Notices::class);
+        return $this->hasMany(Notice::class);
     }
 }

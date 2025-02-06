@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\NotificationType;
 
-class Notices extends Model
+class Notice extends Model
 {
     protected $guarded = [];
 
@@ -22,6 +22,6 @@ class Notices extends Model
     }
     public function reads()
     {
-        return $this->hasMany(UserNotices::class, 'notice_id');
+        return $this->hasMany(UserNotice::class, 'notice_id');
     }
 }
