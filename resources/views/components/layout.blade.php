@@ -7,10 +7,11 @@
 
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bulma/1.0.2/css/bulma.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <link rel="stylesheet" href="{{ asset('css/bulma.min.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/font-awesome.min.css') }}">
+    <!-- <script src="{{ asset('js/tailwind.js') }}"></script> -->
     <script src="https://cdn.tailwindcss.com/"></script>
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script defer src="{{ asset('js/alpine.js') }}"></script>
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
@@ -26,15 +27,14 @@
         };
     </script>
 
-    {{--<div id="app"></div>--}}
-
-    @include('layouts.navbar')
-    <div>
-        {{$slot}}
+    <div id="app" class="bg-gradient-to-r from-gray-800 via-gray-700 to-gray-600">
+        <notice></notice>
+        @include('layouts.header')
+        <main>
+            {{ $slot }}
+        </main>
+        @include('layouts.footer')
     </div>
-
-    @include('layouts.footer')
-
 </body>
 
 </html>

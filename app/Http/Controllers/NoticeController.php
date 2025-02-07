@@ -51,19 +51,12 @@ class NoticeController extends Controller
         if (auth()->check()) {
             $userId = auth()->id();
 
-            $exists = DB::table('user_notices')
-                ->where('notice_id', $noticeId)
-                ->where('user_id', $userId)
-                ->exists();
-
-            if (!$exists) {
                 DB::table('user_notices')->insert([
                     'notice_id' => $noticeId,
                     'user_id' => $userId,
                     'created_at' => now(),
                     'updated_at' => now(),
                 ]);
-            }
 
             return response()->json(['message' => 'Notice marked as read.']);
         }

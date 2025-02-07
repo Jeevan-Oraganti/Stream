@@ -2,6 +2,7 @@ import { defineConfig } from "vite";
 import laravel from "laravel-vite-plugin";
 import vue from "@vitejs/plugin-vue2";
 import { nodePolyfills } from "vite-plugin-node-polyfills";
+import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
     resolve: {
@@ -23,6 +24,7 @@ export default defineConfig({
         laravel([
             "resources/js/app.js"
         ]),
+        tailwindcss(),
         vue({
             template: {
                 transformAssetUrls: {

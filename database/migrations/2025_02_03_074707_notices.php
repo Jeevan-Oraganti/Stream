@@ -19,7 +19,7 @@ return new class extends Migration
             $table->dateTime('expiry_date')->nullable();
             $table->timestamps();
 
-            $table->foreign('notification_type_id')->references('id')->on('notification_types')->onDelete('cascade');
+            $table->foreign('notification_type_id')->references('id')->on('notice_types')->onDelete('cascade');
         });
     }
 

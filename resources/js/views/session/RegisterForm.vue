@@ -5,25 +5,25 @@
             <div class="mb-4">
                 <label for="name" class="block text-lg text-gray-200 mb-2">Name</label>
                 <input type="text" id="name" v-model="form.name"
-                    class="w-full px-4 py-2 bg-gray-800 text-white border border-gray-600 rounded-md"
+                    class="w-full px-4 py-2 bg-gray-800 text-white border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Your Name" required>
             </div>
             <div class="mb-4">
                 <label for="email" class="block text-lg text-gray-200 mb-2">Email</label>
                 <input type="email" id="email" v-model="form.email"
-                    class="w-full px-4 py-2 bg-gray-800 text-white border border-gray-600 rounded-md"
+                    class="w-full px-4 py-2 bg-gray-800 text-white border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Your Email" required>
             </div>
             <div class="mb-4">
                 <label for="password" class="block text-lg text-gray-200 mb-2">Password</label>
                 <input type="password" id="password" v-model="form.password"
-                    class="w-full px-4 py-2 bg-gray-800 text-white border border-gray-600 rounded-md"
+                    class="w-full px-4 py-2 bg-gray-800 text-white border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Your Password" required>
             </div>
             <div class="mb-4">
                 <label for="password_confirmation" class="block text-lg text-gray-200 mb-2">Confirm Password</label>
                 <input type="password" id="password_confirmation" v-model="form.password_confirmation"
-                    class="w-full px-4 py-2 bg-gray-800 text-white border border-gray-600 rounded-md"
+                    class="w-full px-4 py-2 bg-gray-800 text-white border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                     placeholder="Confirm Your Password" required>
             </div>
             <div class="flex justify-between mb-6">

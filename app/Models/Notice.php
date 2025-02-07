@@ -20,7 +20,7 @@ class Notice extends Model
     {
         return $this->belongsTo(NoticeType::class);
     }
-    public function reads()
+    public function hasRead()
     {
         return $this->hasMany(UserNotice::class, 'notice_id');
     }
