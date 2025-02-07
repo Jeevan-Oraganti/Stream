@@ -82,7 +82,6 @@ export default {
 
 <style>
 .notice-container {
-    margin-left: 1rem;
     width: 100vw;
     margin: auto;
 }

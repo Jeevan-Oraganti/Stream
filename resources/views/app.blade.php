@@ -1,38 +1,21 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+    <head>
+        <meta charset="utf-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
 
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{{ config('app.name', 'Laravel') }}</title>
+        <title inertia>{{ config('app.name', 'Laravel') }}</title>
 
-    <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="{{ asset('css/bulma.min.css') }}">
-    <link rel="stylesheet" href="{{ asset('css/font-awesome.min.css') }}">
-    <script src="https://cdn.tailwindcss.com/"></script>
-    <script defer src="{{ asset('js/alpine.js') }}"></script>
+        <!-- Fonts -->
+        <link rel="preconnect" href="https://fonts.bunny.net">
+        <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
-    @vite(['resources/js/app.js'])
-</head>
-
-<body class="bg-gray-100">
-    <div id="app">
-        <script>
-            window.Laravel = {
-                isLoggedIn: @json(auth()->check()),
-                user: @json(auth()->user())
-            };
-        </script>
-
-        @include('layouts.navbar')
-
-        <main>
-            {{ $slot }}
-        </main>
-
-        @include('layouts.footer')
-    </div>
-</body>
-
+        <!-- Scripts -->
+        @routes
+        @vite(['resources/js/app.js', "resources/js/Pages/{$page['component']}.vue"])
+        @inertiaHead
+    </head>
+    <body class="font-sans antialiased">
+        @inertia
+    </body>
 </html>

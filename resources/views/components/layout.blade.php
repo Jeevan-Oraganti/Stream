@@ -9,8 +9,7 @@
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="{{ asset('css/bulma.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/font-awesome.min.css') }}">
-    <!-- <script src="{{ asset('js/tailwind.js') }}"></script> -->
-    <script src="https://cdn.tailwindcss.com/"></script>
+    <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <script defer src="{{ asset('js/alpine.js') }}"></script>
 
     <title>{{ config('app.name', 'Laravel') }}</title>

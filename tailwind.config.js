@@ -6,6 +6,7 @@ export default {
     "./resources/**/*.vue",
     "./resources/**/*.ts",
     "./resources/**/*jsx",
+    "./resources/**/*.tsx",
   ],
   theme: {
     extend: {},
