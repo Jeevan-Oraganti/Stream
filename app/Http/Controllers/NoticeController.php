@@ -37,6 +37,10 @@ class NoticeController extends Controller
                         ->where('user_notices.user_id', '=', $userId);
                 })
                 ->whereNull('user_notices.user_id')
+                ->where(function ($query){
+                    $query->where('expiry_date','>',now())
+                        ->orWhereNull('expiry_date');
+                })
                 ->select('notices.*')
                 ->orderBy('created_at')
                 ->get();
