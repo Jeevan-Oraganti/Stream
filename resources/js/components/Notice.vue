@@ -1,5 +1,5 @@
 <template>
-    <div class="relative w-full flex items-center">
+    <div class="relative top-0 left-0 w-full flex items-center justify-center">
         <div v-if="filteredNotices.length > 0" class="notice-container w-full">
             <div v-for="notice in filteredNotices" :key="notice.id"
                 class="notice-banner flex items-center justify-between w-full p-1" :class="getNoticeClass(notice)">
@@ -82,6 +82,9 @@ export default {
 
 <style>
 .notice-container {
+    position: relative;
+    top: 0;
+    left: 0;
     width: 100vw;
     margin: auto;
 }
