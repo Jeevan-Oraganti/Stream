@@ -13,7 +13,7 @@ class NoticeController extends Controller
     {
         $dismissedNotices = json_decode($request->cookie('dismissed_notice', '[]'), true) ?? [];
 
-        $notices = Notice::with('notificationType')
+        $notices = Notice::with('noticeType')
             ->where(function ($query) {
                 $query->where('expiry_date', '>', now())
                     ->orWhereNull('expiry_date');

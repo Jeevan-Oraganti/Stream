@@ -19,8 +19,8 @@
                         <td class="border p-2">{{ $notice->name }}</td>
                         <td class="border p-2">{{ $notice->description }}</td>
                         <td class="border p-2 font-semibold
-                        {{ $notice->notificationType ? 'text-' . $notice->notificationType->color . '-600' : 'text-gray-600' }}">
-                            {{ $notice->notificationType ? ucfirst($notice->notificationType->type) : 'Unknown' }}
+                        {{ $notice->noticeType ? 'text-' . $notice->noticeType->color . '-600' : 'text-gray-600' }}">
+                            {{ $notice->noticeType ? ucfirst($notice->noticeType->type) : 'Unknown' }}
                         </td>
                         <td class="border p-2">
                             @if($notice->expiry_date != null)

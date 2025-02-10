@@ -16,7 +16,7 @@ class Notice extends Model
         'expiry_date',
     ];
 
-    public function notificationType()
+    public function noticeType()
     {
         return $this->belongsTo(NoticeType::class);
     }
