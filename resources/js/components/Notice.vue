@@ -33,9 +33,11 @@ export default {
     },
     computed: {
         filteredNotices() {
-            return this.notices.filter(notice => {
-                return !this.dismissedNotices.includes(notice.id.toString());
-            });
+            const notice = this.notices.find(notice =>
+                !this.dismissedNotices.includes(notice.id.toString())
+            );
+
+            return notice ? [notice] : [];
         }
     },
     async created() {
@@ -82,14 +84,12 @@ export default {
 
 <style>
 .notice-container {
-    position: relative;
-    top: 0;
-    left: 0;
     width: 100vw;
     margin: auto;
 }
 
 .notice-banner {
+    margin-bottom: 1px;
     position: relative;
     width: 100%;
 }

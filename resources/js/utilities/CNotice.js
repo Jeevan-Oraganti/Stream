@@ -20,25 +20,21 @@ export default class CNotice {
     }
 
     static async fetchNotices() {
-        let notices = [];
         try {
             const dismissedNotice = localStorage.getItem("dismissedNotice");
             const response = await fetch("/notice");
             const data = await response.json();
 
             if (Array.isArray(data)) {
-                notices = data.filter(
-                    (n) => n.id !== parseInt(dismissedNotice)
-                );
+                return data.filter((n) => n.id !== parseInt(dismissedNotice));
             } else if (data && typeof data === "object") {
-                notices = data.id !== parseInt(dismissedNotice) ? [data] : [];
+                return data.id !== parseInt(dismissedNotice) ? [data] : [];
             } else {
-                notices = [];
+                return [];
             }
         } catch (error) {
             console.error("Error fetching notices:", error);
-            this.notices = [];
+            return [];
         }
-        return notices;
     }
 }

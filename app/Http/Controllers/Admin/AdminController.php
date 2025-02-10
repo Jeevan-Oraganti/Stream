@@ -12,8 +12,8 @@ class AdminController extends Controller
     public function noticeIndex()
     {
         $notices = Notice::latest()->get();
-        $notificationTypes = NoticeType::all();
-        return view('admin.notices.index', compact('notices', 'notificationTypes'));
+        $notice_types = NoticeType::all();
+        return view('admin.notices.index', compact('notices', 'notice_types'));
     }
 
     public function noticeStore(Request $request)
@@ -21,7 +21,7 @@ class AdminController extends Controller
         $request->validate([
             'name' => 'required',
             'description' => 'required',
-            'notification_type_id' => 'required|exists:notification_types,id',
+            'notification_type_id' => 'required|exists:notice_types,id',
             'expiry_date' => 'nullable|date',
         ]);
 
@@ -35,7 +35,7 @@ class AdminController extends Controller
         $request->validate([
             'name' => 'required',
             'description' => 'required',
-            'notification_type_id' => 'required|exists:notification_types,id',
+            'notification_type_id' => 'required|exists:notice_types,id',
             'expiry_date' => 'date',
         ]);
 
