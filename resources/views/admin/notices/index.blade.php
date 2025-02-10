@@ -45,17 +45,17 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Notice Title</label>
                     <input type="text" name="name" required
-                        class="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400">
+                        class="text-gray-800 w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400">
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Description</label>
                     <textarea name="description" required
-                        class="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"></textarea>
+                        class="text-gray-800 w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"></textarea>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Notice Type</label>
                     <select name="notification_type_id" required
-                        class="w-full p-2 border rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-400">
+                        class="text-gray-500 w-full p-2 border rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-400">
                         <option value="1">🟠 Announcement</option>
                         <option value="2">🔵 Information</option>
                         <option value="3">🔴 Outage</option>
@@ -64,7 +64,7 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Expiry Date</label>
                     <input type="datetime-local" name="expiry_date"
-                        class="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400">
+                        class="text-gray-500 w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400">
                 </div>
                 <button type="submit"
                     class="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition duration-200">

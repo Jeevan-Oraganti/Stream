@@ -13,7 +13,7 @@ class NoticeController extends Controller
     {
         $dismissedNotices = json_decode($request->cookie('dismissed_notice', '[]'), true) ?? [];
 
-        $notices = Notice::with('noticeType')
+        $notices = Notice::with('noticeTypes')
             ->where(function ($query) {
                 $query->where('expiry_date', '>', now())
                     ->orWhereNull('expiry_date');
@@ -37,8 +37,8 @@ class NoticeController extends Controller
                         ->where('user_notices.user_id', '=', $userId);
                 })
                 ->whereNull('user_notices.user_id')
-                ->where(function ($query) {
-                    $query->where('expiry_date', '>', now())
+                ->where(function ($query){
+                    $query->where('expiry_date','>',now())
                         ->orWhereNull('expiry_date');
                 })
                 ->select('notices.*')
@@ -55,12 +55,12 @@ class NoticeController extends Controller
         if (auth()->check()) {
             $userId = auth()->id();
 
-            DB::table('user_notices')->insert([
-                'notice_id' => $noticeId,
-                'user_id' => $userId,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+                DB::table('user_notices')->insert([
+                    'notice_id' => $noticeId,
+                    'user_id' => $userId,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
 
             return response()->json(['message' => 'Notice marked as read.']);
         }
