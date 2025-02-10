@@ -27,7 +27,7 @@ class AdminController extends Controller
 
         Notice::create($request->except('_token'));
 
-        return redirect()->route('admin.notices.index')->with('success','Notice added successfully.');
+        return redirect()->route('admin.notices.index')->with('success', 'Notice added successfully.');
     }
 
     public function noticeUpdate(Request $request, Notice $notice)
