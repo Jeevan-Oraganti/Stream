@@ -13,7 +13,8 @@
                     <th class="border p-2 text-gray-700">Created At</th>
                 </tr>
                 </thead>
-                <tbody>@foreach($notices as $notice)
+                <tbody>
+                @foreach($notices as $notice)
                     <tr class="text-gray-700">
                         <td class="border p-2">{{ $loop->iteration }}</td>
                         <td class="border p-2">{{ $notice->name }}</td>
