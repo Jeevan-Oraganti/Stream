@@ -19,7 +19,8 @@ class NoticeController extends Controller
                     ->orWhereNull('expiry_date');
             })
             ->whereNotIn('id', $dismissedNotices)
-            ->orderBy('created_at')
+            ->orderBy('created_at', 'desc')
+
             ->get();
 
         return response()->json($notices);
@@ -31,7 +32,7 @@ class NoticeController extends Controller
         if (Auth::check()) {
             $userId = Auth::id();
 
-            $unreadNotices = DB::table('notices')
+            $unreadNotices = Notice::with('noticeTypes')
                 ->leftJoin('user_notices', function ($join) use ($userId) {
                     $join->on('notices.id', '=', 'user_notices.notice_id')
                         ->where('user_notices.user_id', '=', $userId);
@@ -42,7 +43,7 @@ class NoticeController extends Controller
                         ->orWhereNull('expiry_date');
                 })
                 ->select('notices.*')
-                ->orderBy('created_at')
+                ->orderBy('notices.created_at', 'desc')
                 ->get();
 
             return response()->json($unreadNotices);

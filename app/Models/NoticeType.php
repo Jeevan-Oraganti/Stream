@@ -2,9 +2,9 @@
 
 namespace App\Models;
 
+use App\Models\Notice;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Notice;
 
 class NoticeType extends Model
 {
@@ -12,6 +12,9 @@ class NoticeType extends Model
 
     protected $fillable = ['type', 'color'];
 
+    protected $casts = [
+        'created_at' => 'date',
+    ];
     public function notices()
     {
         return $this->hasMany(Notice::class, 'notification_type_id');

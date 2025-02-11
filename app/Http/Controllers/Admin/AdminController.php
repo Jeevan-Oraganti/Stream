@@ -23,6 +23,8 @@ class AdminController extends Controller
             'description' => 'required',
             'notification_type_id' => 'required|exists:notice_types,id',
             'expiry_date' => 'nullable|date',
+            'created_at' => now(),
+            'updated_at' => now(),
         ]);
 
         Notice::create($request->except('_token'));

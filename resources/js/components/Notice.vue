@@ -7,6 +7,7 @@
                 <div class="flex items-center">
                     <p class="font-semibold text-lg mb-1 p-1">{{ notice.name }}:</p>
                     <p class="text-sm ml-1">{{ notice.description }}</p>
+                    <p class="text-sm ml-2">{{ notice.created_at | ago }}</p>
                 </div>
 
                 <button @click="handleNotice(notice.id)" class="dismiss-btn hover">
@@ -21,6 +22,9 @@
 
 <script>
 import CNotice from '@/utilities/CNotice.js';
+import moment from 'moment-timezone';
+import CNotices from "@/utilities/CNotices.js";
+moment.tz.setDefault("Asia/Kolkata");
 
 export default {
     data() {
@@ -40,14 +44,19 @@ export default {
             return notice ? [notice] : [];
         }
     },
+    filters: {
+        ago(date) {
+            return moment(date).fromNow();
+        },
+    },
     async created() {
         if (this.isLoggedIn) {
             document.cookie = "dismissed_notice=; expires=Thu, 01 Jan 1970 00:00:00; path=/";
             localStorage.removeItem('dismissedNotices');
-            this.notices = await CNotice.unreadNotices();
+            this.notices = await CNotices.unreadNotices();
         }
         else {
-            this.notices = await CNotice.fetchNotices();
+            this.notices = await CNotices.fetchNotices();
         }
     },
     methods: {
