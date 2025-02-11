@@ -1,5 +1,5 @@
 <x-layout>
-    <div class="flex space-x-12 items-start">
+    <div class="flex flex-col lg:flex-row lg:space-x-12 items-start p-8">
         <div class="max-w-6xl ml-auto my-10 p-6 bg-white shadow-lg rounded-md">
             <h2 class="text-xl font-semibold mb-4 text-gray-800">Past Notices</h2>
             <table class="w-full border-collapse border border-gray-300">
@@ -37,7 +37,7 @@
         </div>
 
 
-        <div class="max-w-6xl mr-auto p-6 my-10 bg-white shadow-lg rounded-md">
+        <div class="lg:max-w-6xl lg:mr-auto p-6 my-10 bg-white shadow-lg rounded-md mx-auto">
             <h2 class="text-xl font-semibold mb-4 text-gray-800">Add New Notice</h2>
 
             <form action="{{ route('admin.notice.store') }}" method="POST" class="space-y-4">

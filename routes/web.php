@@ -65,8 +65,6 @@ Route::post('/logout', function (Request $request) {
 
 Route::middleware('can:admin')->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard']);
-    Route::get('/analytics', [AnalyticsController::class, 'index']);
-
     Route::get('/admin/notices', [AdminController::class, 'noticeIndex'])->name('admin.notices.index');
     Route::post('/admin/notices', [AdminController::class, 'noticeStore'])->name('admin.notice.store');
     Route::put('/admin/notices/{notice}', [AdminController::class, 'noticeUpdate']);
