@@ -37,7 +37,7 @@
         </div>
 
 
-        <div class="lg:max-w-6xl lg:mr-auto p-6 my-10 bg-white shadow-lg rounded-md md:mx-auto">
+        <div class="lg:max-w-6xl mr-auto p-6 my-10 bg-white shadow-lg rounded-md md:mx-auto">
             <h2 class="text-xl font-semibold mb-4 text-gray-800">Add New Notice</h2>
 
             <form action="{{ route('admin.notice.store') }}" method="POST" class="space-y-4">
