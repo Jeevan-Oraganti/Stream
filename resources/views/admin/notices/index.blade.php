@@ -27,7 +27,7 @@
         };
     </script>
     <div id="app" class="bg-white">
-        <admin-notice :notices-json="{{ json_encode($notices) }}"></admin-notice>
+        <admin-notice :notices-json="{{ json_encode($notices->items()) }}" :pagination="{{ json_encode($notices) }}"></admin-notice>
     </div>
 </body>
 

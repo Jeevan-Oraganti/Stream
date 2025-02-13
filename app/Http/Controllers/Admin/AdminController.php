@@ -9,11 +9,27 @@ use Illuminate\Http\Request;
 
 class AdminController extends Controller
 {
-    public function noticeIndex()
+    public function noticeIndex(Request $request)
     {
-        $notices = Notice::with('noticeType')->latest()->get();
+        $notices = Notice::with('noticeType')->latest()->paginate(5);
+
+        if ($request->ajax()) {
+            return response()->json([
+                'notices' => $notices->items(),
+                'pagination' => [
+                    'current_page' => $notices->currentPage(),
+                    'last_page' => $notices->lastPage(),
+                    'per_page' => $notices->perPage(),
+                    'total' => $notices->total(),
+                    'next_page_url' => $notices->nextPageUrl(),
+                    'prev_page_url' => $notices->previousPageUrl(),
+                ],
+            ]);
+        }
+
         return view('admin.notices.index', compact('notices'));
     }
+
 
     public function noticeStore(Request $request)
     {

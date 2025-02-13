@@ -5,6 +5,7 @@
             <table class="w-full border-collapse border border-gray-300">
                 <thead>
                     <tr class="bg-gray-100">
+                        <th class="border p-2 text-gray-700">No.</th>
                         <th class="border p-2 text-gray-700">Title</th>
                         <th class="border p-2 text-gray-700">Description</th>
                         <th class="border p-2 text-gray-700">Type</th>
@@ -14,9 +15,10 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="notice in notices" :key="notice.id" class="text-gray-700">
-                        <td class="border p-2">{{ notice.form.data.name || 'N/A' }}</td>
-                        <td class="border p-2">{{ notice.form.data.description || 'N/A' }}</td>
+                    <tr v-for="(notice, index) in notices" :key="notice.id" class="text-gray-700">
+                        <td class="border p-2">{{ index + 1 }}</td>
+                        <td class="border p-2">{{ notice.form.data.name }}</td>
+                        <td class="border p-2">{{ notice.form.data.description }}</td>
                         <td
                             :class="['border p-2 font-semibold', notice.form.data.notice_type && notice.form.data.notice_type.color ? 'text-' + notice.form.data.notice_type.color + '-600' : 'text-gray-600']">
                             {{ notice.form.data.notice_type && notice.form.data.notice_type.type ?
@@ -24,14 +26,14 @@
                                 notice.form.data.notice_type.type.slice(1) : 'Unknown' }}
                         </td>
                         <td class="border p-2">
-                            <span v-if="notice.form.data.expiry_date && !isNaN(new Date(notice.form.data.expiry_date))">
+                            <span v-if="notice.form.data.expiry_date">
                                 {{ new Date(notice.form.data.expiry_date).toLocaleString() }}
                             </span>
                             <span v-else class="text-red-500">No Expiry</span>
                         </td>
                         <td class="border p-2">
                             {{ notice.form.data.created_at ? new Date(notice.form.data.created_at).toLocaleString() :
-                                'Unknown' }}
+                            'Unknown' }}
                         </td>
                         <td class="border p-2">
                             <button @click="deleteNotice(notice)"
@@ -42,6 +44,10 @@
                     </tr>
                 </tbody>
             </table>
+
+            <div class="mt-4">
+                <Pagination :pagination="localPagination" @paginate="fetchNotices" />
+            </div>
         </div>
 
         <div class="lg:max-w-6xl mr-auto p-6 my-10 bg-white shadow-md rounded-md md:mx-auto">
@@ -102,21 +108,31 @@
 </template>
 
 <script>
-import CNoticeAdmin from "@/utilities/CNoticeAdmin.js";
+import CNoticesAdmin from "@/utilities/CNoticesAdmin.js";
 import { ref } from 'vue';
+import Pagination from "../Pagination.vue";
+import axios from 'axios';
 
 export default {
+    components: {
+        Pagination,
+    },
     props: {
         noticesJson: {
             type: Array,
+            required: true,
+        },
+        pagination: {
+            type: Object,
             required: true,
         },
     },
     data() {
         return {
             notices: ref([]),
-            form: new CNoticeAdmin().form,
+            form: new CNoticesAdmin().form,
             errors: {},
+            localPagination: { ...this.pagination },
         };
     },
     methods: {
@@ -142,6 +158,23 @@ export default {
                 }
             }
         },
+        async fetchNotices(url) {
+            try {
+                const response = await axios.get(url);
+                this.notices = response.data.notices.map(noticeJson => {
+                    const notice = new CNoticesAdmin(noticeJson.id);
+                    notice.form.data.name = noticeJson.name;
+                    notice.form.data.description = noticeJson.description;
+                    notice.form.data.notice_type = noticeJson.notice_type;
+                    notice.form.data.expiry_date = noticeJson.expiry_date;
+                    notice.form.data.created_at = noticeJson.created_at;
+                    return notice;
+                });
+                this.localPagination = response.data.pagination;
+            } catch (error) {
+                console.error("Error fetching notices:", error);
+            }
+        },
         clearError(field) {
             if (this.form.hasError(field)) {
                 this.$delete(this.form.errors, field);
@@ -150,7 +183,7 @@ export default {
     },
     mounted() {
         this.notices = this.noticesJson.map(noticeJson => {
-            const notice = new CNoticeAdmin(noticeJson.id);
+            const notice = new CNoticesAdmin(noticeJson.id);
             notice.form.data.name = noticeJson.name;
             notice.form.data.description = noticeJson.description;
             notice.form.data.notice_type = noticeJson.notice_type;
@@ -159,7 +192,5 @@ export default {
             return notice;
         });
     }
-
-
 };
 </script>

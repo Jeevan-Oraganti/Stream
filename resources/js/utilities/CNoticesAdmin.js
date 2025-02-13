@@ -1,7 +1,7 @@
 import axios from "axios";
 import CForm from "./CForm";
 
-export default class CNoticeAdmin {
+export default class CNoticesAdmin {
     constructor(id = null, data = {}) {
         this.id = id;
         this.form = new CForm([
