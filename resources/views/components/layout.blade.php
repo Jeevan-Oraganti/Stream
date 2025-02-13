@@ -10,7 +10,7 @@
     <link rel="stylesheet" href="{{ asset('css/bulma.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/font-awesome.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
-    <script src="https://cdn.tailwindcss.com/"></script>
+{{--    <script src="https://cdn.tailwindcss.com/"></script>--}}
     <script defer src="{{ asset('js/alpine.js') }}"></script>
 
     <title>{{ config('app.name', 'Laravel') }}</title>

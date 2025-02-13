@@ -25,6 +25,7 @@ import SearchBar from "./components/SearchBar.vue";
 import LoadingBar from "./components/LoadingBar.vue";
 import LoginForm from "./views/session/LoginForm.vue";
 import RegisterForm from "./views/session/RegisterForm.vue";
+import adminNotice from "./components/admin/adminNotice.vue"
 
 Vue.component("Welcome", Welcome);
 Vue.component("Carousel", Carousel);
@@ -49,6 +50,7 @@ Vue.component("SearchBar", SearchBar);
 Vue.component("LoadingBar", LoadingBar);
 Vue.component("LoginForm", LoginForm);
 Vue.component("RegisterForm", RegisterForm);
+Vue.component("adminNotice", adminNotice);
 
 new Vue({
     el: "#app",

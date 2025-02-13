@@ -13,7 +13,7 @@ class NoticeController extends Controller
     {
         $dismissedNotices = json_decode($request->cookie('dismissed_notice', '[]'), true) ?? [];
 
-        $notices = Notice::with('noticeTypes')
+        $notices = Notice::with('noticeType')
             ->where(function ($query) {
                 $query->where('expiry_date', '>', now())
                     ->orWhereNull('expiry_date');
@@ -32,7 +32,7 @@ class NoticeController extends Controller
         if (Auth::check()) {
             $userId = Auth::id();
 
-            $unreadNotices = Notice::with('noticeTypes')
+            $unreadNotices = Notice::with('noticeType')
                 ->leftJoin('user_notices', function ($join) use ($userId) {
                     $join->on('notices.id', '=', 'user_notices.notice_id')
                         ->where('user_notices.user_id', '=', $userId);
@@ -43,7 +43,7 @@ class NoticeController extends Controller
                         ->orWhereNull('expiry_date');
                 })
                 ->select('notices.*')
-                ->orderBy('notices.created_at', 'desc')
+                ->orderBy('created_at', 'desc')
                 ->get();
 
             return response()->json($unreadNotices);

@@ -11,25 +11,27 @@ class AdminController extends Controller
 {
     public function noticeIndex()
     {
-        $notices = Notice::latest()->get();
-        $notice_types = NoticeType::all();
-        return view('admin.notices.index', compact('notices', 'notice_types'));
+        $notices = Notice::with('noticeType')->latest()->get();
+        return view('admin.notices.index', compact('notices'));
     }
 
     public function noticeStore(Request $request)
     {
-        $request->validate([
-            'name' => 'required',
-            'description' => 'required',
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'required|string',
             'notification_type_id' => 'required|exists:notice_types,id',
             'expiry_date' => 'nullable|date',
             'created_at' => now(),
             'updated_at' => now(),
         ]);
 
-        Notice::create($request->except('_token'));
+        $notice = Notice::create($validatedData);
 
-        return redirect()->route('admin.notices.index')->with('success', 'Notice added successfully.');
+        return response()->json([
+            'message' => 'Notice added successfully.',
+            'notice' => $notice
+        ], 201);
     }
 
     public function noticeUpdate(Request $request, Notice $notice)
@@ -46,10 +48,13 @@ class AdminController extends Controller
         return redirect()->route('admin.notices.index');
     }
 
-    public function noticeDestroy(Notice $notice)
+    public function noticeDestroy($id)
     {
+        $notice = Notice::findOrFail($id);
         $notice->delete();
 
-        return redirect()->route('admin.notices.index');
+        return response()->json([
+            'message' => 'Notice deleted successfully.'
+        ], 200);
     }
 }

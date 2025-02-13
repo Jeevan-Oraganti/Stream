@@ -7,7 +7,7 @@
                 <div class="flex items-center">
                     <p class="font-semibold text-lg mb-1 p-1">{{ notice.name }}:</p>
                     <p class="text-sm ml-1">{{ notice.description }}</p>
-                    <p class="text-sm ml-2">{{ notice.created_at | ago }}</p>
+                    <p class="text-sm ml-2">- {{ notice.created_at | ago }}</p>
                 </div>
 
                 <button @click="handleNotice(notice.id)" class="dismiss-btn hover">
@@ -62,7 +62,8 @@ export default {
     methods: {
         handleNotice(noticeId) {
             if (this.isLoggedIn) {
-                CNotice.acknowledge(noticeId);
+                const cNotice = new CNotice(noticeId);
+                cNotice.acknowledge();
                 this.dismissNotice(noticeId);
             }
             else {

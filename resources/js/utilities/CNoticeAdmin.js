@@ -1,40 +1,38 @@
 import axios from "axios";
-import CForm from "./CForm.js";
+import CForm from "./CForm";
 
-export default class CAdminNotice {
-    constructor() {
+export default class CNoticeAdmin {
+    constructor(id = null, data = {}) {
+        this.id = id;
         this.form = new CForm([
             "name",
             "description",
             "notification_type_id",
             "expiry_date",
         ]);
-    }
 
-    // Create new CForm
-    // CNotice creates a instance of CForm with required fields
-    // CNotice has save
-    //     save returns promise
-    //         then or error
-    // Create a new dedicated page for the listing/add/removing the notices
+        this.form.data = { ...data };
+    }
 
     async save() {
-        console.log('save called');
-        return this.form.save("/admin/notice")
+        return this.form
+            .save("/admin/notice")
             .then((data) => {
-                console.log("Notice saved successfully:", data);
+                this.id = data.id;
                 return data;
             })
-            .catch((error) => {
-                console.error("Error saving notice:", error);
-                return Promise.reject(error);
-            });
+            .catch((error) => Promise.reject(error));
     }
 
-    async delete(id) {
+    async delete() {
+        if (!this.id) {
+            console.error("Error: Notice ID is null or undefined.");
+            return;
+        }
+
         try {
-            await axios.delete(`/admin/notice/${id}`);
-            console.log(`Notice ${id} deleted.`);
+            await axios.delete(`/admin/notice/${this.id}`);
+            console.log(`Notice ${this.id} deleted.`);
         } catch (error) {
             console.error("Error deleting notice:", error);
         }
