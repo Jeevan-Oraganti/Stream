@@ -5,70 +5,84 @@
             <div class="flex items-center mb-4">
                 <div class="relative w-full">
                     <input type="text" v-model="NoticeSearchQuery" placeholder="Search..."
-                        class="text-gray-800 w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" />
+                           class="text-gray-800 w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"/>
                     <span v-if="loading" class="loader absolute right-3 top-2 items-center"></span>
 
                     <span v-if="!loading" class="absolute right-3 top-1/2 transform -translate-y-1/2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none"
-                            viewBox="0 0 24 26" stroke="currentColor">
+                             viewBox="0 0 24 26" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3"
-                                d="M10 2a9 9 0 100 18 9 9 0 000-18zM23 21l-5-5" />
+                                  d="M10 2a9 9 0 100 18 9 9 0 000-18zM23 21l-5-5"/>
                         </svg>
                     </span>
                 </div>
             </div>
             <table class="w-full border-collapse border border-gray-300">
                 <thead>
-                    <tr class="bg-gray-100">
-                        <th class="border p-2 text-gray-700">No.</th>
-                        <th class="border p-2 text-gray-700">Title</th>
-                        <th class="border p-2 text-gray-700">Description</th>
-                        <th class="border p-2 text-gray-700">Type</th>
-                        <th class="border p-2 text-gray-700">Expiry Date</th>
-                        <th class="border p-2 text-gray-700">Created At</th>
-                        <th class="border p-2 text-gray-700">Action</th>
-                    </tr>
+                <tr class="bg-gray-100">
+                    <th class="border p-2 text-gray-700">No.</th>
+                    <th class="border p-2 text-gray-700">Title</th>
+                    <th class="border p-2 text-gray-700">Description</th>
+                    <th class="border p-2 text-gray-700">Type</th>
+                    <th class="border p-2 text-gray-700">Expiry Date</th>
+                    <th class="border p-2 text-gray-700">Created At</th>
+                    <th class="border p-2 text-gray-700">Action</th>
+                </tr>
                 </thead>
                 <tbody>
-                    <tr v-if="filteredNotices.length === 0">
-                        <td class="border p-2 text-center" colspan="7">No notices found.</td>
-                    </tr>
-                    <tr v-for="(notice, index) in filteredNotices" :key="notice.id" class="text-gray-700">
-                        <td class="border p-2">{{ index + 1 }}</td>
-                        <td class="border p-2">{{ notice.form.data.name }}</td>
-                        <td class="border p-2">{{ notice.form.data.description }}</td>
-                        <td
-                            :class="['border p-2 font-semibold', notice.form.data.notice_type && notice.form.data.notice_type.color ? 'text-' + notice.form.data.notice_type.color + '-600' : 'text-gray-600']">
-                            {{
-                                notice.form.data.notice_type && notice.form.data.notice_type.type ?
-                                    notice.form.data.notice_type.type.charAt(0).toUpperCase() +
-                                    notice.form.data.notice_type.type.slice(1) : 'Unknown'
-                            }}
-                        </td>
-                        <td class="border p-2">
+                <tr v-if="filteredNotices.length === 0">
+                    <td class="border p-5 text-center" colspan="7">
+                        <div class="flex flex-col items-center justify-center h-full">
+                            <div v-if="NoticeSearchQuery">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                     stroke-width="1.5" stroke="currentColor" class="w-6 h-6 text-gray-400 mx-auto">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                          d="M10 2a9 9 0 100 18 9 9 0 000-18zM23 21l-5-5"/>
+                                </svg>
+                                <p class="mt-2 text-gray-500">No results found for "{{ NoticeSearchQuery }}"</p>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                <tr v-for="(notice, index) in filteredNotices" :key="notice.id" class="text-gray-700">
+                    <td class="border p-2">{{
+                            (localPagination.current_page - 1) * localPagination.per_page + index + 1
+                        }}
+                    </td>
+                    <td class="border p-2">{{ notice.form.data.name }}</td>
+                    <td class="border p-2">{{ notice.form.data.description }}</td>
+                    <td
+                        :class="['border p-2 font-semibold', notice.form.data.notice_type && notice.form.data.notice_type.color ? 'text-' + notice.form.data.notice_type.color + '-600' : 'text-gray-600']">
+                        {{
+                            notice.form.data.notice_type && notice.form.data.notice_type.type ?
+                                notice.form.data.notice_type.type.charAt(0).toUpperCase() +
+                                notice.form.data.notice_type.type.slice(1) : 'Unknown'
+                        }}
+                    </td>
+                    <td class="border p-2">
                             <span v-if="notice.form.data.expiry_date">
                                 {{ new Date(notice.form.data.expiry_date).toLocaleString() }}
                             </span>
-                            <span v-else class="text-red-500">No Expiry</span>
-                        </td>
-                        <td class="border p-2">
-                            {{
-                                notice.form.data.created_at ? new Date(notice.form.data.created_at).toLocaleString() :
-                                    'Unknown'
-                            }}
-                        </td>
-                        <td class="border p-2">
-                            <button @click="deleteNotice(notice)"
+                        <span v-else class="text-red-500">No Expiry</span>
+                    </td>
+                    <td class="border p-2">
+                        {{
+                            notice.form.data.created_at ? new Date(notice.form.data.created_at).toLocaleString() :
+                                'Unknown'
+                        }}
+                    </td>
+                    <td class="border p-2">
+                        <button @click="deleteNotice(notice)"
                                 class="bg-red-500 text-white py-1 px-2 rounded-md hover:bg-red-600 transition duration-200">
-                                Delete
-                            </button>
-                        </td>
-                    </tr>
+                            Delete
+                        </button>
+                    </td>
+                </tr>
                 </tbody>
             </table>
 
             <div class="mt-4">
-                <Pagination :pagination="localPagination" @paginate="fetchNotices" />
+                <Pagination :pagination="localPagination" @paginate="fetchNotices"/>
             </div>
         </div>
 
@@ -79,8 +93,8 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Notice Title</label>
                     <input v-model="form.data.name" type="text"
-                        class="text-gray-800 w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-                        :class="{ 'border-red-500': form.hasError('name') }" @input="clearError('name')">
+                           class="text-gray-800 w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                           :class="{ 'border-red-500': form.hasError('name') }" @input="clearError('name')">
                     <span v-if="form.hasError('name')" class="text-red-500 text-sm mt-1 block">
                         {{ form.getError('name') }}</span>
                 </div>
@@ -88,9 +102,9 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Description</label>
                     <textarea v-model="form.data.description"
-                        class="text-gray-800 w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-                        :class="{ 'border-red-500': form.hasError('description') }"
-                        @input="clearError('description')"></textarea>
+                              class="text-gray-800 w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                              :class="{ 'border-red-500': form.hasError('description') }"
+                              @input="clearError('description')"></textarea>
                     <span v-if="form.hasError('description')" class="text-red-500 text-sm mt-1 block">
                         {{ form.getError('description') }}</span>
                 </div>
@@ -98,9 +112,9 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Notice Type</label>
                     <select v-model="form.data.notification_type_id"
-                        class="text-gray-500 w-full p-2 border rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-400"
-                        :class="{ 'border-red-500': form.hasError('notification_type_id') }"
-                        @change="clearError('notification_type_id')">
+                            class="text-gray-500 w-full p-2 border rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-400"
+                            :class="{ 'border-red-500': form.hasError('notification_type_id') }"
+                            @change="clearError('notification_type_id')">
                         <option value="1">🟠 Announcement</option>
                         <option value="2">🔵 Information</option>
                         <option value="3">🔴 Outage</option>
@@ -113,14 +127,15 @@
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Expiry Date</label>
                     <input v-model="form.data.expiry_date" type="datetime-local"
-                        class="text-gray-500 w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-                        :class="{ 'border-red-500': form.hasError('expiry_date') }" @input="clearError('expiry_date')">
+                           class="text-gray-500 w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                           :class="{ 'border-red-500': form.hasError('expiry_date') }"
+                           @input="clearError('expiry_date')">
                     <span v-if="form.hasError('expiry_date')" class="text-red-500 text-sm mt-1 block">
                         {{ form.getError('expiry_date') }}</span>
                 </div>
 
                 <button type="submit"
-                    class="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition duration-200">
+                        class="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition duration-200">
                     Publish Notice
                 </button>
             </form>
@@ -131,10 +146,10 @@
 
 <script>
 import CNoticesAdmin from "@/utilities/CNoticesAdmin.js";
-import { ref } from 'vue';
+import {ref} from 'vue';
 import Pagination from "../Pagination.vue";
 import axios from 'axios';
-import { debounce } from "lodash";
+import {debounce} from "lodash";
 
 export default {
     components: {
@@ -155,7 +170,7 @@ export default {
             notices: ref([]),
             form: new CNoticesAdmin().form,
             errors: {},
-            localPagination: { ...this.pagination },
+            localPagination: {...this.pagination},
             NoticeSearchQuery: '',
             loading: false,
         };
