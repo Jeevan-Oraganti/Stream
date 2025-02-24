@@ -30,9 +30,11 @@ class AppServiceProvider extends ServiceProvider
 
         Model::unguard();
 
-//        $kernel->appendMiddlewareToGroup('web', AdminMiddleware::class);
-
         Gate::define('admin', function (User $user) {
+            return $user->name === 'Alen';
+        });
+
+        Gate::define('delete-notice', function (User $user, $notice) {
             return $user->name === 'Alen';
         });
 
