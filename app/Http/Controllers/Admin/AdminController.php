@@ -6,12 +6,24 @@ use App\Http\Controllers\Controller;
 use App\Models\Notice;
 use App\Models\NoticeType;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Validator;
 
 class AdminController extends Controller
 {
     public function noticeIndex(Request $request)
     {
-        $notices = Notice::with('noticeType')->latest()->paginate(5);
+        $search = $request->input('search');
+
+        $notices = Notice::with('noticeType')
+            ->when($search, function ($query, $search) {
+                return $query->where('name', 'like', "%{$search}%")
+                    ->orWhere('description', 'like', "%{$search}%")
+                    ->orWhereHas('noticeType', function ($subQuery) use ($search) {
+                        $subQuery->where('type', 'like', "%{$search}%");
+                    });
+            })
+            ->latest()->paginate(5);
 
         if ($request->ajax()) {
             return response()->json([
@@ -36,7 +48,7 @@ class AdminController extends Controller
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'required|string',
-            'notification_type_id' => 'required|exists:notice_types,id',
+            'notice_type_id' => 'required|exists:notice_types,id',
             'expiry_date' => 'nullable|date',
             'created_at' => now(),
             'updated_at' => now(),
@@ -50,27 +62,47 @@ class AdminController extends Controller
         ], 201);
     }
 
-    public function noticeUpdate(Request $request, Notice $notice)
+    public function noticeUpdate(Request $request, $noticeId)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(), [
             'name' => 'required',
             'description' => 'required',
-            'notification_type_id' => 'required|exists:notice_types,id',
-            'expiry_date' => 'date',
+            'notice_type_id' => 'required|exists:notice_types,id',
+            'expiry_date' => 'nullable|date',
         ]);
 
-        $notice->update($request->all());
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()], 422);
+        }
 
-        return redirect()->route('admin.notices.index');
+        $notice = Notice::find($noticeId);
+
+        if (!$notice) {
+            return response()->json(['message' => 'Notice not found'], 404);
+        }
+
+        $notice->update([
+            'name' => $request->input('name'),
+            'description' => $request->input('description'),
+            'notice_type_id' => $request->input('notice_type_id'),
+            'expiry_date' => $request->input('expiry_date'),
+        ]);
+
+        return response()->json([
+            'message' => 'Notice updated successfully',
+            'notice' => $notice,
+        ]);
     }
 
     public function noticeDestroy($id)
     {
         $notice = Notice::findOrFail($id);
-        $notice->delete();
 
-        return response()->json([
-            'message' => 'Notice deleted successfully.'
-        ], 200);
+        if (Gate::allows('delete-notice', $notice)) {
+            $notice->delete();
+            return redirect()->route('notices.index')->with('success', 'Notice deleted successfully.');
+        } else {
+            return redirect()->route('notices.index')->with('error', 'You do not have permission to delete this notice.');
+        }
     }
 }

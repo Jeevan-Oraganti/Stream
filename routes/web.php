@@ -67,7 +67,7 @@ Route::middleware('can:admin')->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard']);
     Route::get('/admin/notices', [AdminController::class, 'noticeIndex'])->name('admin.notices.index');
     Route::post('/admin/notice', [AdminController::class, 'noticeStore'])->name('admin.notice.store');
-    Route::put('/admin/notices/{notice}', [AdminController::class, 'noticeUpdate']);
+    Route::post('/admin/notice/{noticeId}', [AdminController::class, 'noticeUpdate'])->name('admin.notice.update');
     Route::delete('/admin/notice/{noticeId}', [AdminController::class, 'noticeDestroy']);
 });
 
