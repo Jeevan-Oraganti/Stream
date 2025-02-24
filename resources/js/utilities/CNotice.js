@@ -6,7 +6,7 @@ export default class CNoticeUser {
         this.name = data.name;
         this.description = data.description;
         this.created_at = data.created_at;
-        this.notification_type_id = data.notification_type_id;
+        this.notice_type_id = data.notice_type_id;
         this.expiry_date = data.expiry_date;
     }
 

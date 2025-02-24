@@ -7,7 +7,7 @@ export default class CNoticesAdmin {
         this.form = new CForm([
             "name",
             "description",
-            "notification_type_id",
+            "notice_type_id",
             "expiry_date",
         ]);
 

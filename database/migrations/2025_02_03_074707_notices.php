@@ -15,11 +15,11 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->text('description');
-            $table->unsignedBigInteger('notification_type_id');
+            $table->unsignedBigInteger('notice_type_id');
             $table->dateTime('expiry_date')->nullable();
             $table->timestamps();
 
-            $table->foreign('notification_type_id')->references('id')->on('notice_types')->onDelete('cascade');
+            $table->foreign('notice_type_id')->references('id')->on('notice_types')->onDelete('cascade');
         });
     }
 

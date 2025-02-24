@@ -17,6 +17,6 @@ class NoticeType extends Model
     ];
     public function notices()
     {
-        return $this->hasMany(Notice::class, 'notification_type_id');
+        return $this->hasMany(Notice::class, 'notice_type_id');
     }
 }

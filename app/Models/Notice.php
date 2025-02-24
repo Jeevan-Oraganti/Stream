@@ -20,13 +20,13 @@ class Notice extends Model
     protected $fillable = [
         'name',
         'description',
-        'notification_type_id',
+        'notice_type_id',
         'expiry_date',
     ];
 
     public function noticeType()
     {
-        return $this->belongsTo(NoticeType::class, 'notification_type_id');
+        return $this->belongsTo(NoticeType::class, 'notice_type_id');
     }
     public function hasRead()
     {

@@ -75,7 +75,7 @@ export default {
                 '1': 'bg-orange-100 border-orange-500 text-orange-700',
                 '2': 'bg-blue-100 border-blue-500 text-blue-700',
                 '3': 'bg-red-100 border-red-500 text-red-700'
-            }[notice.notification_type_id];
+            }[notice.notice_type_id];
         },
         dismissNotice(noticeId) {
             this.dismissedNotices.push(noticeId.toString());
