@@ -28,6 +28,17 @@ export default class CForm {
         }
     }
 
+    async update(url) {
+        try {
+            const response = await axios.post(url, this.data);
+            this.reset();
+            return response.data;
+        } catch (error) {
+            this.handleErrors(error);
+            throw error;
+        }
+    }
+
     hasError(field) {
         return this.errors.hasOwnProperty(field);
     }
