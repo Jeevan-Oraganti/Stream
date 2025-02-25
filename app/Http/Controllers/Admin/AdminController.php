@@ -13,7 +13,7 @@ class AdminController extends Controller
 {
     public function noticeIndex(Request $request)
     {
-        $search = $request->input('search');
+        sleep(5);        $search = $request->input('search');
 
         $notices = Notice::with('noticeType')
             ->when($search, function ($query, $search) {
@@ -98,11 +98,11 @@ class AdminController extends Controller
     {
         $notice = Notice::findOrFail($id);
 
-        if (Gate::allows('delete-notice', $notice)) {
+        if (Gate::allows('delete-notice')) {
             $notice->delete();
-            return redirect()->route('notices.index')->with('success', 'Notice deleted successfully.');
+            return redirect()->route('admin.notices.index')->with('success', 'Notice deleted successfully.');
         } else {
-            return redirect()->route('notices.index')->with('error', 'You do not have permission to delete this notice.');
+            return redirect()->route('admin.notices.index')->with('error', 'You do not have permission to delete this notice.');
         }
     }
 }

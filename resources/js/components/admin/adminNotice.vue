@@ -1,7 +1,14 @@
 <template>
     <div class="flex flex-col lg:flex-row lg:space-x-12 items-start p-8">
+        <LoadingBar :progress="progress" v-if="loading" />
         <div class="max-w-6xl ml-auto my-10 p-6 bg-white shadow-md rounded-md">
             <h2 class="text-xl font-semibold mb-4 text-gray-800">Past Notices</h2>
+            <div v-if="localFlashSuccess" class="notification is-success">
+                {{ localFlashSuccess }}
+            </div>
+            <div v-if="localFlashError" class="notification is-danger">
+                {{ localFlashError }}
+            </div>
             <div class="flex items-center mb-4">
                 <div class="relative w-full">
                     <input type="text" v-model="NoticeSearchQuery" placeholder="Search..."
@@ -47,7 +54,7 @@
                     <tr v-for="(notice, index) in notices" :key="notice.id" class="text-gray-700">
                         <td class="border p-2">{{
                             (localPagination.current_page - 1) * localPagination.per_page + index + 1
-                        }}
+                            }}
                         </td>
                         <td class="border p-2">{{ notice.form.data.name }}</td>
                         <td class="border p-2">{{ notice.form.data.description }}</td>
@@ -73,11 +80,11 @@
                         </td>
                         <td class="flex border p-4 space-x-4">
                             <button @click="deleteNotice(notice)"
-                                class="bg-red-500 text-white py-1 px-2 rounded-md hover:bg-red-600 transition duration-200">
+                                class="bg-red-500 text-white py-1 px-2 rounded-md hover:bg-red-600">
                                 Delete
                             </button>
                             <button @click="editNotice(notice)"
-                                class="bg-blue-500 text-white py-1 px-2 rounded-md hover:bg-blue-600 transition duration-200">
+                                class="bg-blue-500 text-white py-1 px-2 rounded-md hover:bg-blue-600">
                                 Edit
                             </button>
                         </td>
@@ -153,10 +160,13 @@ import { ref } from 'vue';
 import Pagination from "../Pagination.vue";
 import axios from 'axios';
 import { debounce } from "lodash";
+import moment from "moment-timezone";
+import LoadingBar from "../LoadingBar.vue";
 
 export default {
     components: {
         Pagination,
+        LoadingBar,
     },
     props: {
         noticesJson: {
@@ -166,6 +176,14 @@ export default {
         pagination: {
             type: Object,
             required: true,
+        },
+        flashSuccess: {
+            type: String,
+            default: ''
+        },
+        flashError: {
+            type: String,
+            default: ''
         },
     },
     data() {
@@ -177,6 +195,12 @@ export default {
             NoticeSearchQuery: '',
             loading: false,
             editingNoticeId: null,
+            notification: {
+                message: '',
+                type: '',
+            },
+            progress: 0,
+            interval: null,
         };
     },
     methods: {
@@ -202,10 +226,19 @@ export default {
         async deleteNotice(notice) {
             if (confirm("Are you sure you want to delete this notice?")) {
                 try {
-                    await notice.delete();
-                    window.location.reload();
+                    const response = await notice.delete();
+                    if (response.status === 200) {
+                        this.localFlashSuccess = "Notice deleted successfully!";
+                        await this.fetchNotices();
+                        window.location.reload();
+                    }
                 } catch (error) {
-                    console.error("Error deleting notice:", error);
+                    if (error.response && error.response.status === 403) {
+                        this.localFlashError = "You are not authorized to delete this notice!";
+                    } else {
+                        this.localFlashError = "An error occurred while deleting the notice.";
+                    }
+                    window.location.reload();
                 }
             }
         },
@@ -227,6 +260,7 @@ export default {
 
         async fetchNotices(url) {
             try {
+                this.startLoading();
                 const response = await axios.get(url, {
                     params: {
                         search: this.NoticeSearchQuery,
@@ -242,8 +276,10 @@ export default {
                     return notice;
                 });
                 this.localPagination = response.data.pagination;
+                this.stopLoading();
             } catch (error) {
                 console.error("Error fetching notices:", error);
+                this.stopLoading();
             }
         },
         clearError(field) {
@@ -251,16 +287,61 @@ export default {
                 this.$delete(this.form.errors, field);
             }
         },
+        startLoading() {
+            console.log("startLoading() called");
+            this.loading = true;
+            this.progress = 0;
+            this.interval = setInterval(() => {
+                if (this.progress < 95) {
+                    this.progress += 5;
+                    console.log("Progress:", this.progress);
+                }
+            }, 100);
+        },
+        stopLoading() {
+            console.log("stopLoading() called");
+            clearInterval(this.interval);
+            this.progress = 100;
+            setTimeout(() => {
+                this.loading = false;
+                this.progress = 0;
+            }, 500);
+        },
     },
     computed: {
         filteredNotices: function () {
             return this.notices;
+        },
+        localFlashSuccess() {
+            return this.flashSuccess;
+        },
+        localFlashError() {
+            return this.flashError;
         }
     },
     watch: {
         NoticeSearchQuery: debounce(function () {
             this.fetchNotices('/admin/notices');
         }, 300),
+        flashSuccess(newVal) {
+            if (newVal) {
+                setTimeout(() => {
+                    this.flashSuccess = "";
+                }, 3000);
+            }
+        },
+        flashError(newVal) {
+            if (newVal) {
+                setTimeout(() => {
+                    this.flashError = "";
+                }, 3000);
+            }
+        }
+    },
+    filters: {
+        ago(date) {
+            return moment(date).fromNow();
+        },
     },
     mounted() {
         this.notices = this.noticesJson.map(noticeJson => {
@@ -273,12 +354,43 @@ export default {
             return notice;
         });
         this.localPagination = this.pagination;
+
+        if (this.flashSuccess) {
+            setTimeout(() => {
+                this.flashSuccess = "";
+            }, 3000);
+        }
+        if (this.flashError) {
+            setTimeout(() => {
+                this.flashError = "";
+            }, 3000);
+        }
     }
 };
 </script>
 
 
 <style scoped>
+.notification {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 0.25rem;
+    font-size: 1rem;
+    text-align: center;
+}
+
+.notification.is-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.notification.is-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
 .loader {
     display: flex;
     justify-content: center;

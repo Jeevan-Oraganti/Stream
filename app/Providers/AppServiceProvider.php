@@ -24,18 +24,14 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot(Kernel $kernel): void
+    public function boot(): void
     {
-        Vite::prefetch(concurrency: 3);
-
-        Model::unguard();
-
         Gate::define('admin', function (User $user) {
-            return $user->name === 'Alen';
+            return in_array($user->id, [1, 9]);
         });
 
-        Gate::define('delete-notice', function (User $user, $notice) {
-            return $user->name === 'Alen';
+        Gate::define('delete-notice', function (User $user) {
+            return $user->id === 1;
         });
 
         Blade::if('admin', function () {
