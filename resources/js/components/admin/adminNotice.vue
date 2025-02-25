@@ -14,7 +14,6 @@
                     <input type="text" v-model="NoticeSearchQuery" placeholder="Search..."
                         class="text-gray-800 w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" />
                     <span v-if="loading" class="loader absolute right-3 top-2 items-center"></span>
-
                     <span v-if="!loading" class="absolute right-3 top-1/2 transform -translate-y-1/2">
                         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 text-gray-400" fill="none"
                             viewBox="0 0 24 26" stroke="currentColor">
@@ -52,19 +51,15 @@
                         </td>
                     </tr>
                     <tr v-for="(notice, index) in notices" :key="notice.id" class="text-gray-700">
-                        <td class="border p-2">{{
-                            (localPagination.current_page - 1) * localPagination.per_page + index + 1
-                            }}
-                        </td>
+                        <td class="border p-2">{{ (localPagination.current_page - 1) * localPagination.per_page + index
+                            + 1 }}</td>
                         <td class="border p-2">{{ notice.form.data.name }}</td>
                         <td class="border p-2">{{ notice.form.data.description }}</td>
                         <td
                             :class="['border p-2 font-semibold', notice.form.data.notice_type && notice.form.data.notice_type.color ? 'text-' + notice.form.data.notice_type.color + '-600' : 'text-gray-600']">
-                            {{
-                                notice.form.data.notice_type && notice.form.data.notice_type.type ?
-                                    notice.form.data.notice_type.type.charAt(0).toUpperCase() +
-                                    notice.form.data.notice_type.type.slice(1) : 'Unknown'
-                            }}
+                            {{ notice.form.data.notice_type && notice.form.data.notice_type.type ?
+                                notice.form.data.notice_type.type.charAt(0).toUpperCase() +
+                                notice.form.data.notice_type.type.slice(1) : 'Unknown' }}
                         </td>
                         <td class="border p-2">
                             <span v-if="notice.form.data.expiry_date">
@@ -73,33 +68,30 @@
                             <span v-else class="text-red-500">No Expiry</span>
                         </td>
                         <td class="border p-2">
-                            {{
-                                notice.form.data.created_at ? new Date(notice.form.data.created_at).toLocaleString() :
-                                    'Unknown' | ago
-                            }}
+                            {{ notice.form.data.created_at ? new Date(notice.form.data.created_at).toLocaleString() :
+                                'Unknown' | ago }}
                         </td>
                         <td class="flex border p-4 space-x-4">
                             <button @click="deleteNotice(notice)"
                                 class="bg-red-500 text-white py-1 px-2 rounded-md hover:bg-red-600">
                                 Delete
                             </button>
-                            <button @click="editNotice(notice)"
-                                class="bg-blue-500 text-white py-1 px-2 rounded-md hover:bg-blue-600">
+                            <button @click="editNotice(notice)" :disabled="!canEdit(user.id)" :class="{
+                                'bg-blue-500 text-white py-1 px-2 rounded-md hover:bg-blue-600': canEdit(user.id),
+                                'bg-gray-300 text-gray-500 py-1 px-2 rounded-md cursor-not-allowed': !canEdit(user.id)
+                            }">
                                 Edit
                             </button>
                         </td>
                     </tr>
                 </tbody>
             </table>
-
             <div class="mt-4">
                 <Pagination :pagination="localPagination" @paginate="fetchNotices" />
             </div>
         </div>
-
         <div class="lg:max-w-6xl mr-auto p-6 my-10 bg-white shadow-md rounded-md md:mx-auto">
             <h2 class="text-xl font-semibold mb-4 text-gray-800">Add New Notice</h2>
-
             <form @submit.prevent="addNotice" class="space-y-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Notice Title</label>
@@ -109,7 +101,6 @@
                     <span v-if="form.hasError('name')" class="text-red-500 text-sm mt-1 block">
                         {{ form.getError('name') }}</span>
                 </div>
-
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Description</label>
                     <textarea v-model="form.data.description"
@@ -119,7 +110,6 @@
                     <span v-if="form.hasError('description')" class="text-red-500 text-sm mt-1 block">
                         {{ form.getError('description') }}</span>
                 </div>
-
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Notice Type</label>
                     <select v-model="form.data.notice_type_id"
@@ -134,7 +124,6 @@
                         {{ form.getError('notice_type_id') }}
                     </span>
                 </div>
-
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Expiry Date</label>
                     <input v-model="form.data.expiry_date" type="datetime-local"
@@ -143,13 +132,11 @@
                     <span v-if="form.hasError('expiry_date')" class="text-red-500 text-sm mt-1 block">
                         {{ form.getError('expiry_date') }}</span>
                 </div>
-
                 <button type="submit"
                     class="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition duration-200">
                     {{ editingNoticeId ? "Update Notice" : "Publish Notice" }}
                 </button>
             </form>
-
         </div>
     </div>
 </template>
@@ -185,6 +172,10 @@ export default {
             type: String,
             default: ''
         },
+        user: {
+            type: Array,
+            required: true
+        },
     },
     data() {
         return {
@@ -195,24 +186,21 @@ export default {
             NoticeSearchQuery: '',
             loading: false,
             editingNoticeId: null,
-            notification: {
-                message: '',
-                type: '',
-            },
             progress: 0,
             interval: null,
         };
     },
     methods: {
+        canEdit(userId) {
+            return userId === 1;
+        },
         async addNotice() {
-            console.log("Submitting Notice:", this.form.data);
             try {
                 if (this.editingNoticeId) {
                     await this.form.update(`/admin/notice/${this.editingNoticeId}`);
                 } else {
                     await this.form.save('/admin/notice');
                 }
-
                 this.resetForm();
                 window.location.reload();
             } catch (error) {
@@ -245,19 +233,15 @@ export default {
         async editNotice(notice) {
             this.form = new CNoticesAdmin(notice.id);
             this.form = notice.form;
-
             if (this.form.data.expiry_date) {
                 this.form.data.expiry_date = new Date(this.form.data.expiry_date).toISOString().slice(0, 16);
             }
-
             this.editingNoticeId = notice.id;
         },
-
         resetForm() {
             this.form = new CNoticesAdmin().form;
             this.editingNoticeId = null;
         },
-
         async fetchNotices(url) {
             try {
                 this.startLoading();
@@ -288,18 +272,15 @@ export default {
             }
         },
         startLoading() {
-            console.log("startLoading() called");
             this.loading = true;
             this.progress = 0;
             this.interval = setInterval(() => {
                 if (this.progress < 95) {
                     this.progress += 5;
-                    console.log("Progress:", this.progress);
                 }
             }, 100);
         },
         stopLoading() {
-            console.log("stopLoading() called");
             clearInterval(this.interval);
             this.progress = 100;
             setTimeout(() => {
@@ -309,7 +290,7 @@ export default {
         },
     },
     computed: {
-        filteredNotices: function () {
+        filteredNotices() {
             return this.notices;
         },
         localFlashSuccess() {
@@ -357,7 +338,6 @@ export default {
             return notice;
         });
         this.localPagination = this.pagination;
-
         if (this.flashSuccess) {
             setTimeout(() => {
                 this.flashSuccess = "";
@@ -371,7 +351,6 @@ export default {
     }
 };
 </script>
-
 
 <style scoped>
 .notification {
