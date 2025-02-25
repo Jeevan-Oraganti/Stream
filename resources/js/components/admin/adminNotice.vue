@@ -68,14 +68,14 @@
                         </td>
                         <td class="border p-2">
                             <span v-if="notice.form.data.expiry_date">
-                                {{ new Date(notice.form.data.expiry_date).toLocaleString() }}
+                                {{ new Date(notice.form.data.expiry_date).toLocaleString() | ago }}
                             </span>
                             <span v-else class="text-red-500">No Expiry</span>
                         </td>
                         <td class="border p-2">
                             {{
                                 notice.form.data.created_at ? new Date(notice.form.data.created_at).toLocaleString() :
-                                    'Unknown'
+                                    'Unknown' | ago
                             }}
                         </td>
                         <td class="flex border p-4 space-x-4">
@@ -340,7 +340,10 @@ export default {
     },
     filters: {
         ago(date) {
-            return moment(date).fromNow();
+            if (!date) return "No Expiry";
+            const format = "DD/MM/YYYY, HH:mm:ss";
+            const parsedDate = moment(date, format, true);
+            return parsedDate.isValid() ? parsedDate.fromNow() : "Invalid date";
         },
     },
     mounted() {
