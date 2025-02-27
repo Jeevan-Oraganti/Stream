@@ -9,6 +9,7 @@
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="{{ asset('css/bulma.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/font-awesome.min.css') }}">
+
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 {{--    <script src="https://cdn.tailwindcss.com/"></script>--}}
     <script defer src="{{ asset('js/alpine.js') }}"></script>
