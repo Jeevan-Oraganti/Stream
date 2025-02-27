@@ -1,10 +1,11 @@
 <template>
     <div class="flex flex-col lg:flex-row lg:space-x-12 items-start p-8">
         <LoadingBar :progress="progress" v-if="loading" />
-        <div class="max-w-6xl ml-auto my-10 p-6 bg-white shadow-md rounded-md">
-            <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8">
+        <div class="max-w-6xl ml-auto my-10 p-6 bg-white border rounded-md">
+            <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8 sm:flex-auto">
                 <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-                    <h2 class="text-sm font-semibold mb-4 text-gray-800">Past Notices</h2>
+                    <h2 class="text-sm font-semibold mb-2 text-gray-800">Past Notices</h2>
+                    <p class="text-sm text-gray-500 mb-4">All your past notices will appear here.</p>
                     <div v-if="localFlashSuccess" class="notification is-success">
                         {{ localFlashSuccess }}
                     </div>
@@ -49,23 +50,19 @@
                             <tr v-if="filteredNotices.length === 0">
                                 <td class="border p-5 text-center" colspan="7">
                                     <div class="flex flex-col items-center justify-center h-full">
-                                        <div v-if="NoticeSearchQuery">
-                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
-                                                stroke-width="1.5" stroke="currentColor"
-                                                class="w-6 h-6 text-gray-400 mx-auto">
-                                                <path stroke-linecap="round" stroke-linejoin="round"
-                                                    d="M10 2a9 9 0 100 18 9 9 0 000-18zM23 21l-5-5" />
-                                            </svg>
-                                            <p class="mt-2 text-gray-500">No results found for "{{ NoticeSearchQuery }}"
-                                            </p>
+                                        <div v-if="NoticeSearchQuery" class="flex flex-col items-center animate-pulse">
+                                            <i class="fas fa-search text-4xl text-gray-400 mb-2"></i>
+                                            <p class="text-lg text-gray-600 mb-2">No results found for "{{
+                                                NoticeSearchQuery
+                                                }}"</p>
+                                            <p class="text-sm text-gray-500">Try clearing the search query.</p>
                                         </div>
                                     </div>
                                 </td>
                             </tr>
                             <tr v-for="(notice, index) in notices" :key="notice.id" class="text-gray-700">
                                 <td class="border-b whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{
-                                    (localPagination.current_page - 1) * localPagination.per_page + index
-                                    + 1
+                                    (localPagination.current_page - 1) * localPagination.per_page + index + 1
                                     }}
                                 </td>
                                 <td
@@ -101,7 +98,8 @@
                                         <i class="fas fa-trash" style="color:red"></i>
                                     </button>
                                     <button @click="editNotice(notice)" :disabled="!canEdit(user.id)">
-                                        <i class="fas fa-edit" :style="{ color: canEdit(user.id) ? 'dodgerblue' : 'gray' }"></i>
+                                        <i class="fas fa-edit"
+                                            :style="{ color: canEdit(user.id) ? 'dodgerblue' : 'gray' }"></i>
                                     </button>
                                 </td>
                             </tr>
@@ -113,8 +111,9 @@
                 </div>
             </div>
         </div>
-        <div class="lg:max-w-6xl mr-auto p-6 my-10 bg-white shadow-md rounded-md md:mx-auto">
-            <h2 class="text-sm font-semibold mb-4 text-gray-800">Add New Notice</h2>
+        <div class="lg:max-w-6xl mr-auto p-6 my-10 bg-white border rounded-md md:mx-auto">
+            <h2 class="text-sm font-semibold mb-2 text-gray-800">Add New Notice</h2>
+            <p class="text-sm text-gray-500 mb-4">You can add a new Notice here.</p>
             <form @submit.prevent="addNotice" class="space-y-4">
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Notice Title</label>
