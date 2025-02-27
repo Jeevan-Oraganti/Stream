@@ -1,6 +1,7 @@
 import "./bootstrap";
 import router from "./routes";
 import Vue from "vue";
+import "@fortawesome/fontawesome-free/css/all.css";
 import Welcome from "@/Pages/Welcome.vue";
 import Carousel from "./components/Carousel.vue";
 import SeriesDropdown from "./components/dropdown/SeriesDropdown.vue";
