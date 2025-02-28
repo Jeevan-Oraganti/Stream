@@ -4,7 +4,7 @@ import Home from "./views/Home.vue";
 import About from "./views/About.vue";
 import Contact from "./views/Contact.vue";
 import FAQ from "./views/FAQ.vue";
-import Notice from "./components/Notice.vue"
+import Notice from "./components/Notice.vue";
 import Tabs from "./components/Tabs.vue";
 import Dashboard from "@/components/admin/Dashboard.vue";
 
@@ -36,7 +36,7 @@ let routes = [
     {
         path: "/notice",
         component: Notice,
-    }
+    },
 ];
 export default new VueRouter({
     routes,

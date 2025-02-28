@@ -28,6 +28,7 @@ import LoginForm from "./views/session/LoginForm.vue";
 import RegisterForm from "./views/session/RegisterForm.vue";
 import adminNotice from "./components/admin/adminNotice.vue";
 import Pagination from "./components/Pagination.vue";
+import AddEditNotice from "@/components/admin/AddEditNotice.vue";
 
 Vue.component("Welcome", Welcome);
 Vue.component("Carousel", Carousel);
@@ -54,6 +55,7 @@ Vue.component("LoginForm", LoginForm);
 Vue.component("RegisterForm", RegisterForm);
 Vue.component("adminNotice", adminNotice);
 Vue.component("Pagination", Pagination);
+Vue.component("AddEditNotice", AddEditNotice);
 
 new Vue({
     el: "#app",

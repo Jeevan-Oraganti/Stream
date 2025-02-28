@@ -20,12 +20,14 @@ export default {
     position: fixed;
     top: 0;
     left: 0;
-    height: 3px;
+    height: 5px;
     width: 0;
-    background: linear-gradient(90deg, rgba(50, 137, 240, 1) 0%, rgba(50, 137, 240, 1) 80%, rgba(37, 197, 239, 1) 100%);
+    background: linear-gradient(90deg, #007bff 0%, #0056b3 80%, #00d9ff 100%);
     transition: width 0.3s ease, opacity 0.3s ease;
     z-index: 11;
     opacity: 1;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    filter: brightness(1.2);
 }
 
 .loading-bar.complete {

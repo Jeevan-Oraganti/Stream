@@ -13,7 +13,8 @@ class AdminController extends Controller
 {
     public function noticeIndex(Request $request)
     {
-        sleep(5);        $search = $request->input('search');
+        sleep(2);
+        $search = $request->input('search');
 
         $notices = Notice::with('noticeType')
             ->when($search, function ($query, $search) {
@@ -60,6 +61,17 @@ class AdminController extends Controller
             'message' => 'Notice added successfully.',
             'notice' => $notice
         ], 201);
+    }
+
+    public function addNotice()
+    {
+        return view('admin.notices.add-notice');
+    }
+
+    public function editNotice($id)
+    {
+        $notice = Notice::with('noticeType')->findOrFail($id);
+        return view('admin.notices.edit-notice', ['notice' => $notice]);
     }
 
     public function noticeUpdate(Request $request, $noticeId)

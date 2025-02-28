@@ -1,11 +1,21 @@
-<template>
-    <div class="flex flex-col lg:flex-row lg:space-x-12 items-start p-8">
-        <LoadingBar :progress="progress" v-if="loading" />
-        <div class="max-w-6xl ml-auto my-10 p-6 bg-white border rounded-md">
+<template xmlns="http://www.w3.org/1999/html">
+    <div class="flex lg:flex-row lg:space-x-12 items-start p-8">
+        <LoadingBar :progress="progress" v-if="loading"/>
+        <div class="w-full mx-auto my-10 p-6 bg-white border rounded-md">
             <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8 sm:flex-auto">
                 <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
-                    <h2 class="text-sm font-semibold mb-2 text-gray-800">Past Notices</h2>
-                    <p class="text-sm text-gray-500 mb-4">All your past notices will appear here.</p>
+                    <div class="flex justify-between mb-4">
+                        <span>
+                            <h2 class="text-sm font-semibold mb-2 text-gray-800">Past Notices</h2>
+                            <p class="text-sm text-gray-500 mb-4">All your past notices will appear here.</p>
+                        </span>
+                        <span>
+                        <button
+                            class="block rounded-md bg-blue-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">
+                            <a href="/admin/add-notice">Add Notice</a>
+                        </button>
+                        </span>
+                    </div>
                     <div v-if="localFlashSuccess" class="notification is-success">
                         {{ localFlashSuccess }}
                     </div>
@@ -15,160 +25,114 @@
                     <div class="flex items-center mb-4">
                         <div class="relative w-full">
                             <input type="text" v-model="NoticeSearchQuery" placeholder="Search..."
-                                class="text-sm text-gray-800 w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" />
-                            <span v-if="loading" class="loader absolute right-3 top-2 items-center"></span>
-                            <span v-if="!loading" class="absolute right-3 top-1/2 transform -translate-y-1/2">
+                                   class="text-sm text-gray-800 w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"/>
+                            <span class="absolute right-3 top-1/2 transform -translate-y-1/2">
                                 <i class="fas fa-search"></i>
                             </span>
                         </div>
                     </div>
                     <table class="min-w-full divide-y divide-gray-300">
                         <thead>
-                            <tr class="border-b">
-                                <th scope="col"
-                                    class="py-4 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">No.
-                                </th>
-                                <th scope="col" class="px-3 py-4 text-left text-sm font-semibold text-gray-900">Title
-                                </th>
-                                <th scope="col" class="px-3 py-4 text-left text-sm font-semibold text-gray-900">
-                                    Description
-                                </th>
-                                <th scope="col" class="px-3 py-4 text-left text-sm font-semibold text-gray-900">Type
-                                </th>
-                                <th scope="col" class="px-3 py-4 text-left text-sm font-semibold text-gray-900">Expiry
-                                    Date
-                                </th>
-                                <th scope="col" class="px-3 py-4 text-left text-sm font-semibold text-gray-900">
-                                    Created
-                                    At
-                                </th>
-                                <th scope="col" class="px-3 py-4 text-left text-sm font-semibold text-gray-900">Actions
-                                </th>
-                            </tr>
+                        <tr class="border-b">
+                            <th scope="col"
+                                class="py-4 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">#
+                            </th>
+                            <th scope="col" class="px-3 py-4 text-left text-sm font-semibold text-gray-900">Title
+                            </th>
+                            <th scope="col" class="px-3 py-4 text-left text-sm font-semibold text-gray-900">
+                                Description
+                            </th>
+                            <th scope="col" class="px-3 py-4 text-left text-sm font-semibold text-gray-900">Type
+                            </th>
+                            <th scope="col"
+                                class="whitespace-nowrap px-3 py-4 text-left text-sm font-semibold text-gray-900">
+                                Expiry
+                                Date
+                            </th>
+                            <th scope="col" class="px-3 py-4 text-left text-sm font-semibold text-gray-900">
+                                Created
+                                At
+                            </th>
+                            <th scope="col" class="px-3 py-4 text-left text-sm font-semibold text-gray-900">Actions
+                            </th>
+                        </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200">
-                            <tr v-if="filteredNotices.length === 0">
-                                <td class="border p-5 text-center" colspan="7">
-                                    <div class="flex flex-col items-center justify-center h-full">
-                                        <div v-if="NoticeSearchQuery" class="flex flex-col items-center animate-pulse">
-                                            <i class="fas fa-search text-4xl text-gray-400 mb-2"></i>
-                                            <p class="text-lg text-gray-600 mb-2">No results found for "{{
+                        <tr v-if="filteredNotices.length === 0">
+                            <td class="border p-5 text-center" colspan="7">
+                                <div class="flex flex-col items-center justify-center h-full">
+                                    <div v-if="NoticeSearchQuery" class="flex flex-col items-center animate-pulse">
+                                        <i class="fas fa-search text-4xl text-gray-400 mb-2"></i>
+                                        <p class="text-lg text-gray-600 mb-2">No results found for "{{
                                                 NoticeSearchQuery
-                                                }}"</p>
-                                            <p class="text-sm text-gray-500">Try clearing the search query.</p>
-                                        </div>
+                                            }}"</p>
+                                        <p class="text-sm text-gray-500">Try clearing the search query.</p>
                                     </div>
-                                </td>
-                            </tr>
-                            <tr v-for="(notice, index) in notices" :key="notice.id" class="text-gray-700">
-                                <td class="border-b whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{
+                                </div>
+                            </td>
+                        </tr>
+                        <tr v-for="(notice, index) in notices" :key="notice.id" class="text-gray-700">
+                            <td class="border-b whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{
                                     (localPagination.current_page - 1) * localPagination.per_page + index + 1
-                                    }}
-                                </td>
-                                <td
-                                    class="border-b whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
-                                    {{ notice.form.data.name }}
-                                </td>
-                                <td class="border-b whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                                    {{ notice.form.data.description }}
-                                </td>
-                                <td
-                                    :class="['border-b whitespace-nowrap px-3 py-4 text-sm', notice.form.data.notice_type && notice.form.data.notice_type.color ? 'text-' + notice.form.data.notice_type.color + '-600' : 'text-gray-600']">
-                                    {{
-                                        notice.form.data.notice_type && notice.form.data.notice_type.type ?
-                                            notice.form.data.notice_type.type.charAt(0).toUpperCase() +
-                                            notice.form.data.notice_type.type.slice(1) : 'Unknown'
-                                    }}
-                                </td>
-                                <td class="border-b whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                }}
+                            </td>
+                            <td
+                                class="border-b whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
+                                {{ notice.form.data.name }}
+                            </td>
+                            <td class="border-b px-3 py-4 text-sm text-gray-500">
+                                {{ notice.form.data.description }}
+                            </td>
+                            <td
+                                :class="['border-b whitespace-nowrap px-3 py-4 text-sm', notice.form.data.notice_type && notice.form.data.notice_type.color ? 'text-' + notice.form.data.notice_type.color + '-600' : 'text-gray-600']">
+                                {{
+                                    notice.form.data.notice_type && notice.form.data.notice_type.type ?
+                                        notice.form.data.notice_type.type.charAt(0).toUpperCase() +
+                                        notice.form.data.notice_type.type.slice(1) : 'Unknown'
+                                }}
+                            </td>
+                            <td class="border-b whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                                     <span v-if="notice.form.data.expiry_date">
                                         {{ new Date(notice.form.data.expiry_date).toLocaleString() | ago }}
                                     </span>
-                                    <span v-else class="whitespace-nowrap text-red-500">No Expiry</span>
-                                </td>
-                                <td class="border-b whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                                    {{
-                                        notice.form.data.created_at ? new Date(notice.form.data.created_at).toLocaleString()
-                                            :
-                                            'Unknown' | ago
-                                    }}
-                                </td>
-                                <td class="border-b px-3 py-4 text-sm space-x-3">
-                                    <button @click="deleteNotice(notice)" class="text-red-500 hover:bg-red-900">
-                                        <i class="fas fa-trash" style="color:red"></i>
-                                    </button>
-                                    <button @click="editNotice(notice)" :disabled="!canEdit(user.id)">
+                                <span v-else class="whitespace-nowrap text-red-500">No Expiry</span>
+                            </td>
+                            <td class="border-b whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                {{
+                                    notice.form.data.created_at ? new Date(notice.form.data.created_at).toLocaleString()
+                                        :
+                                        'Unknown' | ago
+                                }}
+                            </td>
+                            <td class="border-b px-3 py-4 text-sm space-x-3">
+                                <button @click="deleteNotice(notice)" class="text-red-500 hover:bg-red-900">
+                                    <i class="fas fa-trash" style="color:red"></i>
+                                </button>
+                                <button @click="editNotice(notice)" :disabled="!canEdit(user.id)">
+                                    <a :href="canEdit(user.id) ? `/admin/edit-notice/${notice.id}` : '#' ">
                                         <i class="fas fa-edit"
-                                            :style="{ color: canEdit(user.id) ? 'dodgerblue' : 'gray' }"></i>
-                                    </button>
-                                </td>
-                            </tr>
+                                           :style="{ color: canEdit(user.id) ? 'dodgerblue' : 'gray' }"></i>
+                                    </a>
+                                </button>
+                            </td>
+                        </tr>
                         </tbody>
                     </table>
                     <div class="mt-4">
-                        <Pagination :pagination="localPagination" @paginate="fetchNotices" />
+                        <Pagination :pagination="localPagination" @paginate="fetchNotices"/>
                     </div>
                 </div>
             </div>
-        </div>
-        <div class="lg:max-w-6xl mr-auto p-6 my-10 bg-white border rounded-md md:mx-auto">
-            <h2 class="text-sm font-semibold mb-2 text-gray-800">Add New Notice</h2>
-            <p class="text-sm text-gray-500 mb-4">You can add a new Notice here.</p>
-            <form @submit.prevent="addNotice" class="space-y-4">
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Notice Title</label>
-                    <input v-model="form.data.name" type="text"
-                        class="text-sm text-gray-800 w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-                        :class="{ 'border-red-500': form.hasError('name') }" @input="clearError('name')">
-                    <span v-if="form.hasError('name')" class="text-red-500 text-sm mt-1 block">
-                        {{ form.getError('name') }}</span>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Description</label>
-                    <textarea v-model="form.data.description"
-                        class="text-sm text-gray-800 w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-                        :class="{ 'border-red-500': form.hasError('description') }"
-                        @input="clearError('description')"></textarea>
-                    <span v-if="form.hasError('description')" class="text-red-500 text-sm mt-1 block">
-                        {{ form.getError('description') }}</span>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Notice Type</label>
-                    <select v-model="form.data.notice_type_id"
-                        class="text-sm text-gray-500 w-full p-2 border rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-400"
-                        :class="{ 'border-red-500': form.hasError('notice_type_id') }"
-                        @change="clearError('notice_type_id')">
-                        <option value="1">🟠 Announcement</option>
-                        <option value="2">🔵 Information</option>
-                        <option value="3">🔴 Outage</option>
-                    </select>
-                    <span v-if="form.hasError('notice_type_id')" class="text-red-500 text-sm mt-1 block">
-                        {{ form.getError('notice_type_id') }}
-                    </span>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Expiry Date</label>
-                    <input v-model="form.data.expiry_date" type="datetime-local"
-                        class="text-sm text-gray-500 w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-                        :class="{ 'border-red-500': form.hasError('expiry_date') }" @input="clearError('expiry_date')">
-                    <span v-if="form.hasError('expiry_date')" class="text-red-500 text-sm mt-1 block">
-                        {{ form.getError('expiry_date') }}</span>
-                </div>
-                <button type="submit"
-                    class="text-sm w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition duration-200">
-                    {{ editingNoticeId ? "Update Notice" : "Publish Notice" }}
-                </button>
-            </form>
         </div>
     </div>
 </template>
 
 <script>
 import CNoticesAdmin from "@/utilities/CNoticesAdmin.js";
-import { ref } from 'vue';
+import {ref} from 'vue';
 import Pagination from "../Pagination.vue";
 import axios from 'axios';
-import { debounce } from "lodash";
+import {debounce} from "lodash";
 import moment from "moment-timezone";
 import LoadingBar from "../LoadingBar.vue";
 
@@ -195,7 +159,7 @@ export default {
             default: ''
         },
         user: {
-            type: Array,
+            type: Object,
             required: true
         },
     },
@@ -204,7 +168,7 @@ export default {
             notices: ref([]),
             form: new CNoticesAdmin().form,
             errors: {},
-            localPagination: { ...this.pagination },
+            localPagination: {...this.pagination},
             NoticeSearchQuery: '',
             loading: false,
             editingNoticeId: null,
@@ -269,6 +233,7 @@ export default {
         },
         async fetchNotices(url) {
             try {
+                if (this.loading) return;
                 this.startLoading();
                 const response = await axios.get(url, {
                     params: {

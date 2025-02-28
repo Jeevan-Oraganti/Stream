@@ -1,5 +1,6 @@
 import axios from "axios";
 import CForm from "./CForm";
+import moment from "moment/moment.js";
 
 export default class CNoticesAdmin {
     constructor(id = null, data = {}) {
@@ -11,7 +12,9 @@ export default class CNoticesAdmin {
             "expiry_date",
         ]);
 
-        this.form.data = { ...data };
+        this.form.data = { ...data,
+            expiry_date: data.expiry_date || moment().add(1, "week").format("YYYY-MM-DD"),
+         };
     }
 
     async save() {
