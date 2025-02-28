@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->text('description');
+            $table->boolean('is_sticky');
             $table->unsignedBigInteger('notice_type_id');
             $table->dateTime('expiry_date')->nullable();
             $table->timestamps();

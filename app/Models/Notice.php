@@ -20,6 +20,7 @@ class Notice extends Model
     protected $fillable = [
         'name',
         'description',
+        'is_sticky',
         'notice_type_id',
         'expiry_date',
     ];

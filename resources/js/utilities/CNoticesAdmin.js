@@ -8,13 +8,18 @@ export default class CNoticesAdmin {
         this.form = new CForm([
             "name",
             "description",
+            "is_sticky",
             "notice_type_id",
             "expiry_date",
         ]);
 
-        this.form.data = { ...data,
-            expiry_date: data.expiry_date || moment().add(1, "week").format("YYYY-MM-DD"),
-         };
+        this.form.data = {
+            ...data,
+            expiry_date:
+                data.expiry_date ||
+                moment().add(1, "week").format("YYYY-MM-DD"),
+            is_sticky: data.is_sticky || false,
+        };
     }
 
     async save() {

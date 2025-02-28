@@ -19,6 +19,7 @@ class NoticeController extends Controller
                     ->orWhereNull('expiry_date');
             })
             ->whereNotIn('id', $dismissedNotices)
+            ->orderBy('is_sticky', 'desc')
             ->orderBy('created_at', 'desc')
 
             ->get();
@@ -38,11 +39,12 @@ class NoticeController extends Controller
                         ->where('user_notices.user_id', '=', $userId);
                 })
                 ->whereNull('user_notices.user_id')
-                ->where(function ($query){
-                    $query->where('expiry_date','>',now())
+                ->where(function ($query) {
+                    $query->where('expiry_date', '>', now())
                         ->orWhereNull('expiry_date');
                 })
                 ->select('notices.*')
+                ->orderBy('is_sticky', 'desc')
                 ->orderBy('created_at', 'desc')
                 ->get();
 
@@ -56,12 +58,12 @@ class NoticeController extends Controller
         if (auth()->check()) {
             $userId = auth()->id();
 
-                DB::table('user_notices')->insert([
-                    'notice_id' => $noticeId,
-                    'user_id' => $userId,
-                    'created_at' => now(),
-                    'updated_at' => now(),
-                ]);
+            DB::table('user_notices')->insert([
+                'notice_id' => $noticeId,
+                'user_id' => $userId,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
 
             return response()->json(['message' => 'Notice marked as read.']);
         }

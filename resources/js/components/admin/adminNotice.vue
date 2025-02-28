@@ -1,6 +1,6 @@
-<template xmlns="http://www.w3.org/1999/html">
+<template>
     <div class="flex lg:flex-row lg:space-x-12 items-start p-8">
-        <LoadingBar :progress="progress" v-if="loading"/>
+        <LoadingBar :progress="progress" v-if="loading" />
         <div class="w-full mx-auto my-10 p-6 bg-white border rounded-md">
             <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8 sm:flex-auto">
                 <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
@@ -10,10 +10,10 @@
                             <p class="text-sm text-gray-500 mb-4">All your past notices will appear here.</p>
                         </span>
                         <span>
-                        <button
-                            class="block rounded-md bg-blue-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600">
-                            <a href="/admin/add-notice">Add Notice</a>
-                        </button>
+                            <button
+                                class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"><a
+                                    href="/admin/add-notice">Publish Notice</a>
+                            </button>
                         </span>
                     </div>
                     <div v-if="localFlashSuccess" class="notification is-success">
@@ -25,7 +25,7 @@
                     <div class="flex items-center mb-4">
                         <div class="relative w-full">
                             <input type="text" v-model="NoticeSearchQuery" placeholder="Search..."
-                                   class="text-sm text-gray-800 w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"/>
+                                class="text-sm text-gray-800 w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" />
                             <span class="absolute right-3 top-1/2 transform -translate-y-1/2">
                                 <i class="fas fa-search"></i>
                             </span>
@@ -33,93 +33,104 @@
                     </div>
                     <table class="min-w-full divide-y divide-gray-300">
                         <thead>
-                        <tr class="border-b">
-                            <th scope="col"
-                                class="py-4 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">#
-                            </th>
-                            <th scope="col" class="px-3 py-4 text-left text-sm font-semibold text-gray-900">Title
-                            </th>
-                            <th scope="col" class="px-3 py-4 text-left text-sm font-semibold text-gray-900">
-                                Description
-                            </th>
-                            <th scope="col" class="px-3 py-4 text-left text-sm font-semibold text-gray-900">Type
-                            </th>
-                            <th scope="col"
-                                class="whitespace-nowrap px-3 py-4 text-left text-sm font-semibold text-gray-900">
-                                Expiry
-                                Date
-                            </th>
-                            <th scope="col" class="px-3 py-4 text-left text-sm font-semibold text-gray-900">
-                                Created
-                                At
-                            </th>
-                            <th scope="col" class="px-3 py-4 text-left text-sm font-semibold text-gray-900">Actions
-                            </th>
-                        </tr>
+                            <tr class="border-b">
+                                <th scope="col"
+                                    class="py-4 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">#
+                                </th>
+                                <th scope="col" class="px-3 py-4 text-left text-sm font-semibold text-gray-900">Title
+                                </th>
+                                <th scope="col" class="px-3 py-4 text-left text-sm font-semibold text-gray-900">
+                                    Description
+                                </th>
+                                <th scope="col" class="px-3 py-4 text-left text-sm font-semibold text-gray-900">Type
+                                </th>
+                                <th scope="col"
+                                    class="whitespace-nowrap px-3 py-4 text-left text-sm font-semibold text-gray-900">
+                                    Expiry
+                                    Date
+                                </th>
+                                <th scope="col" class="px-3 py-4 text-left text-sm font-semibold text-gray-900">
+                                    Created
+                                    At
+                                </th>
+                                <th scope="col" class="px-3 py-4 text-left text-sm font-semibold text-gray-900">Actions
+                                </th>
+                            </tr>
                         </thead>
                         <tbody class="divide-y divide-gray-200">
-                        <tr v-if="filteredNotices.length === 0">
-                            <td class="border p-5 text-center" colspan="7">
-                                <div class="flex flex-col items-center justify-center h-full">
-                                    <div v-if="NoticeSearchQuery" class="flex flex-col items-center animate-pulse">
-                                        <i class="fas fa-search text-4xl text-gray-400 mb-2"></i>
-                                        <p class="text-lg text-gray-600 mb-2">No results found for "{{
+                            <tr v-if="filteredNotices.length === 0">
+                                <td class="border p-5 text-center" colspan="7">
+                                    <div class="flex flex-col items-center justify-center h-full">
+                                        <div v-if="NoticeSearchQuery" class="flex flex-col items-center animate-pulse">
+                                            <i class="fas fa-search text-4xl text-gray-400 mb-2"></i>
+                                            <p class="text-lg text-gray-600 mb-2">No results found for "{{
                                                 NoticeSearchQuery
                                             }}"</p>
-                                        <p class="text-sm text-gray-500">Try clearing the search query.</p>
+                                            <p class="text-sm text-gray-500">Try clearing the search query.</p>
+                                        </div>
                                     </div>
-                                </div>
-                            </td>
-                        </tr>
-                        <tr v-for="(notice, index) in notices" :key="notice.id" class="text-gray-700">
-                            <td class="border-b whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{
+                                </td>
+                            </tr>
+                            <tr v-for="(notice, index) in notices" :key="notice.id" class="text-gray-700">
+                                <td class="border-b whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{
                                     (localPagination.current_page - 1) * localPagination.per_page + index + 1
                                 }}
-                            </td>
-                            <td
-                                class="border-b whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
-                                {{ notice.form.data.name }}
-                            </td>
-                            <td class="border-b px-3 py-4 text-sm text-gray-500">
-                                {{ notice.form.data.description }}
-                            </td>
-                            <td
-                                :class="['border-b whitespace-nowrap px-3 py-4 text-sm', notice.form.data.notice_type && notice.form.data.notice_type.color ? 'text-' + notice.form.data.notice_type.color + '-600' : 'text-gray-600']">
-                                {{
-                                    notice.form.data.notice_type && notice.form.data.notice_type.type ?
-                                        notice.form.data.notice_type.type.charAt(0).toUpperCase() +
-                                        notice.form.data.notice_type.type.slice(1) : 'Unknown'
-                                }}
-                            </td>
-                            <td class="border-b whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                </td>
+                                <td
+                                    class="border-b whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
+                                    {{ notice.form.data.name }}
+                                    <span v-if="notice.form.data.is_sticky">
+                                        <i class="fas fa-star text-yellow-500"></i>
+                                    </span>
+                                    <span v-if="!notice.form.data.is_sticky">
+                                        <i class="far fa-star text-gray-500"></i>
+                                    </span>
+                                </td>
+                                <td class="border-b px-3 py-4 text-sm text-gray-500">
+                                    {{ notice.form.data.description }}
+                                </td>
+                                <td
+                                    :class="['border-b whitespace-nowrap px-3 py-4 text-sm', notice.form.data.notice_type && notice.form.data.notice_type.color ? 'text-' + notice.form.data.notice_type.color + '-600' : 'text-gray-600']">
+                                    {{
+                                        notice.form.data.notice_type && notice.form.data.notice_type.type ?
+                                            notice.form.data.notice_type.type.charAt(0).toUpperCase() +
+                                            notice.form.data.notice_type.type.slice(1) : 'Unknown'
+                                    }}
+                                </td>
+                                <td class="border-b whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                                     <span v-if="notice.form.data.expiry_date">
                                         {{ new Date(notice.form.data.expiry_date).toLocaleString() | ago }}
                                     </span>
-                                <span v-else class="whitespace-nowrap text-red-500">No Expiry</span>
-                            </td>
-                            <td class="border-b whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                                {{
-                                    notice.form.data.created_at ? new Date(notice.form.data.created_at).toLocaleString()
-                                        :
-                                        'Unknown' | ago
-                                }}
-                            </td>
-                            <td class="border-b px-3 py-4 text-sm space-x-3">
-                                <button @click="deleteNotice(notice)" class="text-red-500 hover:bg-red-900">
-                                    <i class="fas fa-trash" style="color:red"></i>
-                                </button>
-                                <button @click="editNotice(notice)" :disabled="!canEdit(user.id)">
-                                    <a :href="canEdit(user.id) ? `/admin/edit-notice/${notice.id}` : '#' ">
-                                        <i class="fas fa-edit"
-                                           :style="{ color: canEdit(user.id) ? 'dodgerblue' : 'gray' }"></i>
-                                    </a>
-                                </button>
-                            </td>
-                        </tr>
+                                    <span v-else class="whitespace-nowrap text-red-500">No Expiry</span>
+                                </td>
+                                <td class="border-b whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                    {{
+                                        notice.form.data.created_at ? new Date(notice.form.data.created_at).toLocaleString()
+                                            :
+                                            'Unknown' | ago
+                                    }}
+                                </td>
+                                <td class="border-b px-3 py-4 text-sm space-x-3">
+                                    <span v-if="deletingNoticeId !== notice.id">
+                                        <button @click="deleteNotice(notice)" class="text-red-500 hover:bg-red-900">
+                                            <i class="fas fa-trash" style="color:red"></i>
+                                        </button>
+                                    </span>
+                                    <span v-if="deletingNoticeId === notice.id">
+                                        <div class="delete-loader"></div>
+                                    </span>
+                                    <button :disabled="!canEdit(user.id)">
+                                        <a :href="canEdit(user.id) ? `/admin/edit-notice/${notice.id}` : '#'">
+                                            <i class="fas fa-edit"
+                                                :style="{ color: canEdit(user.id) ? 'dodgerblue' : 'gray' }"></i>
+                                        </a>
+                                    </button>
+                                </td>
+                            </tr>
                         </tbody>
                     </table>
                     <div class="mt-4">
-                        <Pagination :pagination="localPagination" @paginate="fetchNotices"/>
+                        <Pagination :pagination="localPagination" @paginate="fetchNotices" />
                     </div>
                 </div>
             </div>
@@ -129,10 +140,10 @@
 
 <script>
 import CNoticesAdmin from "@/utilities/CNoticesAdmin.js";
-import {ref} from 'vue';
+import { ref } from 'vue';
 import Pagination from "../Pagination.vue";
 import axios from 'axios';
-import {debounce} from "lodash";
+import { debounce } from "lodash";
 import moment from "moment-timezone";
 import LoadingBar from "../LoadingBar.vue";
 
@@ -168,12 +179,13 @@ export default {
             notices: ref([]),
             form: new CNoticesAdmin().form,
             errors: {},
-            localPagination: {...this.pagination},
+            localPagination: { ...this.pagination },
             NoticeSearchQuery: '',
             loading: false,
             editingNoticeId: null,
             progress: 0,
             interval: null,
+            deletingNoticeId: null,
         };
     },
     methods: {
@@ -183,25 +195,9 @@ export default {
         canDelete(userId) {
             return userId === 1;
         },
-        async addNotice() {
-            try {
-                if (this.editingNoticeId) {
-                    await this.form.update(`/admin/notice/${this.editingNoticeId}`);
-                } else {
-                    await this.form.save('/admin/notice');
-                }
-                this.resetForm();
-                window.location.reload();
-            } catch (error) {
-                if (error.response && error.response.status === 422) {
-                    this.errors = error.response.data.errors;
-                } else {
-                    console.error('Error saving notice:', error);
-                }
-            }
-        },
         async deleteNotice(notice) {
             if (confirm("Are you sure you want to delete this notice?")) {
+                this.deletingNoticeId = notice.id;
                 try {
                     const response = await notice.delete();
                     if (response.status === 200) {
@@ -218,18 +214,6 @@ export default {
                     window.location.reload();
                 }
             }
-        },
-        async editNotice(notice) {
-            this.form = new CNoticesAdmin(notice.id);
-            this.form = notice.form;
-            if (this.form.data.expiry_date) {
-                this.form.data.expiry_date = new Date(this.form.data.expiry_date).toISOString().slice(0, 16);
-            }
-            this.editingNoticeId = notice.id;
-        },
-        resetForm() {
-            this.form = new CNoticesAdmin().form;
-            this.editingNoticeId = null;
         },
         async fetchNotices(url) {
             try {
@@ -254,11 +238,6 @@ export default {
             } catch (error) {
                 console.error("Error fetching notices:", error);
                 this.stopLoading();
-            }
-        },
-        clearError(field) {
-            if (this.form.hasError(field)) {
-                this.$delete(this.form.errors, field);
             }
         },
         startLoading() {
@@ -297,14 +276,14 @@ export default {
         flashSuccess(newVal) {
             if (newVal) {
                 setTimeout(() => {
-                    this.flashSuccess = "";
+                    this.localFlashSuccess = "";
                 }, 3000);
             }
         },
         flashError(newVal) {
             if (newVal) {
                 setTimeout(() => {
-                    this.flashError = "";
+                    this.localFlashError = "";
                 }, 3000);
             }
         }
@@ -318,10 +297,14 @@ export default {
         },
     },
     mounted() {
+        console.log(this.noticesJson);
+        this.deletingNoticeId = null;
+
         this.notices = this.noticesJson.map(noticeJson => {
             const notice = new CNoticesAdmin(noticeJson.id);
             notice.form.data.name = noticeJson.name;
             notice.form.data.description = noticeJson.description;
+            notice.form.data.is_sticky = noticeJson.is_sticky || false;
             notice.form.data.notice_type = noticeJson.notice_type;
             notice.form.data.expiry_date = noticeJson.expiry_date;
             notice.form.data.created_at = noticeJson.created_at;
@@ -361,6 +344,17 @@ export default {
     background-color: #f8d7da;
     color: #721c24;
     border: 1px solid #f5c6cb;
+}
+
+.delete-loader {
+    display: inline-block;
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-top-color: rgba(255, 0, 0, 1);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    vertical-align: middle;
 }
 
 .loader {

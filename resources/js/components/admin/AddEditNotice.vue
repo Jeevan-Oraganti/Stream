@@ -2,7 +2,7 @@
     <div class="max-w-4xl mx-auto my-10 p-6 bg-white border rounded-md">
         <h2 class="text-xl font-semibold mb-4 text-gray-800">{{
             editingNoticeId ? 'Edit Notice' : 'Add New Notice'
-        }}</h2>
+            }}</h2>
         <form @submit.prevent="saveNotice" class="space-y-4">
             <div>
                 <label class="block text-sm font-medium text-gray-700">Notice Title</label>
@@ -11,7 +11,7 @@
                     :class="{ 'border-red-500': form.hasError('name') }" @input="clearError('name')">
                 <span v-if="form.hasError('name')" class="text-red-500 text-sm mt-1 block">{{
                     form.getError('name')
-                }}</span>
+                    }}</span>
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700">Description</label>
@@ -43,8 +43,19 @@
                 <span v-if="form.hasError('expiry_date')" class="text-red-500 text-sm mt-1 block">{{
                     form.getError('expiry_date') }}</span>
             </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Priority Notice</label>
+                <div class="flex items-center">
+                    <input v-model="form.data.is_sticky" type="checkbox"
+                        class="text-gray-500 border rounded focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        :class="{ 'border-red-500': form.hasError('is_sticky') }" @change="clearError('is_sticky')">
+                    <span class="ml-2 text-gray-700">Make this a priority notice</span>
+                </div>
+                <span v-if="form.hasError('is_sticky')" class="text-red-500 text-sm mt-1 block">{{
+                    form.getError('is_sticky') }}</span>
+            </div>
             <button type="submit"
-                class="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition duration-200">
+                class="w-full bg-indigo-500 text-white py-2 rounded-md hover:bg-indigo-600 transition duration-200">
                 {{ editingNoticeId ? 'Update Notice' : 'Publish Notice' }}
             </button>
         </form>
@@ -94,7 +105,8 @@ export default {
         if (this.notice) {
             this.form.data.name = this.notice.name;
             this.form.data.description = this.notice.description;
-            this.form.data.notice_type = this.notice.notice_type;
+            this.form.data.is_sticky = this.notice.is_sticky;
+            this.form.data.notice_type_id = this.notice.notice_type_id;
             this.form.data.expiry_date = this.notice.expiry_date;
             this.form.data.created_at = this.notice.created_at;
             this.editingNoticeId = this.notice.id;

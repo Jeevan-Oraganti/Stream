@@ -13,7 +13,7 @@ class AdminController extends Controller
 {
     public function noticeIndex(Request $request)
     {
-        sleep(2);
+        sleep(5);
         $search = $request->input('search');
 
         $notices = Notice::with('noticeType')
@@ -51,6 +51,7 @@ class AdminController extends Controller
             'description' => 'required|string',
             'notice_type_id' => 'required|exists:notice_types,id',
             'expiry_date' => 'nullable|date',
+            'is_sticky' => 'required|boolean',
             'created_at' => now(),
             'updated_at' => now(),
         ]);
@@ -81,6 +82,7 @@ class AdminController extends Controller
             'description' => 'required',
             'notice_type_id' => 'required|exists:notice_types,id',
             'expiry_date' => 'nullable|date',
+            'is_sticky' => 'required|boolean',
         ]);
 
         if ($validator->fails()) {
@@ -98,6 +100,7 @@ class AdminController extends Controller
             'description' => $request->input('description'),
             'notice_type_id' => $request->input('notice_type_id'),
             'expiry_date' => $request->input('expiry_date'),
+            'is_sticky' => $request->input('is_sticky'),
         ]);
 
         return response()->json([
@@ -108,6 +111,7 @@ class AdminController extends Controller
 
     public function noticeDestroy($id)
     {
+        sleep(5);
         $notice = Notice::findOrFail($id);
 
         if (Gate::allows('delete-notice')) {
