@@ -27,7 +27,11 @@
     };
 </script>
 <div id="app" class="bg-white">
-    <add-edit-notice :notice="{{ json_encode($notice) }}"></add-edit-notice>
+    <add-edit-notice
+    :notice="{{ json_encode($notice) }}"
+    :flash-success="{{ json_encode(session('success')) }}"
+    :flash-error="{{ json_encode(session('error')) }}">
+    </add-edit-notice>
 </div>
 </body>
 

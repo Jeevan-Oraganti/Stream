@@ -277,14 +277,14 @@ export default {
             if (newVal) {
                 setTimeout(() => {
                     this.localFlashSuccess = "";
-                }, 3000);
+                }, 6000);
             }
         },
         flashError(newVal) {
             if (newVal) {
                 setTimeout(() => {
                     this.localFlashError = "";
-                }, 3000);
+                }, 6000);
             }
         }
     },
@@ -297,7 +297,6 @@ export default {
         },
     },
     mounted() {
-        console.log(this.noticesJson);
         this.deletingNoticeId = null;
 
         this.notices = this.noticesJson.map(noticeJson => {
@@ -314,12 +313,12 @@ export default {
         if (this.flashSuccess) {
             setTimeout(() => {
                 this.flashSuccess = "";
-            }, 3000);
+            }, 6000);
         }
         if (this.flashError) {
             setTimeout(() => {
                 this.flashError = "";
-            }, 3000);
+            }, 6000);
         }
     }
 };

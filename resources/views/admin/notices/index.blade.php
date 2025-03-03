@@ -25,6 +25,8 @@
             isLoggedIn: @json(auth()->check()),
             user: @json(auth()->user())
         };
+        console.log(@json(session('success')))
+        console.log(@json(session('error')))
     </script>
     <div id="app" class="bg-white">
         <admin-notice :notices-json="{{ json_encode($notices->items()) }}"

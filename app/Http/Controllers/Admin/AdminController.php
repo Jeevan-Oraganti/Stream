@@ -13,7 +13,7 @@ class AdminController extends Controller
 {
     public function noticeIndex(Request $request)
     {
-        sleep(5);
+        sleep(2);
         $search = $request->input('search');
 
         $notices = Notice::with('noticeType')
@@ -56,6 +56,14 @@ class AdminController extends Controller
             'updated_at' => now(),
         ]);
 
+        if ($validatedData['is_sticky']) {
+            $existingStickyNotice = Notice::where('is_sticky', true)->first();
+            if ($existingStickyNotice) {
+                return redirect()->route('admin.notices.index')->with('error', 'A sticky notice already exists. Please unsticky the existing notice before adding a new sticky notice.');
+            }
+        }
+
+
         $notice = Notice::create($validatedData);
 
         return response()->json([
@@ -84,7 +92,6 @@ class AdminController extends Controller
             'expiry_date' => 'nullable|date',
             'is_sticky' => 'required|boolean',
         ]);
-
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
         }
@@ -93,6 +100,13 @@ class AdminController extends Controller
 
         if (!$notice) {
             return response()->json(['message' => 'Notice not found'], 404);
+        }
+
+        if ($request->input('is_sticky') && $noticeId) {
+            $existingStickyNotice = Notice::where('is_sticky', '1')->where('id', '!=', $notice->id)->first();
+            if ($existingStickyNotice) {
+                return redirect()->route('admin.notices.index')->with('error', 'A sticky notice already exists. Please unsticky the existing notice before adding a new sticky notice.');
+            }
         }
 
         $notice->update([

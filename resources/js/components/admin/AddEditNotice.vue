@@ -3,6 +3,12 @@
         <h2 class="text-xl font-semibold mb-4 text-gray-800">{{
             editingNoticeId ? 'Edit Notice' : 'Add New Notice'
             }}</h2>
+        <div v-if="localFlashSuccess" class="notification is-success">
+            {{ localFlashSuccess }}
+        </div>
+        <div v-if="localFlashError" class="notification is-danger">
+            {{ localFlashError }}
+        </div>
         <form @submit.prevent="saveNotice" class="space-y-4">
             <div>
                 <label class="block text-sm font-medium text-gray-700">Notice Title</label>
@@ -63,12 +69,21 @@
 </template>
 
 <script>import CNoticesAdmin from "@/utilities/CNoticesAdmin.js";
+import {debounce} from "lodash";
 
 export default {
     props: {
         notice: {
             type: Object,
             default: null,
+        },
+        flashSuccess: {
+            type: String,
+            default: ''
+        },
+        flashError: {
+            type: String,
+            default: ''
         },
     },
     data() {
@@ -101,11 +116,35 @@ export default {
             }
         },
     },
+    computed: {
+        localFlashSuccess() {
+            return this.flashSuccess;
+        },
+        localFlashError() {
+            return this.flashError;
+        }
+    },
+    watch: {
+        flashSuccess(newVal) {
+            if (newVal) {
+                setTimeout(() => {
+                    this.localFlashSuccess = "";
+                }, 3000);
+            }
+        },
+        flashError(newVal) {
+            if (newVal) {
+                setTimeout(() => {
+                    this.localFlashError = "";
+                }, 3000);
+            }
+        }
+    },
     mounted() {
         if (this.notice) {
             this.form.data.name = this.notice.name;
             this.form.data.description = this.notice.description;
-            this.form.data.is_sticky = this.notice.is_sticky;
+            this.form.data.is_sticky = this.notice.is_sticky || false;
             this.form.data.notice_type_id = this.notice.notice_type_id;
             this.form.data.expiry_date = this.notice.expiry_date;
             this.form.data.created_at = this.notice.created_at;
@@ -118,6 +157,39 @@ export default {
             const nextWeek = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
             this.form.data.expiry_date = nextWeek.toISOString().slice(0, 16);
         }
+
+        if (this.flashSuccess) {
+            setTimeout(() => {
+                this.flashSuccess = "";
+            }, 3000);
+        }
+        if (this.flashError) {
+            setTimeout(() => {
+                this.flashError = "";
+            }, 3000);
+        }
     },
 };
 </script>
+
+<style scoped>
+.notification {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 0.25rem;
+    font-size: 1rem;
+    text-align: center;
+}
+
+.notification.is-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.notification.is-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+</style>
