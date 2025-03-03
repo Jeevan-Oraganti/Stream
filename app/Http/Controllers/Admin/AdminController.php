@@ -13,7 +13,7 @@ class AdminController extends Controller
 {
     public function noticeIndex(Request $request)
     {
-        sleep(2);
+//        sleep(2);
         $search = $request->input('search');
 
         $notices = Notice::with('noticeType')
@@ -59,17 +59,16 @@ class AdminController extends Controller
         if ($validatedData['is_sticky']) {
             $existingStickyNotice = Notice::where('is_sticky', true)->first();
             if ($existingStickyNotice) {
-                return redirect()->route('admin.notices.index')->with('error', 'A sticky notice already exists. Please unsticky the existing notice before adding a new sticky notice.');
+                return response()->json([
+                    'errors' => ['is_sticky' => ['A sticky notice already exists. Please unsticky the existing one.']]
+                ], 422);
             }
         }
 
+        Notice::create($validatedData);
 
-        $notice = Notice::create($validatedData);
+        return redirect()->route('admin.notices.index')->with('success', 'Notice added successfully.');
 
-        return response()->json([
-            'message' => 'Notice added successfully.',
-            'notice' => $notice
-        ], 201);
     }
 
     public function addNotice()
@@ -102,25 +101,20 @@ class AdminController extends Controller
             return response()->json(['message' => 'Notice not found'], 404);
         }
 
-        if ($request->input('is_sticky') && $noticeId) {
+        if ($request->input('is_sticky')) {
             $existingStickyNotice = Notice::where('is_sticky', '1')->where('id', '!=', $notice->id)->first();
             if ($existingStickyNotice) {
-                return redirect()->route('admin.notices.index')->with('error', 'A sticky notice already exists. Please unsticky the existing notice before adding a new sticky notice.');
+                return response()->json([
+                    'errors' => ['is_sticky' => ['A sticky notice already exists. Please unsticky the existing one.']]
+                ], 422);
             }
         }
 
-        $notice->update([
-            'name' => $request->input('name'),
-            'description' => $request->input('description'),
-            'notice_type_id' => $request->input('notice_type_id'),
-            'expiry_date' => $request->input('expiry_date'),
-            'is_sticky' => $request->input('is_sticky'),
-        ]);
+        $notice->update($request->all());
 
-        return response()->json([
-            'message' => 'Notice updated successfully',
-            'notice' => $notice,
-        ]);
+        return redirect()->route('admin.notices.index')
+            ->with('success', 'Notice updated successfully.');
+
     }
 
     public function noticeDestroy($id)

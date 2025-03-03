@@ -31,8 +31,8 @@
     <div id="app" class="bg-white">
         <admin-notice :notices-json="{{ json_encode($notices->items()) }}"
         :pagination="{{ json_encode($notices) }}"
-        :flash-success="{{ json_encode(session('success')) }}"
-        :flash-error="{{ json_encode(session('error')) }}"
+        :flash-success="{{ json_encode(session('success', '')) }}"
+        :flash-error="{{ json_encode(session('error', '')) }}"
         :user="{{ json_encode(auth()->user()) }}">
     </admin-notice>
     </div>
