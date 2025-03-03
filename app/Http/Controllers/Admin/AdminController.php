@@ -13,7 +13,7 @@ class AdminController extends Controller
 {
     public function noticeIndex(Request $request)
     {
-//        sleep(2);
+        sleep(2);
         $search = $request->input('search');
 
         $notices = Notice::with('noticeType')
@@ -60,7 +60,7 @@ class AdminController extends Controller
             $existingStickyNotice = Notice::where('is_sticky', true)->first();
             if ($existingStickyNotice) {
                 return response()->json([
-                    'errors' => ['is_sticky' => ['A sticky notice already exists. Please unsticky the existing one.']]
+                    'errors' => ['is_sticky' => ['A sticky notice already exists. Please unstick the existing one.']]
                 ], 422);
             }
         }
@@ -112,9 +112,9 @@ class AdminController extends Controller
 
         $notice->update($request->all());
 
-        return redirect()->route('admin.notices.index')
-            ->with('success', 'Notice updated successfully.');
-
+        return response()->json([
+            'notice' => $notice,
+        ]);
     }
 
     public function noticeDestroy($id)

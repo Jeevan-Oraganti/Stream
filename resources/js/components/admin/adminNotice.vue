@@ -313,12 +313,12 @@ export default {
         if (this.flashSuccess) {
             setTimeout(() => {
                 this.flashSuccess = "";
-            }, 1000);
+            }, 3000);
         }
         if (this.flashError) {
             setTimeout(() => {
                 this.flashError = "";
-            }, 1000);
+            }, 3000);
         }
     }
 };

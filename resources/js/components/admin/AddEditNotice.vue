@@ -81,14 +81,6 @@ export default {
             type: Object,
             default: null,
         },
-        flashSuccess: {
-            type: String,
-            default: ''
-        },
-        flashError: {
-            type: String,
-            default: ''
-        },
     },
     data() {
         return {
@@ -109,10 +101,13 @@ export default {
                 }
                 this.localFlashSuccess = "Notice saved successfully";
 
-                setTimeout(() => {
-                    this.localFlashSuccess = '';
-                    window.location.href='/admin/notices';
-                }, 1000);
+                if (this.localFlashSuccess) {
+                    setTimeout(() => {
+                        this.localFlashSuccess = '';
+                    }, 3000);
+                }
+                window.location.href = '/admin/notices';
+
             } catch (error) {
                 this.localFlashError = "Error saving the notice";
                 if (error.response && error.response.status === 422) {
@@ -120,9 +115,12 @@ export default {
                 } else {
                     console.error('Error saving notice:', error);
                 }
-                setTimeout(() => {
-                    this.localFlashError = '';
-                }, 3000);
+
+                if(this.localFlashError) {
+                    setTimeout(() => {
+                        this.localFlashError = '';
+                    }, 3000);
+                }
             }
         },
         clearError(field) {
