@@ -24,7 +24,7 @@
                     </div>
                     <div class="flex items-center mb-4">
                         <div class="relative w-full">
-                            <input type="text" v-model="NoticeSearchQuery" placeholder="Search..."
+                            <input type="text" ref="selectSearch" v-model="NoticeSearchQuery" placeholder="Search..."
                                    class="text-sm text-gray-800 w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"/>
                             <span class="absolute right-3 top-1/2 transform -translate-y-1/2">
                                 <i class="fas fa-search"></i>
@@ -79,7 +79,7 @@
                             <td
                                 class="border-b whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
                                     <span v-if="notice.form.data.is_sticky">
-                                        <i class="fas fa-star text-yellow-500 fa-spin"></i>
+                                        <i class="fas fa-star text-yellow-500 fa-beat-fade"></i>
                                     </span>
                                 <span v-if="!notice.form.data.is_sticky">
                                         <i class="far fa-star text-gray-500"></i>
@@ -179,8 +179,8 @@
                         :class="row.notice_type && row.notice_type.color ? 'text-' + row.notice_type.color + '-500' : 'text-gray-500'">
                         {{ row.notice_type }}
                     </td>
-                    <td class="border-b px-3 py-4 text-sm text-gray-500">{{ row.expiry_date }}</td>
-                    <td class="border-b px-3 py-4 text-sm text-gray-500">{{ row.created_at }}</td>
+                    <td class="border-b px-3 py-4 text-sm text-gray-500">{{ row.expiry_date | ago}}</td>
+                    <td class="border-b px-3 py-4 text-sm text-gray-500">{{ row.created_at | ago}}</td>
                     <td class="border-b px-3 py-4 text-sm text-gray-500">
                         <button @click="deleteNotice(row.id)" class="text-red-500 hover:bg-red-900">
                             <i class="fas fa-trash mr-3" style="color:red"></i>
@@ -254,6 +254,12 @@ export default {
         };
     },
     methods: {
+        focusSearchBar(event) {
+          if (event.key === "/") {
+              event.preventDefault();
+              this.$refs.selectSearch.focus();
+          }
+        },
         canEdit(userId) {
             return userId === 1;
         },
@@ -350,7 +356,7 @@ export default {
     watch: {
         NoticeSearchQuery: debounce(function () {
             this.fetchNotices('/admin/notices');
-        }, 300),
+        }, 500),
         flashSuccess(newVal) {
             if (newVal) {
                 setTimeout(() => {
@@ -364,7 +370,7 @@ export default {
                     this.localFlashError = "";
                 }, 3000);
             }
-        }
+        },
     },
     filters: {
         ago(date) {
@@ -400,10 +406,11 @@ export default {
             }, 3000);
         }
 
-        $(document).ready(function () {
-            $('#noticesTable').DataTable();
-        });
-    }
+        window.addEventListener("keydown", this.focusSearchBar);
+    },
+    beforeUnmount() {
+        window.removeEventListener("keydown", this.focusSearchBar);
+    },
 };
 </script>
 
