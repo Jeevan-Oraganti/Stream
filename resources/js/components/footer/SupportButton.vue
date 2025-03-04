@@ -4,7 +4,7 @@
             Support
         </a>
 
-        <modal name="contact-support-modal" height="auto" width="50%" :pivotY=".5" class="rounded-none shadow-inner">
+        <modal name="contact-support-modal" height="auto" width="50%" :pivotY=".5" class="rounded-none shadow-inner" :styles="{ backgroundColor: 'transparent' }">
             <div class="container mx-auto py-6 bg-gray-900 text-white">
                 <h1 class="text-2xl text-center font-semibold mb-6">Have a Question?</h1>
 

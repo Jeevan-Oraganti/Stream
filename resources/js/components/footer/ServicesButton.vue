@@ -4,7 +4,7 @@
             Our Services
         </a>
 
-        <modal name="services-modal" height="auto" width="50%" :pivotY="1" class="rounded-lg shadow-lg">
+        <modal name="services-modal" height="auto" width="50%" :pivotY="1" class="rounded-lg shadow-lg" :styles="{ backgroundColor: 'transparent' }">
             <div class="container py-4 px-16 bg-gray-900 text-white rounded-lg">
                 <!-- Modal Header -->
                 <h1 class="text-2xl text-center font-semibold mb-6 mt-6">Our Services</h1>

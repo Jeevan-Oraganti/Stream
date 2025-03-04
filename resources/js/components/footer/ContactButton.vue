@@ -4,7 +4,7 @@
             Contact Officials
         </a>
 
-        <modal name="contact-officials-modal" height="auto" width="50%" :pivotY=".5" class="rounded-lg shadow-lg">
+        <modal name="contact-officials-modal" height="auto" width="50%" :pivotY=".5" class="rounded-lg shadow-lg" :styles="{ backgroundColor: 'transparent' }">
             <div class="container mx-auto py-4 px-16 bg-gray-900 text-white rounded-lg">
                 <h1 class="text-2xl text-center font-semibold mb-6 mt-6">Contact Our Officials</h1>
 
