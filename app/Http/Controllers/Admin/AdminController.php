@@ -68,7 +68,6 @@ class AdminController extends Controller
         Notice::create($validatedData);
 
         return redirect()->route('admin.notices.index')->with('success', 'Notice added successfully.');
-
     }
 
     public function addNotice()
@@ -111,6 +110,30 @@ class AdminController extends Controller
         }
 
         $notice->update($request->all());
+
+        return response()->json([
+            'notice' => $notice,
+        ]);
+    }
+
+    public function toggleSticky($noticeId)
+    {
+        $notice = Notice::find($noticeId);
+
+        if (!$notice) {
+            return response()->json(['message' => 'Notice not found'], 404);
+        }
+
+        Notice::where('is_sticky', true)->update(['is_sticky' => false]);
+
+        if ($notice->is_sticky) {
+            $notice->update(['is_sticky' => false]);
+            return response()->json([
+                'notice' => $notice,
+            ]);
+        }
+
+        $notice->update(['is_sticky' => true]);
 
         return response()->json([
             'notice' => $notice,

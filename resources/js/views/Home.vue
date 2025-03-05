@@ -78,7 +78,7 @@
 <script>
 import moment from 'moment';
 import Status from '../models/Status';
-import Notice from "@/components/Notice.vue";
+import Notice from "@/components/notice/NoticeHeader.vue";
 import AddToStream from "../components/AddToStream.vue";
 import Tabs from "../components/Tabs.vue";
 import DarkModeToggle from '../components/DarkModeToggle.vue';

@@ -27,7 +27,7 @@
     };
 </script>
 <div id="app" class="bg-white">
-    <add-edit-notice></add-edit-notice>
+    <notice-form></notice-form>
 </div>
 </body>
 

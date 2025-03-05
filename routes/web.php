@@ -71,10 +71,11 @@ Route::middleware('can:admin')->group(function () {
     Route::delete('/admin/notice/{noticeId}', [AdminController::class, 'noticeDestroy']);
     Route::get('/admin/add-notice', [AdminController::class, 'addNotice']);
     Route::get('/admin/edit-notice/{noticeId}', [AdminController::class, 'editNotice']);
+    Route::post('/admin/notice/{noticeId}/toggle-sticky', [AdminController::class, 'toggleSticky']);
 });
 
 
-Route::get('/notice', [NoticeController::class, 'getLatestNotice']);
+Route::get('/notices', [NoticeController::class, 'getLatestNotice']);
 
 Route::middleware('auth')->group(function () {
     Route::get('/notices/unread', [NoticeController::class, 'unread']);

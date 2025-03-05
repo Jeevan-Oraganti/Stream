@@ -20,15 +20,15 @@ import FAQ from "./views/FAQ.vue";
 import Tooltippy from "./components/Tooltippy.vue";
 import PinnedToTop from "./components/PinnedToTop.vue";
 import "tippy.js/dist/tippy.css";
-import Notice from "./components/Notice.vue";
+import Notice from "./components/notice/NoticeHeader.vue";
 import Dashboard from "@/components/admin/Dashboard.vue";
 import SearchBar from "./components/SearchBar.vue";
 import LoadingBar from "./components/LoadingBar.vue";
 import LoginForm from "./views/session/LoginForm.vue";
 import RegisterForm from "./views/session/RegisterForm.vue";
-import adminNotice from "./components/admin/adminNotice.vue";
-import Pagination from "./components/Pagination.vue";
-import AddEditNotice from "@/components/admin/AddEditNotice.vue";
+import Pagination from "@/components/Pagination.vue";
+import noticeForm from "@/components/notice/admin/NoticeForm.vue";
+import noticesList from "@/components/notice/admin/NoticesList.vue";
 
 Vue.component("Welcome", Welcome);
 Vue.component("Carousel", Carousel);
@@ -53,9 +53,9 @@ Vue.component("SearchBar", SearchBar);
 Vue.component("LoadingBar", LoadingBar);
 Vue.component("LoginForm", LoginForm);
 Vue.component("RegisterForm", RegisterForm);
-Vue.component("adminNotice", adminNotice);
+Vue.component("noticesList", noticesList);
 Vue.component("Pagination", Pagination);
-Vue.component("AddEditNotice", AddEditNotice);
+Vue.component("noticeForm", noticeForm);
 
 new Vue({
     el: "#app",

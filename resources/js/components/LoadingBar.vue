@@ -17,7 +17,8 @@ export default {
 
 <style scoped>
 .loading-bar {
-    position: fixed;
+    position: relative;
+    border-radius: 10px;
     top: 0;
     left: 0;
     height: 5px;

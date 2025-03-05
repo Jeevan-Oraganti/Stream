@@ -74,7 +74,7 @@
 </template>
 
 <script>
-import CNotice from "@/utilities/CNotice.js";
+import CNotice from "@/components/notice/CNotice.js";
 import { debounce } from "lodash";
 
 export default {

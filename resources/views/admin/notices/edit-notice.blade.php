@@ -27,9 +27,9 @@
     };
 </script>
 <div id="app" class="bg-white">
-    <add-edit-notice
+    <notice-form
         :notice="{{ json_encode($notice) }}">
-    </add-edit-notice>
+    </notice-form>
 </div>
 </body>
 

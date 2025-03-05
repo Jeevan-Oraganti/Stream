@@ -1,6 +1,5 @@
 <template>
     <div class="lg:flex-row lg:space-x-12 items-start p-8">
-        <LoadingBar :progress="progress" v-if="loading" />
         <div class="w-full mx-auto my-10 p-6 bg-white border rounded-md">
             <div class="-mx-4 -my-2 overflow-x-auto sm:-mx-6 lg:-mx-8 sm:flex-auto">
                 <div class="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
@@ -11,13 +10,13 @@
                         </span>
                         <span>
                             <button
-                                class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"><a
-                                    href="/admin/add-notice">Publish Notice</a>
-                            </button>
-                        </span>
-                    </div>
-                    <div v-if="localFlashSuccess" class="notification is-success">
-                        {{ localFlashSuccess }}
+                            class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"><a
+                            href="/admin/add-notice">Add Notice</a>
+                        </button>
+                    </span>
+                </div>
+                <div v-if="localFlashSuccess" class="notification is-success">
+                    {{ localFlashSuccess }}
                     </div>
                     <div v-if="localFlashError" class="notification is-danger">
                         {{ localFlashError }}
@@ -25,10 +24,11 @@
                     <div class="flex items-center mb-4">
                         <div class="relative w-full">
                             <input type="text" ref="selectSearch" v-model="NoticeSearchQuery" placeholder="Search..."
-                                class="text-sm text-gray-800 w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" />
+                            class="text-sm text-gray-800 w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" />
                             <span class="absolute right-3 top-1/2 transform -translate-y-1/2">
                                 <i class="fas fa-search"></i>
                             </span>
+                            <LoadingBar :progress="progress" v-if="loading" />
                         </div>
                     </div>
                     <table class="min-w-full divide-y divide-gray-300">
@@ -53,7 +53,7 @@
                                     Created
                                     At
                                 </th>
-                                <th scope="col" class="px-3 py-4 text-left text-sm font-semibold text-gray-900">Actions
+                                <th scope="col" class="px-3 py-4 text-left text-sm font-semibold text-gray-900">Delete
                                 </th>
                             </tr>
                         </thead>
@@ -76,15 +76,12 @@
                                     (localPagination.current_page - 1) * localPagination.per_page + index + 1
                                 }}
                                 </td>
-                                <td
-                                    class="border-b whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
-                                    <span v-if="notice.form.data.is_sticky">
-                                        <i class="fas fa-star text-yellow-500 fa-fade"></i>
-                                    </span>
-                                    <span v-if="!notice.form.data.is_sticky">
-                                        <i class="far fa-star text-gray-500"></i>
-                                    </span>
-                                    {{ notice.form.data.name }}
+                                <td class="border-b whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
+                                <span @click="toggleSticky(notice)" v-if="notice.form.data.is_sticky"><i class="fas fa-star" style="color:orange; cursor: pointer;"></i></span>
+                                <span @click="toggleSticky(notice)" v-else><i class="far fa-star" style="cursor: pointer;"></i></span>
+                                    <a :href="canEdit(user.id) ? `/admin/edit-notice/${notice.id}` : '#'" :style="{ color: canEdit(user.id) ? 'dodgerblue' : 'text-gray-900' }">
+                                        {{ notice.form.data.name }}
+                                    </a>
                                 </td>
                                 <td class="border-b px-3 py-4 text-sm text-gray-500">
                                     {{ notice.form.data.description }}
@@ -110,7 +107,7 @@
                                             'Unknown' | ago
                                     }}
                                 </td>
-                                <td class="border-b px-3 py-4 text-sm space-x-3">
+                                <td class="border-b px-3 py-4 text-sm">
                                     <span v-if="deletingNoticeId !== notice.id">
                                         <button @click="deleteNotice(notice)" class="text-red-500 hover:bg-red-900">
                                             <i class="fas fa-trash" style="color:red"></i>
@@ -119,12 +116,6 @@
                                     <span v-if="deletingNoticeId === notice.id">
                                         <div class="delete-loader"></div>
                                     </span>
-                                    <button :disabled="!canEdit(user.id)">
-                                        <a :href="canEdit(user.id) ? `/admin/edit-notice/${notice.id}` : '#'">
-                                            <i class="fas fa-edit"
-                                                :style="{ color: canEdit(user.id) ? 'dodgerblue' : 'gray' }"></i>
-                                        </a>
-                                    </button>
                                 </td>
                             </tr>
                         </tbody>
@@ -201,13 +192,13 @@
 </template>
 
 <script>
-import CNotice from "@/utilities/CNotice";
+import CNotice from "@/components/notice/CNotice.js";
 import { ref } from 'vue';
-import Pagination from "../Pagination.vue";
+import Pagination from "@/components/Pagination.vue";
 import axios from 'axios';
 import { debounce } from "lodash";
 import moment from "moment-timezone";
-import LoadingBar from "../LoadingBar.vue";
+import LoadingBar from "@/components/LoadingBar.vue";
 import DataTable from "datatables.net-dt";
 import "datatables.net-dt/css/dataTables.dataTables.css";
 import "datatables.net-dt";
@@ -255,6 +246,20 @@ export default {
         };
     },
     methods: {
+        async toggleSticky(notice) {
+            try {
+                const response = await notice.toggleSticky();
+                if (response.status === 200) {
+                    this.localFlashSuccess = "Notice updated successfully!";
+                    await this.fetchNotices();
+                }
+            } catch (error) {
+                console.error("Error toggling sticky notice:", error);
+                this.localFlashError = "An error occurred while updating the notice.";
+            } finally {
+                window.location.href = '/admin/notices';
+            }
+        },
         focusSearchBar(event) {
             if (event.key === "/") {
                 event.preventDefault();
@@ -269,22 +274,23 @@ export default {
         },
         async deleteNotice(notice) {
             if (confirm("Are you sure you want to delete this notice?")) {
-                this.deletingNoticeId = notice.id;
-                try {
-                    const response = await notice.delete();
-                    if (response.status === 200) {
-                        this.localFlashSuccess = "Notice deleted successfully!";
-                        await this.fetchNotices();
-                        window.location.reload();
-                    }
-                } catch (error) {
-                    if (error.response && error.response.status === 403) {
-                        this.localFlashError = "You are not authorized to delete this notice!";
-                    } else {
-                        this.localFlashError = "An error occurred while deleting the notice.";
-                    }
-                    window.location.reload();
+            this.deletingNoticeId = notice.id;
+            try {
+                const response = await notice.delete();
+                if (response.status === 200) {
+                this.localFlashSuccess = "Notice deleted successfully!";
+                await this.fetchNotices();
                 }
+            } catch (error) {
+                if (error.response && error.response.status === 403) {
+                this.localFlashError = "You are not authorized to delete this notice!";
+                } else {
+                this.localFlashError = "An error occurred while deleting the notice.";
+                }
+            } finally {
+                window.location.href = '/admin/notices';
+                this.deletingNoticeId = null;
+            }
             }
         },
         async fetchNotices(url = this.baseUrl) {
@@ -344,7 +350,7 @@ export default {
     },
     watch: {
         NoticeSearchQuery: debounce(function () {
-            this.fetchNotices('/admin/notices');
+            this.fetchNotices();
         }, 500),
         flashSuccess(newVal) {
             if (newVal) {

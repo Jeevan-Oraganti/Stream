@@ -1,5 +1,5 @@
 import axios from "axios";
-import CForm from "./CForm";
+import CForm from "@/components/notice/CForm.js";
 import moment from "moment/moment.js";
 
 export default class CNotice {
@@ -23,34 +23,22 @@ export default class CNotice {
         };
     }
 
-    initializeFromRaw(rawNotice) {
-        this.id = rawNotice.id;
-        this.form.data = {
-            name: rawNotice.name,
-            description: rawNotice.description,
-            is_sticky: rawNotice.is_sticky,
-            notice_type_id: rawNotice.notice_type_id,
-            expiry_date: rawNotice.expiry_date,
-            created_at: rawNotice.created_at,
-        };
-    }
-
     static async fetchNoticesListForAdmin(url, searchQuery) {
         try {
             const response = await axios.get(url, {
-            params: { search: searchQuery },
+                params: { search: searchQuery },
             });
             return {
-            notices: response.data.notices.map(
-                (noticeJson) => new CNotice(noticeJson.id, noticeJson)
-            ),
-            pagination: response.data.pagination,
+                notices: response.data.notices.map(
+                    (noticeJson) => new CNotice(noticeJson.id, noticeJson)
+                ),
+                pagination: response.data.pagination,
             };
         } catch (error) {
             console.error("Error fetching notices:", error);
             return {
-            notices: [],
-            pagination: null,
+                notices: [],
+                pagination: null,
             };
         }
     }
@@ -77,15 +65,29 @@ export default class CNotice {
     }
 
     async delete() {
-        if (!this.id) {
-            throw new Error("Cannot delete notice without an ID.");
-        }
+        if (!this.id) throw new Error("Cannot delete notice without an ID.");
         try {
             const response = await axios.delete(`/admin/notice/${this.id}`);
+            console.log("Notice deleted:", response.data);
             return response.data;
         } catch (error) {
-            console.error("Error deleting notice:", error);
-            return [];
+            console.error("Error deleting notice:", error.response?.data || error);
+            return { success: false, message: "Failed to delete notice." };
         }
     }
+
+    async toggleSticky() {
+        if (!this.id) {
+            throw new Error("Cannot toggle sticky without an ID.");
+        }
+        try {
+            const response = await axios.post(`/admin/notice/${this.id}/toggle-sticky`);
+            console.log("Notice sticky status toggled:", response.data);
+            return response.data;
+        } catch (error) {
+            console.error("Error toggling sticky status:", error.response?.data || error);
+            return { success: false, message: "Failed to toggle sticky status." };
+        }
+    }
+
 }
