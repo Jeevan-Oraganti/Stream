@@ -21,7 +21,7 @@ export default {
     border-radius: 10px;
     top: 0;
     left: 0;
-    height: 5px;
+    height: 4px;
     width: 0;
     background: linear-gradient(90deg, #007bff 0%, #0056b3 80%, #00d9ff 100%);
     transition: width 0.3s ease, opacity 0.3s ease;
