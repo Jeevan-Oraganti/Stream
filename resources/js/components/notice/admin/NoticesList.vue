@@ -71,7 +71,7 @@
                                     </div>
                                 </td>
                             </tr>
-                            <tr v-for="(notice, index) in notices" :key="notice.id" class="text-gray-700">
+                            <tr v-for="(notice, index) in notices" :key="notice.id" :class="{ 'bg-green-100': isActive(notice) }" class="text-gray-700">
                                 <td class="border-b whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{
                                     (localPagination.current_page - 1) * localPagination.per_page + index + 1
                                 }}
@@ -126,7 +126,7 @@
                 </div>
             </div>
         </div>
-        <div class="inline my-10">
+        <!-- <div class="inline my-10">
             <div class="w-full mx-auto my-10 p-6 bg-white border rounded-md">
                 <table id="noticesTable" class="min-w-full divide-y divide-gray-300">
                     <thead>
@@ -172,22 +172,16 @@
                             </td>
                             <td class="border-b px-3 py-4 text-sm text-gray-500">{{ row.expiry_date }}</td>
                             <td class="border-b px-3 py-4 text-sm text-gray-500">{{ row.created_at | ago }}</td>
-                            <td class="border-b px-3 py-4 text-sm text-gray-500">
+                            <td class="border-b px-3 py-4 text-sm text-gray-500 justify-center align-center">
                                 <button @click="deleteNotice(row.id)" class="text-red-500 hover:bg-red-900">
                                     <i class="fas fa-trash mr-3" style="color:red"></i>
-                                </button>
-                                <button :disabled="!canEdit(user.id)">
-                                    <a :href="canEdit(user.id) ? '/admin/edit-notice/${notice.id}' : '#'">
-                                        <i class="fas fa-edit"
-                                            :style="{ color: canEdit(user.id) ? 'dodgerblue' : 'gray' }"></i>
-                                    </a>
                                 </button>
                             </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-        </div>
+        </div> -->
     </div>
 </template>
 
@@ -246,6 +240,11 @@ export default {
         };
     },
     methods: {
+        isActive(notice) {
+            const now = new Date();
+            const expiryDate = new Date(notice.form.data.expiry_date);
+            return expiryDate > now;
+        },
         async toggleSticky(notice) {
             try {
                 const response = await notice.toggleSticky();
@@ -446,6 +445,7 @@ export default {
     border-radius: 50%;
     animation: spin 1s linear infinite;
 }
+
 
 @keyframes spin {
     0% {
