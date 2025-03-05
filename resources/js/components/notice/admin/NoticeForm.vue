@@ -2,7 +2,7 @@
     <div class="max-w-4xl mx-auto my-10 p-6 bg-white border rounded-md">
         <h2 class="text-xl font-semibold mb-4 text-gray-800">{{
             editingNoticeId ? 'Edit Notice' : 'Add New Notice'
-        }}</h2>
+            }}</h2>
         <div v-if="localFlashSuccess" class="notification is-success">
             {{ localFlashSuccess }}
         </div>
@@ -17,7 +17,7 @@
                     :class="{ 'border-red-500': form.hasError('name') }" @input="clearError('name')">
                 <span v-if="form.hasError('name')" class="text-red-500 text-sm mt-1 block">{{
                     form.getError('name')
-                }}</span>
+                    }}</span>
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700">Description</label>
@@ -27,7 +27,7 @@
                     @input="clearError('description')"></textarea>
                 <span v-if="form.hasError('description')" class="text-red-500 text-sm mt-1 block">{{
                     form.getError('description')
-                }}</span>
+                    }}</span>
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700">Notice Type</label>
@@ -41,7 +41,7 @@
                 </select>
                 <span v-if="form.hasError('notice_type_id')" class="text-red-500 text-sm mt-1 block">{{
                     form.getError('notice_type_id')
-                }}</span>
+                    }}</span>
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700">Expiry Date</label>
@@ -50,7 +50,7 @@
                     :class="{ 'border-red-500': form.hasError('expiry_date') }" @input="clearError('expiry_date')">
                 <span v-if="form.hasError('expiry_date')" class="text-red-500 text-sm mt-1 block">{{
                     form.getError('expiry_date')
-                }}</span>
+                    }}</span>
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700">Priority Notice</label>
@@ -63,7 +63,7 @@
                 </div>
                 <span v-if="form.hasError('is_sticky')" class="text-red-500 text-sm mt-1 block">{{
                     form.getError('is_sticky')
-                }}</span>
+                    }}</span>
             </div>
             <button type="submit"
                 class="w-full bg-indigo-500 text-white py-2 rounded-md hover:bg-indigo-600 transition duration-200">
@@ -73,7 +73,8 @@
     </div>
 </template>
 
-<script>import CNoticesAdmin from "@/utilities/CNoticesAdmin.js";
+<script>
+import CNotice from "@/utilities/CNotice.js";
 import { debounce } from "lodash";
 
 export default {
@@ -85,7 +86,7 @@ export default {
     },
     data() {
         return {
-            form: new CNoticesAdmin().form,
+            form: new CNotice().form,
             editingNoticeId: null,
             errors: {},
             localFlashSuccess: this.flashSuccess,
@@ -132,12 +133,7 @@ export default {
     },
     mounted() {
         if (this.notice) {
-            this.form.data.name = this.notice.name;
-            this.form.data.description = this.notice.description;
-            this.form.data.is_sticky = this.notice.is_sticky || false;
-            this.form.data.notice_type_id = this.notice.notice_type_id;
-            this.form.data.expiry_date = this.notice.expiry_date;
-            this.form.data.created_at = this.notice.created_at;
+            this.form.data = new CNotice(this.notice.id, this.notice).form.data;
             this.editingNoticeId = this.notice.id;
             if (this.form.data.expiry_date) {
                 this.form.data.expiry_date = new Date(this.form.data.expiry_date).toISOString().slice(0, 16);
@@ -218,15 +214,15 @@ export default {
     transition: .4s;
 }
 
-input:checked + .slider {
+input:checked+.slider {
     background-color: #2196F3;
 }
 
-input:focus + .slider {
+input:focus+.slider {
     box-shadow: 0 0 1px #2196F3;
 }
 
-input:checked + .slider:before {
+input:checked+.slider:before {
     -webkit-transform: translateX(26px);
     -ms-transform: translateX(26px);
     transform: translateX(26px);

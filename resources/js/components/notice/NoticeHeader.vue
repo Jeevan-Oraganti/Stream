@@ -21,9 +21,9 @@
 
 
 <script>
-import CNotice from '@/utilities/CNotice.js';
+import CNotice from "@/components/notice/CNotice.js";
 import moment from 'moment-timezone';
-import CNotices from "@/utilities/CNotices.js";
+import CNotices from "@/components/notice/CNotices.js";
 moment.tz.setDefault("Asia/Kolkata");
 
 export default {
@@ -53,10 +53,10 @@ export default {
         if (this.isLoggedIn) {
             document.cookie = "dismissed_notice=; expires=Thu, 01 Jan 1970 00:00:00; path=/";
             localStorage.removeItem('dismissedNotices');
-            this.notices = await CNotices.unreadNotices();
+            this.notices = await CNotices.unreadNoticesForUser();
         }
         else {
-            this.notices = await CNotices.fetchNotices();
+            this.notices = await CNotices.fetchNoticesForGuest();
         }
     },
     methods: {
