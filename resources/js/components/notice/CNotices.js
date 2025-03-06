@@ -1,10 +1,31 @@
 import axios from "axios";
+import CNotice from "@/components/notice/CNotice.js";
 
 export default class CNotices {
     //unreadNoticesForUser
     //unreadNoticesForGuest
     //unreadNotices
     //filterGuestNotices
+
+    static async fetchNoticesListForAdmin(url, searchQuery) {
+        try {
+            const response = await axios.get(url, {
+                params: { search: searchQuery },
+            });
+            return {
+                notices: response.data.notices.map(
+                    (noticeJson) => new CNotice(noticeJson.id, noticeJson)
+                ),
+                pagination: response.data.pagination,
+            };
+        } catch (error) {
+            console.error("Error fetching notices:", error);
+            return {
+                notices: [],
+                pagination: null,
+            };
+        }
+    }
 
     static async unreadNoticesForUser() {
         try {

@@ -156,14 +156,12 @@
 
 <script>
 import CNotice from "@/components/notice/CNotice.js";
+import CNotices from "@/components/notice/CNotices.js";
 import { ref } from 'vue';
 import Pagination from "@/components/Pagination.vue";
 import { debounce } from "lodash";
 import moment from "moment-timezone";
 import LoadingBar from "@/components/LoadingBar.vue";
-import DataTable from "datatables.net-dt";
-import "datatables.net-dt/css/dataTables.dataTables.css";
-import "datatables.net-dt";
 
 export default {
     components: {
@@ -203,10 +201,8 @@ export default {
         isActive(notice) {
             const now = new Date();
             const expiryDate = new Date(notice.form.data.expiry_date);
-            if (expiryDate > now && notice.form.data.is_active) {
-                return true;
-            }
-            return false;
+            return !!(expiryDate > now && notice.form.data.is_active);
+
         },
         async toggleSticky(notice) {
             try {
@@ -259,7 +255,7 @@ export default {
             try {
                 if (this.loading) return;
                 this.startLoading();
-                const results = await CNotice.fetchNoticesListForAdmin(url, this.NoticeSearchQuery);
+                const results = await CNotices.fetchNoticesListForAdmin(url, this.NoticeSearchQuery);
                 this.notices = results.notices;
                 this.localPagination = results.pagination;
                 this.stopLoading();

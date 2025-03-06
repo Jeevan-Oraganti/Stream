@@ -25,26 +25,6 @@ export default class CNotice {
         };
     }
 
-    static async fetchNoticesListForAdmin(url, searchQuery) {
-        try {
-            const response = await axios.get(url, {
-                params: { search: searchQuery },
-            });
-            return {
-                notices: response.data.notices.map(
-                    (noticeJson) => new CNotice(noticeJson.id, noticeJson)
-                ),
-                pagination: response.data.pagination,
-            };
-        } catch (error) {
-            console.error("Error fetching notices:", error);
-            return {
-                notices: [],
-                pagination: null,
-            };
-        }
-    }
-
     async acknowledge() {
         if (!this.id) return;
         try {

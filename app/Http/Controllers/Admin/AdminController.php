@@ -13,7 +13,7 @@ class AdminController extends Controller
 {
     public function noticeIndex(Request $request)
     {
-//        sleep(2);
+        sleep(2);
         $search = $request->input('search');
 
         $notices = Notice::with('noticeType')
