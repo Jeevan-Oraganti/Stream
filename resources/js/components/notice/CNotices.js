@@ -16,7 +16,7 @@ export default class CNotices {
         }
     }
 
-    static async fetchNoticesForGuest() {
+    static async unreadNoticesForGuest() {
         try {
             const dismissedNotice = localStorage.getItem("dismissedNotice");
             const response = await fetch("/notices");

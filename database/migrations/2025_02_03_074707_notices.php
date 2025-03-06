@@ -14,10 +14,12 @@ return new class extends Migration
         Schema::create('notices', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->text('description');
-            $table->boolean('is_sticky');
+            $table->text('description')->nullable();
+            $table->boolean('is_sticky')->default(false);
             $table->unsignedBigInteger('notice_type_id');
             $table->dateTime('expiry_date')->nullable();
+            $table->dateTime('expiry_date')->nullable();
+            $table->boolean('is_active')->default(false);
             $table->timestamps();
 
             $table->foreign('notice_type_id')->references('id')->on('notice_types')->onDelete('cascade');

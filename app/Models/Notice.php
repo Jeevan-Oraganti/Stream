@@ -23,6 +23,8 @@ class Notice extends Model
         'is_sticky',
         'notice_type_id',
         'expiry_date',
+        'scheduled_at',
+        'is_active',
     ];
 
     public function noticeType()

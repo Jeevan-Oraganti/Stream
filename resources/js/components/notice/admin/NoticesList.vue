@@ -10,13 +10,13 @@
                         </span>
                         <span>
                             <button
-                            class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"><a
-                            href="/admin/add-notice">Add Notice</a>
-                        </button>
-                    </span>
-                </div>
-                <div v-if="localFlashSuccess" class="notification is-success">
-                    {{ localFlashSuccess }}
+                                class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"><a
+                                    href="/admin/add-notice">Add Notice</a>
+                            </button>
+                        </span>
+                    </div>
+                    <div v-if="localFlashSuccess" class="notification is-success">
+                        {{ localFlashSuccess }}
                     </div>
                     <div v-if="localFlashError" class="notification is-danger">
                         {{ localFlashError }}
@@ -24,7 +24,7 @@
                     <div class="flex items-center mb-4">
                         <div class="relative w-full">
                             <input type="text" ref="selectSearch" v-model="NoticeSearchQuery" placeholder="Search..."
-                            class="text-sm text-gray-800 w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" />
+                                class="text-sm text-gray-800 w-full p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" />
                             <span class="absolute right-3 top-1/2 transform -translate-y-1/2">
                                 <i class="fas fa-search"></i>
                             </span>
@@ -50,6 +50,13 @@
                                     Date
                                 </th>
                                 <th scope="col" class="px-3 py-4 text-left text-sm font-semibold text-gray-900">
+                                    Scheduled
+                                    At
+                                </th>
+                                <th scope="col" class="px-3 py-4 text-left text-sm font-semibold text-gray-900">
+                                    Active
+                                </th>
+                                <th scope="col" class="px-3 py-4 text-left text-sm font-semibold text-gray-900">
                                     Created
                                     At
                                 </th>
@@ -65,21 +72,26 @@
                                             <i class="fas fa-search text-4xl text-gray-400 mb-2"></i>
                                             <p class="text-lg text-gray-600 mb-2">No results found for "{{
                                                 NoticeSearchQuery
-                                            }}"</p>
+                                                }}"</p>
                                             <p class="text-sm text-gray-500">Try clearing the search query.</p>
                                         </div>
                                     </div>
                                 </td>
                             </tr>
-                            <tr v-for="(notice, index) in notices" :key="notice.id" :class="{ 'bg-green-100': isActive(notice) }" class="text-gray-700">
+                            <tr v-for="(notice, index) in notices" :key="notice.id"
+                                :class="{ 'bg-green-100': isActive(notice) }" class="text-gray-700">
                                 <td class="border-b whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{
                                     (localPagination.current_page - 1) * localPagination.per_page + index + 1
-                                }}
+                                    }}
                                 </td>
-                                <td class="border-b whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
-                                <span @click="toggleSticky(notice)" v-if="notice.form.data.is_sticky"><i class="fas fa-star" style="color:orange; cursor: pointer;"></i></span>
-                                <span @click="toggleSticky(notice)" v-else><i class="far fa-star" style="cursor: pointer;"></i></span>
-                                    <a :href="canEdit(user.id) ? `/admin/edit-notice/${notice.id}` : '#'" :style="{ color: canEdit(user.id) ? 'dodgerblue' : 'text-gray-900' }">
+                                <td
+                                    class="border-b whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
+                                    <span @click="toggleSticky(notice)" v-if="notice.form.data.is_sticky"><i
+                                            class="fas fa-star" style="color:orange; cursor: pointer;"></i></span>
+                                    <span @click="toggleSticky(notice)" v-else><i class="far fa-star"
+                                            style="cursor: pointer;"></i></span>
+                                    <a :href="canEdit(user.id) ? `/admin/edit-notice/${notice.id}` : '#'"
+                                        :style="{ color: canEdit(user.id) ? 'dodgerblue' : 'text-gray-900' }">
                                         {{ notice.form.data.name }}
                                     </a>
                                 </td>
@@ -99,6 +111,19 @@
                                         {{ new Date(notice.form.data.expiry_date).toLocaleString() | ago }}
                                     </span>
                                     <span v-else class="whitespace-nowrap text-red-500">No Expiry</span>
+                                </td>
+                                <td class="border-b whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                    {{
+                                        notice.form.data.scheduled_at ? new
+                                            Date(notice.form.data.scheduled_at).toLocaleString()
+                                            :
+                                            'Unknown' | ago
+                                    }}
+                                </td>
+                                <td class="border-b whitespace-nowrap px-3 py-4 text-sm text-gray-500">
+                                    {{
+                                        isActive(notice) ? 'Yes' : 'No'
+                                    }}
                                 </td>
                                 <td class="border-b whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                                     {{
@@ -126,62 +151,6 @@
                 </div>
             </div>
         </div>
-        <!-- <div class="inline my-10">
-            <div class="w-full mx-auto my-10 p-6 bg-white border rounded-md">
-                <table id="noticesTable" class="min-w-full divide-y divide-gray-300">
-                    <thead>
-                        <tr class="border-b">
-                            <th scope="col"
-                                class="py-4 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">#
-                            </th>
-                            <th scope="col"
-                                class="py-4 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">Title
-                            </th>
-                            <th scope="col"
-                                class="py-4 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">
-                                Description
-                            </th>
-                            <th scope="col"
-                                class="py-4 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">Type
-                            </th>
-                            <th scope="col"
-                                class="py-4 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">Expiry
-                                Date
-                            </th>
-                            <th scope="col"
-                                class="py-4 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">Created
-                                At
-                            </th>
-                            <th scope="col"
-                                class="py-4 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">Actions
-                            </th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="(row, index) in tableData" :key="index">
-                            <td class="border-b px-3 py-4 text-sm text-gray-500">{{ row.no }}</td>
-                            <td class="font-semibold border-b px-3 py-4 text-sm text-gray-900">
-                                <span v-if="row.is_sticky"><i class="fas fa-star" style="color:orange;"></i></span>
-                                <span v-else><i class="far fa-star"></i></span>
-                                {{ row.name }}
-                            </td>
-                            <td class="border-b px-3 py-4 text-sm text-gray-500">{{ row.description }}</td>
-                            <td class="border-b px-3 py-4 text-sm text-gray-500"
-                                :class="row.notice_type && row.notice_type.color ? 'text-' + row.notice_type.color + '-500' : 'text-gray-500'">
-                                {{ row.notice_type }}
-                            </td>
-                            <td class="border-b px-3 py-4 text-sm text-gray-500">{{ row.expiry_date }}</td>
-                            <td class="border-b px-3 py-4 text-sm text-gray-500">{{ row.created_at | ago }}</td>
-                            <td class="border-b px-3 py-4 text-sm text-gray-500 justify-center align-center">
-                                <button @click="deleteNotice(row.id)" class="text-red-500 hover:bg-red-900">
-                                    <i class="fas fa-trash mr-3" style="color:red"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </div> -->
     </div>
 </template>
 
@@ -189,7 +158,6 @@
 import CNotice from "@/components/notice/CNotice.js";
 import { ref } from 'vue';
 import Pagination from "@/components/Pagination.vue";
-import axios from 'axios';
 import { debounce } from "lodash";
 import moment from "moment-timezone";
 import LoadingBar from "@/components/LoadingBar.vue";
@@ -203,14 +171,6 @@ export default {
         LoadingBar,
     },
     props: {
-        noticesJson: {
-            type: Array,
-            required: true,
-        },
-        pagination: {
-            type: Object,
-            required: true,
-        },
         flashSuccess: {
             type: String,
             default: ''
@@ -243,7 +203,10 @@ export default {
         isActive(notice) {
             const now = new Date();
             const expiryDate = new Date(notice.form.data.expiry_date);
-            return expiryDate > now;
+            if (expiryDate > now && notice.form.data.is_active) {
+                return true;
+            }
+            return false;
         },
         async toggleSticky(notice) {
             try {
@@ -273,23 +236,23 @@ export default {
         },
         async deleteNotice(notice) {
             if (confirm("Are you sure you want to delete this notice?")) {
-            this.deletingNoticeId = notice.id;
-            try {
-                const response = await notice.delete();
-                if (response.status === 200) {
-                this.localFlashSuccess = "Notice deleted successfully!";
-                await this.fetchNotices();
+                this.deletingNoticeId = notice.id;
+                try {
+                    const response = await notice.delete();
+                    if (response.status === 200) {
+                        this.localFlashSuccess = "Notice deleted successfully!";
+                        await this.fetchNotices();
+                    }
+                } catch (error) {
+                    if (error.response && error.response.status === 403) {
+                        this.localFlashError = "You are not authorized to delete this notice!";
+                    } else {
+                        this.localFlashError = "An error occurred while deleting the notice.";
+                    }
+                } finally {
+                    window.location.href = '/admin/notices';
+                    this.deletingNoticeId = null;
                 }
-            } catch (error) {
-                if (error.response && error.response.status === 403) {
-                this.localFlashError = "You are not authorized to delete this notice!";
-                } else {
-                this.localFlashError = "An error occurred while deleting the notice.";
-                }
-            } finally {
-                window.location.href = '/admin/notices';
-                this.deletingNoticeId = null;
-            }
             }
         },
         async fetchNotices(url = this.baseUrl) {
@@ -333,19 +296,6 @@ export default {
         localFlashError() {
             return this.flashError;
         },
-        tableData() {
-            return this.notices.map((notice, index) => ({
-                no: (this.localPagination.current_page - 1) * this.localPagination.per_page + index + 1,
-                id: notice.form.data.id,
-                name: notice.form.data.name,
-                description: notice.form.data.description,
-                is_sticky: notice.form.data.is_sticky,
-                notice_type: notice.form.data.notice_type ? notice.form.data.notice_type.type : 'Unknown',
-                expiry_date: notice.form.data.expiry_date ? new Date(notice.form.data.expiry_date).toLocaleString() : 'No Expiry',
-                created_at: notice.form.data.created_at ? new Date(notice.form.data.created_at).toLocaleString() : 'Unknown',
-
-            }));
-        }
     },
     watch: {
         NoticeSearchQuery: debounce(function () {
@@ -371,15 +321,13 @@ export default {
             if (!date) return "No Expiry";
             const format = "DD/MM/YYYY, HH:mm:ss";
             const parsedDate = moment(date, format, true);
-            return parsedDate.isValid() ? parsedDate.fromNow() : "Invalid date";
+            return parsedDate.isValid() ? parsedDate.fromNow() : "No Date";
         },
     },
     async mounted() {
         this.deletingNoticeId = null;
 
         await this.fetchNotices();
-
-        this.localPagination = this.pagination;
 
         if (this.flashSuccess) {
             setTimeout(() => {
@@ -391,8 +339,6 @@ export default {
                 this.flashError = "";
             }, 3000);
         }
-
-        var table = new DataTable('#noticesTable');
 
         window.addEventListener("keydown", this.focusSearchBar);
     },

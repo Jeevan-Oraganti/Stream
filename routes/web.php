@@ -75,9 +75,9 @@ Route::middleware('can:admin')->group(function () {
 });
 
 
-Route::get('/notices', [NoticeController::class, 'getLatestNotice']);
+Route::get('/notices', [NoticeController::class, 'unreadNoticesForGuest']);
 
 Route::middleware('auth')->group(function () {
-    Route::get('/notices/unread', [NoticeController::class, 'unread']);
+    Route::get('/notices/unread', [NoticeController::class, 'unreadNoticesForUser']);
     Route::post('/notice/{noticeId}/acknowledge', [NoticeController::class, 'acknowledge']);
 });
