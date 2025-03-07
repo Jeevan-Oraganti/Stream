@@ -30,10 +30,8 @@ class ScheduledNotices extends Command
 
         $noticesToActivate = Notice::where(function ($query) {
             $query->where('scheduled_at', '<=', now())
-            ->orWhereNull('scheduled_at');
-        })
-            ->where(function ($query) {
-                $query->where('expiry_date', '>', now())
+                ->orWhereNull('scheduled_at')
+                ->where('expiry_date', '>', now())
                 ->orWhereNull('expiry_date');
             })
             ->where('is_active', false)
@@ -43,18 +41,21 @@ class ScheduledNotices extends Command
             $notice->update(['is_active' => true]);
             Log::info("Notice ID {$notice->id} is now active.");
         }
-        Log::info('Scheduled notices sent');
 
-        $noticesToDeactivate = Notice::where('expiry_date', '<=', now())
-            ->whereNotNull('expiry_date')
+        $noticesToDeactivate = Notice::where(function ($query) {
+            $query->where('expiry_date', '<=', now())
+                ->whereNotNull('expiry_date')
+                ->orWhere('scheduled_at', '>', now())
+                ->whereNotNull('scheduled_at');
+        })
             ->where('is_active', true)
             ->get();
 
         foreach ($noticesToDeactivate as $notice) {
             $notice->update(['is_active' => false]);
-            Log::info("Notice ID {$notice->id} has expired and is now inactive.");
+            Log::info("Notice ID {$notice->id} has expired or is scheduled for the future and is now inactive.");
         }
 
-        Log::info('Scheduled notices processed');
+        Log::info('Scheduled notices Sent');
     }
 }
