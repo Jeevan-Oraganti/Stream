@@ -72,7 +72,7 @@
                                             <i class="fas fa-search text-4xl text-gray-400 mb-2"></i>
                                             <p class="text-lg text-gray-600 mb-2">No results found for "{{
                                                 NoticeSearchQuery
-                                                }}"</p>
+                                            }}"</p>
                                             <p class="text-sm text-gray-500">Try clearing the search query.</p>
                                         </div>
                                     </div>
@@ -82,7 +82,7 @@
                                 :class="{ 'bg-green-100': isActive(notice) }" class="text-gray-700">
                                 <td class="border-b whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{
                                     (localPagination.current_page - 1) * localPagination.per_page + index + 1
-                                    }}
+                                }}
                                 </td>
                                 <td
                                     class="border-b whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
@@ -108,14 +108,14 @@
                                 </td>
                                 <td class="border-b whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                                     <span v-if="notice.form.data.expiry_date">
-                                        {{ new Date(notice.form.data.expiry_date).toLocaleString() | ago }}
+                                        {{ new Date(notice.form.data.expiry_date) | ago }}
                                     </span>
                                     <span v-else class="whitespace-nowrap text-red-500">No Expiry</span>
                                 </td>
                                 <td class="border-b whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                                     {{
                                         notice.form.data.scheduled_at ? new
-                                            Date(notice.form.data.scheduled_at).toLocaleString()
+                                            Date(notice.form.data.scheduled_at)
                                             :
                                             'Unknown' | ago
                                     }}
@@ -127,7 +127,7 @@
                                 </td>
                                 <td class="border-b whitespace-nowrap px-3 py-4 text-sm text-gray-500">
                                     {{
-                                        notice.form.data.created_at ? new Date(notice.form.data.created_at).toLocaleString()
+                                        notice.form.data.created_at ? new Date(notice.form.data.created_at)
                                             :
                                             'Unknown' | ago
                                     }}
@@ -195,6 +195,8 @@ export default {
             interval: null,
             deletingNoticeId: null,
             baseUrl: "/admin/notices",
+            localFlashSuccess: '',
+            localFlashError: '',
         };
     },
     methods: {
@@ -208,14 +210,19 @@ export default {
             try {
                 const response = await notice.toggleSticky();
                 if (response.status === 200) {
+                    notice.form.data.is_sticky = response.data.notice.is_sticky;
                     this.localFlashSuccess = "Notice updated successfully!";
-                    await this.fetchNotices();
+                }
+                if (notice.form.data.is_sticky) {
+                    this.notices.forEach(n => {
+                        if (n.id !== notice.id) {
+                            n.form.data.is_sticky = false;
+                        }
+                    });
                 }
             } catch (error) {
                 console.error("Error toggling sticky notice:", error);
                 this.localFlashError = "An error occurred while updating the notice.";
-            } finally {
-                window.location.href = '/admin/notices';
             }
         },
         focusSearchBar(event) {
@@ -231,13 +238,17 @@ export default {
             return userId === 1;
         },
         async deleteNotice(notice) {
+            this.deletingNoticeId = notice.id;
             if (confirm("Are you sure you want to delete this notice?")) {
-                this.deletingNoticeId = notice.id;
                 try {
                     const response = await notice.delete();
+                    console.log('Response', response);
                     if (response.status === 200) {
                         this.localFlashSuccess = "Notice deleted successfully!";
-                        await this.fetchNotices();
+                        console.log('Before filter', this.notices);
+                        this.notices = this.notices.filter(n => n.id !== notice.id);
+                        console.log('After filter', this.notices);
+                        // await this.fetchNotices();
                     }
                 } catch (error) {
                     if (error.response && error.response.status === 403) {
@@ -246,7 +257,7 @@ export default {
                         this.localFlashError = "An error occurred while deleting the notice.";
                     }
                 } finally {
-                    window.location.href = '/admin/notices';
+                    // window.location.href = '/admin/notices';
                     this.deletingNoticeId = null;
                 }
             }
@@ -285,12 +296,6 @@ export default {
     computed: {
         filteredNotices() {
             return this.notices;
-        },
-        localFlashSuccess() {
-            return this.flashSuccess;
-        },
-        localFlashError() {
-            return this.flashError;
         },
     },
     watch: {

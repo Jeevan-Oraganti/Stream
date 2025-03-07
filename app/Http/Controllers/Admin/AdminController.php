@@ -144,7 +144,7 @@ class AdminController extends Controller
 
     public function noticeDestroy($id)
     {
-//        sleep(2);
+        sleep(2);
         $notice = Notice::findOrFail($id);
 
         if (Gate::allows('delete-notice')) {

@@ -49,9 +49,11 @@ export default class CNotice {
     async delete() {
         if (!this.id) throw new Error("Cannot delete notice without an ID.");
         try {
-            const response = await axios.delete(`/admin/notice/${this.id}`);
-            console.log("Notice deleted:", response.data);
-            return response.data;
+            const response = await axios.post(
+                `/admin/notice/${this.id}/delete`
+            );
+            console.log("Notice deleted:", response);
+            return response;
         } catch (error) {
             console.error(
                 "Error deleting notice:",
@@ -70,7 +72,7 @@ export default class CNotice {
                 `/admin/notice/${this.id}/toggle-sticky`
             );
             console.log("Notice sticky status toggled:", response.data);
-            return response.data;
+            return response;
         } catch (error) {
             console.error(
                 "Error toggling sticky status:",
