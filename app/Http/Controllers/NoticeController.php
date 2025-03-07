@@ -9,15 +9,12 @@ use Illuminate\Support\Facades\DB;
 
 class NoticeController extends Controller
 {
-    public function getLatestNotice(Request $request)
+    public function unreadNoticesForGuest(Request $request)
     {
         $dismissedNotices = json_decode($request->cookie('dismissed_notice', '[]'), true) ?? [];
 
         $notices = Notice::with('noticeType')
-            ->where(function ($query) {
-                $query->where('expiry_date', '>', now())
-                    ->orWhereNull('expiry_date');
-            })
+            ->where('is_active', true)
             ->whereNotIn('id', $dismissedNotices)
             ->orderBy('is_sticky', 'desc')
             ->orderBy('created_at', 'desc')
@@ -28,21 +25,18 @@ class NoticeController extends Controller
     }
 
 
-    public function unread()
+    public function unreadNoticesForUser()
     {
         if (Auth::check()) {
             $userId = Auth::id();
 
             $unreadNotices = Notice::with('noticeType')
+                ->where('is_active', true)
                 ->leftJoin('user_notices', function ($join) use ($userId) {
                     $join->on('notices.id', '=', 'user_notices.notice_id')
                         ->where('user_notices.user_id', '=', $userId);
                 })
                 ->whereNull('user_notices.user_id')
-                ->where(function ($query) {
-                    $query->where('expiry_date', '>', now())
-                        ->orWhereNull('expiry_date');
-                })
                 ->select('notices.*')
                 ->orderBy('is_sticky', 'desc')
                 ->orderBy('created_at', 'desc')

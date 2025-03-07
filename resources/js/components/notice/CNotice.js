@@ -11,6 +11,8 @@ export default class CNotice {
             "is_sticky",
             "notice_type_id",
             "expiry_date",
+            "scheduled_at",
+            "is_active",
             "created_at",
         ]);
 
@@ -21,26 +23,6 @@ export default class CNotice {
                 moment().add(1, "week").format("YYYY-MM-DD"),
             is_sticky: data.is_sticky || false,
         };
-    }
-
-    static async fetchNoticesListForAdmin(url, searchQuery) {
-        try {
-            const response = await axios.get(url, {
-                params: { search: searchQuery },
-            });
-            return {
-                notices: response.data.notices.map(
-                    (noticeJson) => new CNotice(noticeJson.id, noticeJson)
-                ),
-                pagination: response.data.pagination,
-            };
-        } catch (error) {
-            console.error("Error fetching notices:", error);
-            return {
-                notices: [],
-                pagination: null,
-            };
-        }
     }
 
     async acknowledge() {
@@ -71,7 +53,10 @@ export default class CNotice {
             console.log("Notice deleted:", response.data);
             return response.data;
         } catch (error) {
-            console.error("Error deleting notice:", error.response?.data || error);
+            console.error(
+                "Error deleting notice:",
+                error.response?.data || error
+            );
             return { success: false, message: "Failed to delete notice." };
         }
     }
@@ -81,13 +66,20 @@ export default class CNotice {
             throw new Error("Cannot toggle sticky without an ID.");
         }
         try {
-            const response = await axios.post(`/admin/notice/${this.id}/toggle-sticky`);
+            const response = await axios.post(
+                `/admin/notice/${this.id}/toggle-sticky`
+            );
             console.log("Notice sticky status toggled:", response.data);
             return response.data;
         } catch (error) {
-            console.error("Error toggling sticky status:", error.response?.data || error);
-            return { success: false, message: "Failed to toggle sticky status." };
+            console.error(
+                "Error toggling sticky status:",
+                error.response?.data || error
+            );
+            return {
+                success: false,
+                message: "Failed to toggle sticky status.",
+            };
         }
     }
-
 }

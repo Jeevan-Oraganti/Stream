@@ -27,9 +27,7 @@
     };
 </script>
 <div id="app" class="bg-white">
-    <notices-list :notices-json="{{ json_encode($notices->items()) }}"
-                  :pagination="{{ json_encode($notices) }}"
-                  :flash-success="{{ json_encode(session('success', '')) }}"
+    <notices-list :flash-success="{{ json_encode(session('success', '')) }}"
                   :flash-error="{{ json_encode(session('error', '')) }}"
                   :user="{{ json_encode(auth()->user()) }}">
     </notices-list>

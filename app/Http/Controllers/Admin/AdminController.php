@@ -48,10 +48,11 @@ class AdminController extends Controller
     {
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
-            'description' => 'required|string',
+            'description' => 'nullable|string',
             'notice_type_id' => 'required|exists:notice_types,id',
             'expiry_date' => 'nullable|date',
             'is_sticky' => 'required|boolean',
+            'scheduled_at' => 'nullable|date',
             'created_at' => now(),
             'updated_at' => now(),
         ]);
@@ -85,10 +86,11 @@ class AdminController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required',
-            'description' => 'required',
+            'description' => 'nullable',
             'notice_type_id' => 'required|exists:notice_types,id',
             'expiry_date' => 'nullable|date',
             'is_sticky' => 'required|boolean',
+            'scheduled_at' => 'nullable|date',
         ]);
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()], 422);
@@ -142,7 +144,7 @@ class AdminController extends Controller
 
     public function noticeDestroy($id)
     {
-        sleep(5);
+//        sleep(2);
         $notice = Notice::findOrFail($id);
 
         if (Gate::allows('delete-notice')) {

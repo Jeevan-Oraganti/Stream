@@ -56,7 +56,7 @@ export default {
             this.notices = await CNotices.unreadNoticesForUser();
         }
         else {
-            this.notices = await CNotices.fetchNoticesForGuest();
+            this.notices = await CNotices.unreadNoticesForGuest();
         }
     },
     methods: {

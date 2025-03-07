@@ -1,8 +1,8 @@
 <template>
     <div class="max-w-4xl mx-auto my-10 p-6 bg-white border rounded-md">
         <h2 class="text-xl font-semibold mb-4 text-gray-800">{{
-            editingNoticeId ? 'Edit Notice' : 'Add New Notice'
-            }}</h2>
+            form.id ? 'Edit Notice' : 'Add New Notice'
+        }}</h2>
         <div v-if="localFlashSuccess" class="notification is-success">
             {{ localFlashSuccess }}
         </div>
@@ -17,7 +17,7 @@
                     :class="{ 'border-red-500': form.hasError('name') }" @input="clearError('name')">
                 <span v-if="form.hasError('name')" class="text-red-500 text-sm mt-1 block">{{
                     form.getError('name')
-                    }}</span>
+                }}</span>
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700">Description</label>
@@ -27,7 +27,7 @@
                     @input="clearError('description')"></textarea>
                 <span v-if="form.hasError('description')" class="text-red-500 text-sm mt-1 block">{{
                     form.getError('description')
-                    }}</span>
+                }}</span>
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700">Notice Type</label>
@@ -41,7 +41,7 @@
                 </select>
                 <span v-if="form.hasError('notice_type_id')" class="text-red-500 text-sm mt-1 block">{{
                     form.getError('notice_type_id')
-                    }}</span>
+                }}</span>
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700">Expiry Date</label>
@@ -50,7 +50,16 @@
                     :class="{ 'border-red-500': form.hasError('expiry_date') }" @input="clearError('expiry_date')">
                 <span v-if="form.hasError('expiry_date')" class="text-red-500 text-sm mt-1 block">{{
                     form.getError('expiry_date')
-                    }}</span>
+                }}</span>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700">Scheduled At</label>
+                <input v-model="form.data.scheduled_at" type="datetime-local"
+                    class="text-gray-500 w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                    :class="{ 'border-red-500': form.hasError('scheduled_at') }" @input="clearError('scheduled_at')">
+                <span v-if="form.hasError('scheduled_at')" class="text-red-500 text-sm mt-1 block">{{
+                    form.getError('scheduled_at')
+                }}</span>
             </div>
             <div>
                 <label class="block text-sm font-medium text-gray-700">Priority Notice</label>
@@ -63,11 +72,11 @@
                 </div>
                 <span v-if="form.hasError('is_sticky')" class="text-red-500 text-sm mt-1 block">{{
                     form.getError('is_sticky')
-                    }}</span>
+                }}</span>
             </div>
             <button type="submit"
                 class="w-full bg-indigo-500 text-white py-2 rounded-md hover:bg-indigo-600 transition duration-200">
-                {{ editingNoticeId ? 'Update Notice' : 'Publish Notice' }}
+                {{ form.id ? 'Update Notice' : 'Publish Notice' }}
             </button>
         </form>
     </div>
@@ -87,7 +96,6 @@ export default {
     data() {
         return {
             form: new CNotice().form,
-            editingNoticeId: null,
             errors: {},
             localFlashSuccess: this.flashSuccess,
             localFlashError: this.flashError,
@@ -96,8 +104,8 @@ export default {
     methods: {
         async saveNotice() {
             try {
-                if (this.editingNoticeId) {
-                    await this.form.update(`/admin/notice/${this.editingNoticeId}`);
+                if (this.form.id) {
+                    await this.form.update(`/admin/notice/${this.form.id}`);
                 } else {
                     await this.form.save('/admin/notice');
                 }
@@ -134,7 +142,7 @@ export default {
     mounted() {
         if (this.notice) {
             this.form.data = new CNotice(this.notice.id, this.notice).form.data;
-            this.editingNoticeId = this.notice.id;
+            this.form.id = this.notice.id;
             if (this.form.data.expiry_date) {
                 this.form.data.expiry_date = new Date(this.form.data.expiry_date).toISOString().slice(0, 16);
             }

@@ -23,10 +23,9 @@ export default {
     left: 0;
     height: 4px;
     width: 0;
-    background: linear-gradient(90deg, #007bff 0%, #0056b3 80%, #00d9ff 100%);
+    background: linear-gradient(90deg, rgba(0, 123, 255, 1) 0%, rgba(0, 86, 179, 1) 80%, rgba(0, 217, 255, 1) 100%);
     transition: width 0.3s ease, opacity 0.3s ease;
     z-index: 11;
-    opacity: 1;
     box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
     filter: brightness(1.2);
 }
