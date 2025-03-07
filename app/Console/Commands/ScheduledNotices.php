@@ -28,13 +28,15 @@ class ScheduledNotices extends Command
     {
         Log::info('Sending scheduled notices');
 
-        $noticesToActivate = Notice::where(function ($query) {
-            $query->where('scheduled_at', '<=', now())
-                ->orWhereNull('scheduled_at')
-                ->where('expiry_date', '>', now())
-                ->orWhereNull('expiry_date');
+        $noticesToActivate = Notice::where('is_active', false)
+            ->where(function ($query) {
+                $query->where('scheduled_at', '<=', now())
+                    ->orWhereNull('scheduled_at');
             })
-            ->where('is_active', false)
+            ->where(function ($query) {
+                $query->where('expiry_date', '>', now())
+                    ->orWhereNull('expiry_date');
+            })
             ->get();
 
         foreach ($noticesToActivate as $notice) {
@@ -42,13 +44,13 @@ class ScheduledNotices extends Command
             Log::info("Notice ID {$notice->id} is now active.");
         }
 
-        $noticesToDeactivate = Notice::where(function ($query) {
-            $query->where('expiry_date', '<=', now())
-                ->whereNotNull('expiry_date')
-                ->orWhere('scheduled_at', '>', now())
-                ->whereNotNull('scheduled_at');
-        })
-            ->where('is_active', true)
+        $noticesToDeactivate = Notice::where('is_active', true)
+            ->where(function ($query) {
+                $query->whereNotNull('expiry_date')->where('expiry_date', '<=', now());
+            })
+            ->orWhere(function ($query) {
+                $query->whereNotNull('scheduled_at')->where('scheduled_at', '>', now());
+            })
             ->get();
 
         foreach ($noticesToDeactivate as $notice) {
