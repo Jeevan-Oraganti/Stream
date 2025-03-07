@@ -212,6 +212,9 @@ export default {
                 if (response.status === 200) {
                     notice.form.data.is_sticky = response.data.notice.is_sticky;
                     this.localFlashSuccess = "Notice updated successfully!";
+                    setTimeout(() => {
+                        this.localFlashSuccess = "";
+                    }, 3000);
                 }
                 if (notice.form.data.is_sticky) {
                     this.notices.forEach(n => {
@@ -223,6 +226,9 @@ export default {
             } catch (error) {
                 console.error("Error toggling sticky notice:", error);
                 this.localFlashError = "An error occurred while updating the notice.";
+                setTimeout(() => {
+                    this.localFlashSuccess = "";
+                }, 3000);
             }
         },
         focusSearchBar(event) {
@@ -245,19 +251,24 @@ export default {
                     console.log('Response', response);
                     if (response.status === 200) {
                         this.localFlashSuccess = "Notice deleted successfully!";
-                        console.log('Before filter', this.notices);
                         this.notices = this.notices.filter(n => n.id !== notice.id);
-                        console.log('After filter', this.notices);
-                        // await this.fetchNotices();
+                        setTimeout(() => {
+                            this.localFlashSuccess = "";
+                        }, 3000);
                     }
                 } catch (error) {
                     if (error.response && error.response.status === 403) {
                         this.localFlashError = "You are not authorized to delete this notice!";
+                        setTimeout(() => {
+                            this.localFlashSuccess = "";
+                        }, 3000);
                     } else {
                         this.localFlashError = "An error occurred while deleting the notice.";
+                        setTimeout(() => {
+                            this.localFlashSuccess = "";
+                        }, 3000);
                     }
                 } finally {
-                    // window.location.href = '/admin/notices';
                     this.deletingNoticeId = null;
                 }
             }
@@ -302,20 +313,6 @@ export default {
         NoticeSearchQuery: debounce(function () {
             this.fetchNotices();
         }, 500),
-        flashSuccess(newVal) {
-            if (newVal) {
-                setTimeout(() => {
-                    this.localFlashSuccess = "";
-                }, 3000);
-            }
-        },
-        flashError(newVal) {
-            if (newVal) {
-                setTimeout(() => {
-                    this.localFlashError = "";
-                }, 3000);
-            }
-        },
     },
     filters: {
         ago(date) {
@@ -331,13 +328,15 @@ export default {
         await this.fetchNotices();
 
         if (this.flashSuccess) {
+            this.localFlashSuccess = this.flashSuccess;
             setTimeout(() => {
-                this.flashSuccess = "";
+                this.localFlashSuccess = "";
             }, 3000);
         }
         if (this.flashError) {
+            this.localFlashError = this.flashError;
             setTimeout(() => {
-                this.flashError = "";
+                this.localFlashError = "";
             }, 3000);
         }
 
