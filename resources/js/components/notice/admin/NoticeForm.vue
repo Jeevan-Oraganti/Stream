@@ -76,7 +76,7 @@
             </div>
             <button type="submit"
                 class="w-full bg-indigo-500 text-white py-2 rounded-md hover:bg-indigo-600 transition duration-200">
-                {{ form.id ? 'Update Notice' : 'Publish Notice' }}
+                {{ form.id ? 'Update Notice' : 'Add Notice' }}
             </button>
         </form>
     </div>
@@ -97,6 +97,7 @@ export default {
         return {
             form: new CNotice().form,
             errors: {},
+            loading: false,
             localFlashSuccess: this.flashSuccess,
             localFlashError: this.flashError,
         };
@@ -104,6 +105,8 @@ export default {
     methods: {
         async saveNotice() {
             try {
+                if (this.loading) return;
+                this.startLoading();
                 if (this.form.id) {
                     await this.form.update(`/admin/notice/${this.form.id}`);
                 } else {
@@ -116,6 +119,7 @@ export default {
                         this.localFlashSuccess = '';
                     }, 3000);
                 }
+                this.stopLoading();
                 window.location.href = '/admin/notices';
 
             } catch (error) {
@@ -125,13 +129,33 @@ export default {
                 } else {
                     console.error('Error saving notice:', error);
                 }
+                this.stopLoading();
 
                 if (this.localFlashError) {
                     setTimeout(() => {
                         this.localFlashError = '';
                     }, 3000);
                 }
+            } finally {
+                this.loading = false;
             }
+        },
+        startLoading() {
+            this.loading = true;
+            this.progress = 0;
+            this.interval = setInterval(() => {
+                if (this.progress < 95) {
+                    this.progress += 5;
+                }
+            }, 100);
+        },
+        stopLoading() {
+            clearInterval(this.interval);
+            this.progress = 100;
+            setTimeout(() => {
+                this.loading = false;
+                this.progress = 0;
+            }, 500);
         },
         clearError(field) {
             if (this.form.hasError(field)) {
@@ -160,14 +184,15 @@ export default {
 
 <style scoped>
 .notification {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    z-index: 10;
+    width: auto;
     padding: 1rem;
-    margin-bottom: 1rem;
     border-radius: 0.25rem;
     font-size: 1rem;
     text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 .notification.is-success {

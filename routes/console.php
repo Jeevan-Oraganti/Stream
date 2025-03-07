@@ -1,7 +1,9 @@
 <?php
 
+use App\Models\Notice;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
+use app\Console\Commands\ScheduledNotices;
 use Illuminate\Support\Facades\Schedule;
 
 Artisan::command('inspire', function () {

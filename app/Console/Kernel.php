@@ -12,7 +12,6 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // Schedule your custom command
         $schedule->command('notices:scheduled-notices')->everyMinute();
     }
 

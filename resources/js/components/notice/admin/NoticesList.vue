@@ -72,7 +72,7 @@
                                             <i class="fas fa-search text-4xl text-gray-400 mb-2"></i>
                                             <p class="text-lg text-gray-600 mb-2">No results found for "{{
                                                 NoticeSearchQuery
-                                                }}"</p>
+                                            }}"</p>
                                             <p class="text-sm text-gray-500">Try clearing the search query.</p>
                                         </div>
                                     </div>
@@ -82,7 +82,7 @@
                                 :class="{ 'bg-green-100': isActive(notice) }" class="text-gray-700">
                                 <td class="border-b whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{
                                     (localPagination.current_page - 1) * localPagination.per_page + index + 1
-                                    }}
+                                }}
                                 </td>
                                 <td
                                     class="border-b whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
@@ -233,6 +233,7 @@ export default {
         },
         focusSearchBar(event) {
             if (event.ctrlKey && event.key === "k") {
+                nano
                 event.preventDefault();
                 this.$refs.selectSearch.focus();
             }
@@ -350,8 +351,12 @@ export default {
 
 <style scoped>
 .notification {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    z-index: 10;
+    width: auto;
     padding: 1rem;
-    margin-bottom: 1rem;
     border-radius: 0.25rem;
     font-size: 1rem;
     text-align: center;
