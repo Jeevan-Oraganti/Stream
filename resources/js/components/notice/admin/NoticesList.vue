@@ -9,9 +9,9 @@
                             <p class="text-sm text-gray-500 mb-4">All your past notices will appear here.</p>
                         </span>
                         <span>
-                            <button
-                                class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"><a
-                                    href="/admin/add-notice">Add Notice</a>
+                            <button @click="addNotice"
+                                class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                Add Notice
                             </button>
                         </span>
                     </div>
@@ -31,7 +31,7 @@
                             <LoadingBar :progress="progress" v-if="loading" />
                         </div>
                     </div>
-                    <table class="min-w-full divide-y divide-gray-300">
+                    <table id="noticesTable" class="display min-w-full divide-y divide-gray-300">
                         <thead>
                             <tr class="border-b">
                                 <th scope="col"
@@ -66,7 +66,7 @@
                         </thead>
                         <tbody class="divide-y divide-gray-200">
                             <tr v-if="filteredNotices.length === 0">
-                                <td class="border p-5 text-center" colspan="7">
+                                <td class="border p-5 text-center" colspan="9">
                                     <div class="flex flex-col items-center justify-center h-full">
                                         <div v-if="NoticeSearchQuery" class="flex flex-col items-center animate-pulse">
                                             <i class="fas fa-search text-4xl text-gray-400 mb-2"></i>
@@ -90,10 +90,10 @@
                                             class="fas fa-star" style="color:orange; cursor: pointer;"></i></span>
                                     <span @click="toggleSticky(notice)" v-else><i class="far fa-star"
                                             style="cursor: pointer;"></i></span>
-                                    <a :href="canEdit(user.id) ? `/admin/edit-notice/${notice.id}` : '#'"
+                                    <span @click="editNotice(notice)" class="cursor-pointer"
                                         :style="{ color: canEdit(user.id) ? 'dodgerblue' : 'text-gray-900' }">
                                         {{ notice.form.data.name }}
-                                    </a>
+                                    </span>
                                 </td>
                                 <td class="border-b px-3 py-4 text-sm text-gray-500">
                                     {{ notice.form.data.description }}
@@ -151,6 +151,7 @@
                 </div>
             </div>
         </div>
+        <notice-form :notice="notice"></notice-form>
     </div>
 </template>
 
@@ -162,11 +163,16 @@ import Pagination from "@/components/Pagination.vue";
 import { debounce } from "lodash";
 import moment from "moment-timezone";
 import LoadingBar from "@/components/LoadingBar.vue";
+import NoticeForm from "@/components/notice/admin/NoticeForm.vue";
+import $ from 'jquery';
+import 'datatables.net-dt';
+import DataTables from "datatables.net";
 
 export default {
     components: {
         Pagination,
         LoadingBar,
+        NoticeForm,
     },
     props: {
         flashSuccess: {
@@ -197,9 +203,18 @@ export default {
             baseUrl: "/admin/notices",
             localFlashSuccess: '',
             localFlashError: '',
+            notice: null
         };
     },
     methods: {
+        addNotice() {
+            this.$modal.show('add-edit-notice');
+            this.notice = {};
+        },
+        editNotice(notice) {
+            this.$modal.show('add-edit-notice');
+            this.notice = notice.form.data;
+        },
         isActive(notice) {
             const now = new Date();
             const expiryDate = new Date(notice.form.data.expiry_date);
@@ -233,7 +248,6 @@ export default {
         },
         focusSearchBar(event) {
             if (event.ctrlKey && event.key === "k") {
-                nano
                 event.preventDefault();
                 this.$refs.selectSearch.focus();
             }
@@ -281,11 +295,19 @@ export default {
                 const results = await CNotices.fetchNoticesListForAdmin(url, this.NoticeSearchQuery);
                 this.notices = results.notices;
                 this.localPagination = results.pagination;
+                this.initializeDataTable();
                 this.stopLoading();
             } catch (error) {
                 console.error("Error fetching notices:", error);
                 this.stopLoading();
             }
+        },
+        initializeDataTable() {
+            this.$nextTick(() => {
+                $('#noticesTable').DataTable({
+                    searching: false,
+                });
+            });
         },
         startLoading() {
             this.loading = true;
@@ -354,12 +376,14 @@ export default {
     position: fixed;
     top: 20px;
     left: 50%;
+    transform: translateX(-50%);
     z-index: 10;
     width: auto;
     padding: 1rem;
     border-radius: 0.25rem;
     font-size: 1rem;
     text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .notification.is-success {

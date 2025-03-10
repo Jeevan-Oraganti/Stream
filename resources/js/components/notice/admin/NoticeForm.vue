@@ -1,85 +1,95 @@
 <template>
-    <div class="max-w-4xl mx-auto my-10 p-6 bg-white border rounded-md">
-        <h2 class="text-xl font-semibold mb-4 text-gray-800">{{
-            form.id ? 'Edit Notice' : 'Add New Notice'
-        }}</h2>
-        <div v-if="localFlashSuccess" class="notification is-success">
-            {{ localFlashSuccess }}
-        </div>
-        <div v-if="localFlashError" class="notification is-danger">
-            {{ localFlashError }}
-        </div>
-        <form @submit.prevent="saveNotice" class="space-y-4">
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Notice Title</label>
-                <input v-model="form.data.name" type="text"
-                    class="text-gray-800 w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-                    :class="{ 'border-red-500': form.hasError('name') }" @input="clearError('name')">
-                <span v-if="form.hasError('name')" class="text-red-500 text-sm mt-1 block">{{
-                    form.getError('name')
-                }}</span>
+    <modal name="add-edit-notice" height="auto" :pivotY=".5" @opened="assignFormData"
+        class="rounded-lg shadow-lg w-full max-w-lg mx-auto px-4">
+        <div class="container block m-auto justify-center p-8">
+            <h2 class="text-xl font-semibold mb-4 text-gray-800">{{
+                form.id ? 'Edit Notice' : 'Add New Notice'
+                }}</h2>
+            <div v-if="localFlashSuccess" class="notification is-success">
+                {{ localFlashSuccess }}
             </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Description</label>
-                <textarea v-model="form.data.description"
-                    class="text-gray-800 w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-                    :class="{ 'border-red-500': form.hasError('description') }"
-                    @input="clearError('description')"></textarea>
-                <span v-if="form.hasError('description')" class="text-red-500 text-sm mt-1 block">{{
-                    form.getError('description')
-                }}</span>
+            <div v-if="localFlashError" class="notification is-danger">
+                {{ localFlashError }}
             </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Notice Type</label>
-                <select v-model="form.data.notice_type_id"
-                    class="text-gray-500 w-full p-2 border rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-400"
-                    :class="{ 'border-red-500': form.hasError('notice_type_id') }"
-                    @change="clearError('notice_type_id')">
-                    <option value="1">🟠 Announcement</option>
-                    <option value="2">🔵 Information</option>
-                    <option value="3">🔴 Outage</option>
-                </select>
-                <span v-if="form.hasError('notice_type_id')" class="text-red-500 text-sm mt-1 block">{{
-                    form.getError('notice_type_id')
-                }}</span>
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Expiry Date</label>
-                <input v-model="form.data.expiry_date" type="datetime-local"
-                    class="text-gray-500 w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-                    :class="{ 'border-red-500': form.hasError('expiry_date') }" @input="clearError('expiry_date')">
-                <span v-if="form.hasError('expiry_date')" class="text-red-500 text-sm mt-1 block">{{
-                    form.getError('expiry_date')
-                }}</span>
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Scheduled At</label>
-                <input v-model="form.data.scheduled_at" type="datetime-local"
-                    class="text-gray-500 w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-                    :class="{ 'border-red-500': form.hasError('scheduled_at') }" @input="clearError('scheduled_at')">
-                <span v-if="form.hasError('scheduled_at')" class="text-red-500 text-sm mt-1 block">{{
-                    form.getError('scheduled_at')
-                }}</span>
-            </div>
-            <div>
-                <label class="block text-sm font-medium text-gray-700">Priority Notice</label>
-                <div class="flex items-center">
-                    <label class="switch">
-                        <input v-model="form.data.is_sticky" type="checkbox" @change="clearError('is_sticky')">
-                        <span class="slider round"></span>
-                    </label>
-                    <span class="ml-2 text-gray-700">Make this a priority notice</span>
+            <form @submit.prevent="saveNotice" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Notice Title</label>
+                    <input v-model="form.data.name" type="text"
+                        class="text-gray-800 w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        :class="{ 'border-red-500': form.hasError('name') }" @input="clearError('name')">
+                    <span v-if="form.hasError('name')" class="text-red-500 text-sm mt-1 block">{{
+                        form.getError('name')
+                        }}</span>
                 </div>
-                <span v-if="form.hasError('is_sticky')" class="text-red-500 text-sm mt-1 block">{{
-                    form.getError('is_sticky')
-                }}</span>
-            </div>
-            <button type="submit"
-                class="w-full bg-indigo-500 text-white py-2 rounded-md hover:bg-indigo-600 transition duration-200">
-                {{ form.id ? 'Update Notice' : 'Add Notice' }}
-            </button>
-        </form>
-    </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Description</label>
+                    <textarea v-model="form.data.description"
+                        class="text-gray-800 w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        :class="{ 'border-red-500': form.hasError('description') }"
+                        @input="clearError('description')"></textarea>
+                    <span v-if="form.hasError('description')" class="text-red-500 text-sm mt-1 block">{{
+                        form.getError('description')
+                        }}</span>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Notice Type</label>
+                    <select v-model="form.data.notice_type_id"
+                        class="text-gray-500 w-full p-2 border rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        :class="{ 'border-red-500': form.hasError('notice_type_id') }"
+                        @change="clearError('notice_type_id')">
+                        <option value="1">🟠 Announcement</option>
+                        <option value="2">🔵 Information</option>
+                        <option value="3">🔴 Outage</option>
+                    </select>
+                    <span v-if="form.hasError('notice_type_id')" class="text-red-500 text-sm mt-1 block">{{
+                        form.getError('notice_type_id')
+                        }}</span>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Expiry Date</label>
+                    <input v-model="form.data.expiry_date" type="datetime-local"
+                        class="text-gray-500 w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        :class="{ 'border-red-500': form.hasError('expiry_date') }" @input="clearError('expiry_date')">
+                    <span v-if="form.hasError('expiry_date')" class="text-red-500 text-sm mt-1 block">{{
+                        form.getError('expiry_date')
+                        }}</span>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Scheduled At</label>
+                    <input v-model="form.data.scheduled_at" type="datetime-local"
+                        class="text-gray-500 w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        :class="{ 'border-red-500': form.hasError('scheduled_at') }"
+                        @input="clearError('scheduled_at')">
+                    <span v-if="form.hasError('scheduled_at')" class="text-red-500 text-sm mt-1 block">{{
+                        form.getError('scheduled_at')
+                        }}</span>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Priority Notice</label>
+                    <div class="flex items-center">
+                        <label class="switch">
+                            <input v-model="form.data.is_sticky" type="checkbox" @change="clearError('is_sticky')">
+                            <span class="slider round"></span>
+                        </label>
+                        <span class="ml-2 text-gray-700">Make this a priority notice</span>
+                    </div>
+                    <span v-if="form.hasError('is_sticky')" class="text-red-500 text-sm mt-1 block">{{
+                        form.getError('is_sticky')
+                        }}</span>
+                </div>
+                <div class="flex mt-6 justify-between space-x-3">
+                    <button type="button" @click="$modal.hide('add-edit-notice')"
+                        class="w-full bg-indigo-500 text-white py-2 rounded-md hover:bg-indigo-600 transition duration-200">
+                        Cancel
+                    </button>
+                    <button type="submit"
+                        class="w-full bg-indigo-500 text-white py-2 rounded-md hover:bg-indigo-600 transition duration-200">
+                        {{ form.id ? 'Update Notice' : 'Add Notice' }}
+                    </button>
+                </div>
+            </form>
+        </div>
+    </modal>
 </template>
 
 <script>
@@ -119,6 +129,8 @@ export default {
                         this.localFlashSuccess = '';
                     }, 3000);
                 }
+                this.$modal.hide("add-edit-notice");
+
                 this.stopLoading();
                 window.location.href = '/admin/notices';
 
@@ -162,22 +174,24 @@ export default {
                 this.$delete(this.form.errors, field);
             }
         },
-    },
-    mounted() {
-        if (this.notice) {
-            this.form.data = new CNotice(this.notice.id, this.notice).form.data;
-            this.form.id = this.notice.id;
-            if (this.form.data.expiry_date) {
-                this.form.data.expiry_date = new Date(this.form.data.expiry_date).toISOString().slice(0, 16);
+        assignFormData() {
+            if (this.notice) {
+                console.log('Entered notice');
+                this.form.data = new CNotice(this.notice.id, this.notice).form.data;
+                this.form.id = this.notice.id;
+                if (this.form.data.expiry_date) {
+                    this.form.data.expiry_date = new Date(this.form.data.expiry_date).toISOString().slice(0, 16);
+                }
+            } else {
+                console.log('Else notice');
+                const now = new Date();
+                const nextWeek = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+                this.form.data.expiry_date = nextWeek.toISOString().slice(0, 16);
             }
-        } else {
-            const now = new Date();
-            const nextWeek = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
-            this.form.data.expiry_date = nextWeek.toISOString().slice(0, 16);
-        }
 
-        this.localFlashSuccess = this.flashSuccess;
-        this.localFlashError = this.flashError;
+            this.localFlashSuccess = this.flashSuccess;
+            this.localFlashError = this.flashError;
+        },
     },
 };
 </script>
@@ -187,12 +201,14 @@ export default {
     position: fixed;
     top: 20px;
     left: 50%;
+    transform: translateX(-50%);
     z-index: 10;
     width: auto;
     padding: 1rem;
     border-radius: 0.25rem;
     font-size: 1rem;
     text-align: center;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .notification.is-success {

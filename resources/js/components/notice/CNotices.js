@@ -2,10 +2,6 @@ import axios from "axios";
 import CNotice from "@/components/notice/CNotice.js";
 
 export default class CNotices {
-    //unreadNoticesForUser
-    //unreadNoticesForGuest
-    //unreadNotices
-    //filterGuestNotices
 
     static async fetchNoticesListForAdmin(url, searchQuery) {
         try {
