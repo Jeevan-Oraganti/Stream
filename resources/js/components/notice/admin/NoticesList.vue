@@ -165,8 +165,10 @@ import moment from "moment-timezone";
 import LoadingBar from "@/components/LoadingBar.vue";
 import NoticeForm from "@/components/notice/admin/NoticeForm.vue";
 import $ from 'jquery';
-import 'datatables.net-dt';
-import DataTables from "datatables.net";
+import DataTable from 'datatables.net-dt';
+import DataTablesCore from 'datatables.net';
+
+DataTable.use(DataTablesCore);
 
 export default {
     components: {
@@ -305,7 +307,6 @@ export default {
         initializeDataTable() {
             this.$nextTick(() => {
                 $('#noticesTable').DataTable({
-                    searching: false,
                 });
             });
         },

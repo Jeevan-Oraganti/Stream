@@ -1,5 +1,5 @@
 <template>
-    <modal name="add-edit-notice" height="auto" :pivotY=".5" @opened="assignFormData"
+    <modal name="add-edit-notice" height="auto" :pivotY=".5"
         class="rounded-lg shadow-lg w-full max-w-lg mx-auto px-4">
         <div class="container block m-auto justify-center p-8">
             <h2 class="text-xl font-semibold mb-4 text-gray-800">{{
@@ -174,25 +174,33 @@ export default {
                 this.$delete(this.form.errors, field);
             }
         },
-        assignFormData() {
-            if (this.notice) {
-                console.log('Entered notice');
-                this.form.data = new CNotice(this.notice.id, this.notice).form.data;
-                this.form.id = this.notice.id;
-                if (this.form.data.expiry_date) {
-                    this.form.data.expiry_date = new Date(this.form.data.expiry_date).toISOString().slice(0, 16);
-                }
-            } else {
-                console.log('Else notice');
-                const now = new Date();
-                const nextWeek = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
-                this.form.data.expiry_date = nextWeek.toISOString().slice(0, 16);
-            }
-
-            this.localFlashSuccess = this.flashSuccess;
-            this.localFlashError = this.flashError;
-        },
     },
+    watch: {
+        notice: {
+            immediate: true,
+            handler(newNotice) {
+                if (this.notice) {
+                    console.log('Entered notice');
+                    this.form.data = new CNotice(this.notice.id, this.notice).form.data;
+                    this.form.id = this.notice.id;
+                    if (this.form.data.expiry_date) {
+                        this.form.data.expiry_date = new Date(this.form.data.expiry_date).toISOString().slice(0, 16);
+                    }
+                    if (this.form.data.scheduled_at) {
+                        this.form.data.scheduled_at = new Date(this.form.data.scheduled_at).toISOString().slice(0, 16);
+                    }
+                } else {
+                    console.log('Else notice');
+                    const now = new Date();
+                    const nextWeek = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+                    this.form.data.expiry_date = nextWeek.toISOString().slice(0, 16);
+                }
+
+                this.localFlashSuccess = this.flashSuccess;
+                this.localFlashError = this.flashError;
+            }
+        }
+    }
 };
 </script>
 
