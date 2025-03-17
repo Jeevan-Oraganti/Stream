@@ -11,18 +11,21 @@
             {{ localFlashError }}
         </div>
 
-        <div class="bg-white rounded-lg overflow-hidden">
-            <table class="min-w-full divide-y divide-gray-200 min-h-screen">
+        <div class="bg-white overflow-hidden">
+            <table class="min-w-full divide-y divide-gray-200 border">
                 <thead>
                     <tr>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                        <th
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider border">
                             Notice Types
                         </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                        <th
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider border">
                             Current
                             Color
                         </th>
-                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider">
+                        <th
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider border">
                             Change
                             Color
                         </th>
@@ -30,21 +33,23 @@
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
                     <tr v-for="type in noticeTypes" :key="type.id">
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 border">{{
                             type.type.charAt(0).toUpperCase() + type.type.slice(1)
-                            }}
+                        }}
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
+                        <td class="px-6 py-4 whitespace-nowrap border">
+                            <div :style="{ backgroundColor: type.color }" class="w-24 h-6 rounded-md border"></div>
                             <span class="text-sm font-semibold" :style="{ color: type.color }">{{
                                 type.color.charAt(0).toUpperCase() + type.color.slice(1)
-                            }}</span>
+                                }}</span>
                         </td>
-                        <td class="px-6 py-4 whitespace-nowrap">
+                        <td class="px-6 py-4 items-center whitespace-nowrap border">
                             <div class="flex items-center space-x-6">
                                 <!-- Color Selection -->
-                                <div class="flex">
-                                    <v-swatches v-model="type.newColor"
-                                        @input="updateColor(type, type.newColor)"></v-swatches>
+                                <div class="relative mt-2">
+                                    <v-swatches v-model="type.newColor" @input="updateColor(type, type.newColor)"
+                                        show-fallback fallback-input-type="color">
+                                    </v-swatches>
                                 </div>
 
                                 <!-- Change Button -->
@@ -140,5 +145,17 @@ export default {
     background-color: #f8d7da;
     color: #721c24;
     border: 1px solid #f5c6cb;
+}
+
+.bg-white {
+    overflow: visible !important;
+}
+
+table {
+    overflow: visible !important;
+}
+
+tbody {
+    overflow: visible !important;
 }
 </style>
