@@ -72,6 +72,9 @@ Route::middleware('can:admin')->group(function () {
     Route::get('/admin/add-notice', [AdminController::class, 'addNotice']);
     Route::get('/admin/edit-notice/{noticeId}', [AdminController::class, 'editNotice']);
     Route::post('/admin/notice/{noticeId}/toggle-sticky', [AdminController::class, 'toggleSticky']);
+    Route::get('/admin/change-notice-color', [AdminController::class, 'NoticeTypeColor'])->name('admin.change-notice-type-color');
+    Route::get('/admin/notice-types', [AdminController::class, 'getNoticeTypes']);
+    Route::post('/admin/notice-type/{noticeTypeId}/change-color', [AdminController::class, 'changeNoticeTypeColorPost']);
 });
 
 

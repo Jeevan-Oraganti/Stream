@@ -2,12 +2,13 @@
     <div class="relative top-0 left-0 w-full flex items-center justify-center">
         <div v-if="filteredNotices.length > 0" class="notice-container w-full">
             <div v-for="notice in filteredNotices" :key="notice.id"
-                class="notice-banner flex items-center justify-between w-full p-1" :class="getNoticeClass(notice)">
+                class="notice-banner flex items-center justify-between w-full p-1 text-white"
+                 :style="{ backgroundColor: notice.notice_type.color }">
 
-                <div class="flex items-center">
-                    <p class="font-semibold text-lg mb-1 p-1">{{ notice.name }}:</p>
-                    <p class="text-sm ml-1">{{ notice.description }}</p>
-                    <p class="text-sm ml-2">- {{ notice.created_at | ago }}</p>
+                <div class="flex items-center text-white">
+                    <p class="font-semibold text-lg mb-1 p-1 text-white">{{ notice.name }}:</p>
+                    <p class="text-sm ml-1 text-white">{{ notice.description }}</p>
+                    <p class="text-sm ml-2 text-white">- {{ notice.created_at | ago }}</p>
                 </div>
 
                 <button @click="handleNotice(notice.id)" class="dismiss-btn hover">
@@ -69,13 +70,6 @@ export default {
             else {
                 this.dismissNotice(noticeId);
             }
-        },
-        getNoticeClass(notice) {
-            return {
-                '1': 'bg-orange-100 border-orange-500 text-orange-700',
-                '2': 'bg-blue-100 border-blue-500 text-blue-700',
-                '3': 'bg-red-100 border-red-500 text-red-700'
-            }[notice.notice_type_id];
         },
         dismissNotice(noticeId) {
             this.dismissedNotices.push(noticeId.toString());

@@ -3,6 +3,7 @@ import CForm from "@/components/notice/CForm.js";
 import moment from "moment/moment.js";
 
 export default class CNotice {
+    //initialize the notice
     constructor(id = null, data = {}) {
         this.id = id;
         this.form = new CForm([
@@ -16,14 +17,20 @@ export default class CNotice {
             "created_at",
         ]);
 
+        //set the form data
         this.form.data = {
             ...data,
-            expiry_date: data.expiry_date || moment().add(1, "week").format("YYYY-MM-DD"),
-            scheduled_at: data.scheduled_at || moment().add(1, "day").format("YYYY-MM-DD"),
+            expiry_date:
+                data.expiry_date ||
+                moment().add(1, "week").format("YYYY-MM-DD"),
+            scheduled_at:
+                data.scheduled_at ||
+                moment().add(1, "day").format("YYYY-MM-DD"),
             is_sticky: data.is_sticky || false,
         };
     }
 
+    //acknowledge the notice by the user
     async acknowledge() {
         if (!this.id) return;
         try {
@@ -34,10 +41,12 @@ export default class CNotice {
         }
     }
 
+    //save the notice
     async save() {
         return this.form.save("/admin/notice");
     }
 
+    //update the notice
     async update(url) {
         if (!this.id) {
             throw new Error("Cannot update notice without an ID.");
@@ -45,6 +54,7 @@ export default class CNotice {
         return this.form.update(url);
     }
 
+    //delete the notice
     async delete() {
         if (!this.id) throw new Error("Cannot delete notice without an ID.");
         try {
@@ -62,6 +72,7 @@ export default class CNotice {
         }
     }
 
+    //toggle the sticky status of the notice making it the priority notice
     async toggleSticky() {
         if (!this.id) {
             throw new Error("Cannot toggle sticky without an ID.");

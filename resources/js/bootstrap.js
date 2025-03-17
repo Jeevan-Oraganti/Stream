@@ -9,7 +9,7 @@ import { Chart } from "chart.js";
 import moment from "moment";
 
 window.Vue = Vue;
-Vue.use(VueRouter);
+//Vue.use(VueRouter);
 Vue.use(PortalVue);
 Vue.use(VModal);
 Vue.use(inView);

@@ -1,19 +1,14 @@
 import axios from "axios";
-import CNotice from "@/components/notice/CNotice.js";
 
 export default class CNotices {
 
+    //fetch all notices for the admin
     static async fetchNoticesListForAdmin(url, searchQuery) {
         try {
             const response = await axios.get(url, {
-                params: { search: searchQuery },
+                params: {search: searchQuery},
             });
-            return {
-                notices: response.data.notices.map(
-                    (noticeJson) => new CNotice(noticeJson.id, noticeJson)
-                ),
-                pagination: response.data.pagination,
-            };
+            return response;
         } catch (error) {
             console.error("Error fetching notices:", error);
             return {
@@ -23,6 +18,7 @@ export default class CNotices {
         }
     }
 
+    //fetch unread notices for the user who is logged-in
     static async unreadNoticesForUser() {
         try {
             const response = await axios.get("/notices/unread");
@@ -33,6 +29,7 @@ export default class CNotices {
         }
     }
 
+    //fetch all notices for the user who is not logged-in or guest
     static async unreadNoticesForGuest() {
         try {
             const dismissedNotice = localStorage.getItem("dismissedNotice");
@@ -45,6 +42,7 @@ export default class CNotices {
         }
     }
 
+    //filter the notices for the guest from cookies
     static filterGuestNotices(data, dismissedNotice) {
         if (Array.isArray(data)) {
             return data.filter((n) => n.id !== parseInt(dismissedNotice));

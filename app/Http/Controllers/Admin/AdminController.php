@@ -13,7 +13,7 @@ class AdminController extends Controller
 {
     public function noticeIndex(Request $request)
     {
-        sleep(2);
+        //sleep(2);
         $search = $request->input('search');
 
         $notices = Notice::with('noticeType')
@@ -23,21 +23,10 @@ class AdminController extends Controller
                     ->orWhereHas('noticeType', function ($subQuery) use ($search) {
                         $subQuery->where('type', 'like', "%{$search}%");
                     });
-            })
-            ->latest()->paginate(5);
+            })->latest()->get();
 
         if ($request->ajax()) {
-            return response()->json([
-                'notices' => $notices->items(),
-                'pagination' => [
-                    'current_page' => $notices->currentPage(),
-                    'last_page' => $notices->lastPage(),
-                    'per_page' => $notices->perPage(),
-                    'total' => $notices->total(),
-                    'next_page_url' => $notices->nextPageUrl(),
-                    'prev_page_url' => $notices->previousPageUrl(),
-                ],
-            ]);
+            return response()->json(['notices' => $notices]);
         }
 
         return view('admin.notices.index', compact('notices'));
@@ -53,8 +42,8 @@ class AdminController extends Controller
             'expiry_date' => 'nullable|date',
             'is_sticky' => 'required|boolean',
             'scheduled_at' => 'nullable|date',
-            'created_at' => now(),
-            'updated_at' => now(),
+            'created_at' => now()->setTimezone('Asia/Kolkata'),
+            'updated_at' => now()->setTimezone('Asia/Kolkata'),
         ]);
 
         if ($validatedData['is_sticky']) {
@@ -144,7 +133,7 @@ class AdminController extends Controller
 
     public function noticeDestroy($id)
     {
-        sleep(2);
+//        sleep(2);
         $notice = Notice::findOrFail($id);
 
         if (Gate::allows('delete-notice')) {
@@ -153,5 +142,28 @@ class AdminController extends Controller
         } else {
             return redirect()->route('admin.notices.index')->with('error', 'You do not have permission to delete this notice.');
         }
+    }
+
+    public function NoticeTypeColor()
+    {
+        return view('admin.notices.change-color');
+    }
+
+    public function getNoticeTypes()
+    {
+        $noticeTypes = NoticeType::all();
+        return response()->json(['noticeTypes' => $noticeTypes]);
+    }
+
+    public function changeNoticeTypeColorPost(Request $request, $noticeTypeId)
+    {
+        $request->validate([
+            'color' => 'required|string|max:255',
+        ]);
+
+        $noticeType = NoticeType::findOrFail($noticeTypeId);
+        $noticeType->update(['color' => $request->input('color')]);
+
+        return response()->json(['message' => 'Notice type color updated successfully.']);
     }
 }

@@ -1,10 +1,8 @@
+<!-- filepath: /home/bnetworks/websites/stream/resources/js/components/notice/admin/NoticeForm.vue -->
 <template>
-    <modal name="add-edit-notice" height="auto" :pivotY=".5"
-        class="rounded-lg shadow-lg w-full max-w-lg mx-auto px-4">
+    <modal name="add-edit-notice" height="auto" :pivotY=".5" class="rounded-lg shadow-lg w-full max-w-lg mx-auto px-4">
         <div class="container block m-auto justify-center p-8">
-            <h2 class="text-xl font-semibold mb-4 text-gray-800">{{
-                form.id ? 'Edit Notice' : 'Add New Notice'
-                }}</h2>
+            <h2 class="text-xl font-semibold mb-4 text-gray-800">{{ form.id ? 'Edit Notice' : 'Add New Notice' }}</h2>
             <div v-if="localFlashSuccess" class="notification is-success">
                 {{ localFlashSuccess }}
             </div>
@@ -17,9 +15,8 @@
                     <input v-model="form.data.name" type="text"
                         class="text-gray-800 w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                         :class="{ 'border-red-500': form.hasError('name') }" @input="clearError('name')">
-                    <span v-if="form.hasError('name')" class="text-red-500 text-sm mt-1 block">{{
-                        form.getError('name')
-                        }}</span>
+                    <span v-if="form.hasError('name')" class="text-red-500 text-sm mt-1 block">{{ form.getError('name')
+                    }}</span>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Description</label>
@@ -28,8 +25,7 @@
                         :class="{ 'border-red-500': form.hasError('description') }"
                         @input="clearError('description')"></textarea>
                     <span v-if="form.hasError('description')" class="text-red-500 text-sm mt-1 block">{{
-                        form.getError('description')
-                        }}</span>
+                        form.getError('description') }}</span>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Notice Type</label>
@@ -37,13 +33,12 @@
                         class="text-gray-500 w-full p-2 border rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-400"
                         :class="{ 'border-red-500': form.hasError('notice_type_id') }"
                         @change="clearError('notice_type_id')">
-                        <option value="1">🟠 Announcement</option>
-                        <option value="2">🔵 Information</option>
-                        <option value="3">🔴 Outage</option>
+                        <option value="1">Announcement</option>
+                        <option value="2">Information</option>
+                        <option value="3">Outage</option>
                     </select>
                     <span v-if="form.hasError('notice_type_id')" class="text-red-500 text-sm mt-1 block">{{
-                        form.getError('notice_type_id')
-                        }}</span>
+                        form.getError('notice_type_id') }}</span>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Expiry Date</label>
@@ -51,8 +46,7 @@
                         class="text-gray-500 w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                         :class="{ 'border-red-500': form.hasError('expiry_date') }" @input="clearError('expiry_date')">
                     <span v-if="form.hasError('expiry_date')" class="text-red-500 text-sm mt-1 block">{{
-                        form.getError('expiry_date')
-                        }}</span>
+                        form.getError('expiry_date') }}</span>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Scheduled At</label>
@@ -61,21 +55,18 @@
                         :class="{ 'border-red-500': form.hasError('scheduled_at') }"
                         @input="clearError('scheduled_at')">
                     <span v-if="form.hasError('scheduled_at')" class="text-red-500 text-sm mt-1 block">{{
-                        form.getError('scheduled_at')
-                        }}</span>
+                        form.getError('scheduled_at') }}</span>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Priority Notice</label>
                     <div class="flex items-center">
-                        <label class="switch">
-                            <input v-model="form.data.is_sticky" type="checkbox" @change="clearError('is_sticky')">
-                            <span class="slider round"></span>
-                        </label>
+                        <i :class="{ 'fas fa-star text-yellow-500': form.data.is_sticky, 'far fa-star text-gray-500': !form.data.is_sticky }"
+                            @click="form.data.is_sticky = !form.data.is_sticky; clearError('is_sticky')"
+                            class="cursor-pointer text-2xl"></i>
                         <span class="ml-2 text-gray-700">Make this a priority notice</span>
                     </div>
                     <span v-if="form.hasError('is_sticky')" class="text-red-500 text-sm mt-1 block">{{
-                        form.getError('is_sticky')
-                        }}</span>
+                        form.getError('is_sticky') }}</span>
                 </div>
                 <div class="flex mt-6 justify-between space-x-3">
                     <button type="button" @click="$modal.hide('add-edit-notice')"
@@ -94,7 +85,6 @@
 
 <script>
 import CNotice from "@/components/notice/CNotice.js";
-import { debounce } from "lodash";
 
 export default {
     props: {
@@ -102,18 +92,27 @@ export default {
             type: Object,
             default: null,
         },
+        flashSuccess: {
+            type: String,
+            default: ''
+        },
+        flashError: {
+            type: String,
+            default: ''
+        },
     },
     data() {
         return {
             form: new CNotice().form,
             errors: {},
             loading: false,
-            localFlashSuccess: this.flashSuccess,
-            localFlashError: this.flashError,
+            localFlashSuccess: '',
+            localFlashError: '',
         };
     },
     methods: {
         async saveNotice() {
+            console.log(this.form.data);
             try {
                 if (this.loading) return;
                 this.startLoading();
@@ -132,7 +131,8 @@ export default {
                 this.$modal.hide("add-edit-notice");
 
                 this.stopLoading();
-                window.location.href = '/admin/notices';
+                // this.$emit('notice-saved', response.data.notice);
+                // window.location.href = '/admin/notices';
 
             } catch (error) {
                 this.localFlashError = "Error saving the notice";
@@ -179,10 +179,9 @@ export default {
         notice: {
             immediate: true,
             handler(newNotice) {
-                if (this.notice) {
-                    console.log('Entered notice');
-                    this.form.data = new CNotice(this.notice.id, this.notice).form.data;
-                    this.form.id = this.notice.id;
+                if (newNotice) {
+                    this.form.data = new CNotice(newNotice.id, newNotice).form.data;
+                    this.form.id = newNotice.id;
                     if (this.form.data.expiry_date) {
                         this.form.data.expiry_date = new Date(this.form.data.expiry_date).toISOString().slice(0, 16);
                     }
@@ -190,7 +189,6 @@ export default {
                         this.form.data.scheduled_at = new Date(this.form.data.scheduled_at).toISOString().slice(0, 16);
                     }
                 } else {
-                    console.log('Else notice');
                     const now = new Date();
                     const nextWeek = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
                     this.form.data.expiry_date = nextWeek.toISOString().slice(0, 16);
@@ -200,11 +198,23 @@ export default {
                 this.localFlashError = this.flashError;
             }
         }
-    }
+    },
 };
 </script>
 
 <style scoped>
+.loader {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 25px;
+    height: 25px;
+    border: 4px solid rgba(255, 255, 255, 0.2);
+    border-top-color: rgba(37, 197, 239, 1);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
 .notification {
     position: fixed;
     top: 20px;

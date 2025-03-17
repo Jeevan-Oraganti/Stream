@@ -1,3 +1,4 @@
+<!-- filepath: /home/bnetworks/websites/stream/resources/js/components/notice/admin/NoticesList.vue -->
 <template>
     <div class="lg:flex-row lg:space-x-12 items-start p-8">
         <div class="w-full mx-auto my-10 p-6 bg-white border rounded-md">
@@ -8,11 +9,15 @@
                             <h2 class="text-sm font-semibold mb-2 text-gray-800">Past Notices</h2>
                             <p class="text-sm text-gray-500 mb-4">All your past notices will appear here.</p>
                         </span>
-                        <span>
+                        <span class="flex-col">
                             <button @click="addNotice"
-                                class="block rounded-md bg-indigo-600 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                class="block justify-center rounded-md bg-indigo-600 px-6 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                                 Add Notice
                             </button>
+                            <a href="/admin/change-notice-color"
+                                class="block justify-center rounded-md bg-green-500 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600">
+                                Change Notice Color
+                            </a>
                         </span>
                     </div>
                     <div v-if="localFlashSuccess" class="notification is-success">
@@ -33,7 +38,7 @@
                     </div>
                     <table id="noticesTable" class="display min-w-full divide-y divide-gray-300">
                         <thead>
-                            <tr class="border-b">
+                            <tr>
                                 <th scope="col"
                                     class="py-4 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">#
                                 </th>
@@ -64,90 +69,10 @@
                                 </th>
                             </tr>
                         </thead>
-                        <tbody class="divide-y divide-gray-200">
-                            <tr v-if="filteredNotices.length === 0">
-                                <td class="border p-5 text-center" colspan="9">
-                                    <div class="flex flex-col items-center justify-center h-full">
-                                        <div v-if="NoticeSearchQuery" class="flex flex-col items-center animate-pulse">
-                                            <i class="fas fa-search text-4xl text-gray-400 mb-2"></i>
-                                            <p class="text-lg text-gray-600 mb-2">No results found for "{{
-                                                NoticeSearchQuery
-                                            }}"</p>
-                                            <p class="text-sm text-gray-500">Try clearing the search query.</p>
-                                        </div>
-                                    </div>
-                                </td>
-                            </tr>
-                            <tr v-for="(notice, index) in notices" :key="notice.id"
-                                :class="{ 'bg-green-100': isActive(notice) }" class="text-gray-700">
-                                <td class="border-b whitespace-nowrap px-3 py-4 text-sm text-gray-500">{{
-                                    (localPagination.current_page - 1) * localPagination.per_page + index + 1
-                                }}
-                                </td>
-                                <td
-                                    class="border-b whitespace-nowrap py-4 pl-4 pr-3 text-sm font-medium text-gray-900 sm:pl-0">
-                                    <span @click="toggleSticky(notice)" v-if="notice.form.data.is_sticky"><i
-                                            class="fas fa-star" style="color:orange; cursor: pointer;"></i></span>
-                                    <span @click="toggleSticky(notice)" v-else><i class="far fa-star"
-                                            style="cursor: pointer;"></i></span>
-                                    <span @click="editNotice(notice)" class="cursor-pointer"
-                                        :style="{ color: canEdit(user.id) ? 'dodgerblue' : 'text-gray-900' }">
-                                        {{ notice.form.data.name }}
-                                    </span>
-                                </td>
-                                <td class="border-b px-3 py-4 text-sm text-gray-500">
-                                    {{ notice.form.data.description }}
-                                </td>
-                                <td
-                                    :class="['border-b whitespace-nowrap px-3 py-4 text-sm', notice.form.data.notice_type && notice.form.data.notice_type.color ? 'text-' + notice.form.data.notice_type.color + '-600' : 'text-gray-600']">
-                                    {{
-                                        notice.form.data.notice_type && notice.form.data.notice_type.type ?
-                                            notice.form.data.notice_type.type.charAt(0).toUpperCase() +
-                                            notice.form.data.notice_type.type.slice(1) : 'Unknown'
-                                    }}
-                                </td>
-                                <td class="border-b whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                                    <span v-if="notice.form.data.expiry_date">
-                                        {{ new Date(notice.form.data.expiry_date) | ago }}
-                                    </span>
-                                    <span v-else class="whitespace-nowrap text-red-500">No Expiry</span>
-                                </td>
-                                <td class="border-b whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                                    {{
-                                        notice.form.data.scheduled_at ? new
-                                            Date(notice.form.data.scheduled_at)
-                                            :
-                                            'Unknown' | ago
-                                    }}
-                                </td>
-                                <td class="border-b whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                                    {{
-                                        isActive(notice) ? 'Yes' : 'No'
-                                    }}
-                                </td>
-                                <td class="border-b whitespace-nowrap px-3 py-4 text-sm text-gray-500">
-                                    {{
-                                        notice.form.data.created_at ? new Date(notice.form.data.created_at)
-                                            :
-                                            'Unknown' | ago
-                                    }}
-                                </td>
-                                <td class="border-b px-3 py-4 text-sm">
-                                    <span v-if="deletingNoticeId !== notice.id">
-                                        <button @click="deleteNotice(notice)" class="text-red-500 hover:bg-red-900">
-                                            <i class="fas fa-trash" style="color:red"></i>
-                                        </button>
-                                    </span>
-                                    <span v-if="deletingNoticeId === notice.id">
-                                        <div class="delete-loader"></div>
-                                    </span>
-                                </td>
-                            </tr>
+                        <tbody>
+                            <!-- Table rows will be generated by DataTable dynamically -->
                         </tbody>
                     </table>
-                    <div class="mt-4">
-                        <Pagination :pagination="localPagination" @paginate="fetchNotices" />
-                    </div>
                 </div>
             </div>
         </div>
@@ -192,7 +117,7 @@ export default {
     },
     data() {
         return {
-            notices: ref([]),
+            notices: [],
             form: new CNotice(),
             errors: {},
             localPagination: { ...this.pagination },
@@ -212,10 +137,16 @@ export default {
         addNotice() {
             this.$modal.show('add-edit-notice');
             this.notice = {};
+            this.initializeDataTable();
+            // this.fetchNotices();
         },
         editNotice(notice) {
+            // console.log(notice);
             this.$modal.show('add-edit-notice');
-            this.notice = notice.form.data;
+            this.notice = typeof notice === 'string' ? JSON.parse(notice) : notice;
+            // console.log(this.notice);
+            this.initializeDataTable();
+            // this.fetchNotices();
         },
         isActive(notice) {
             const now = new Date();
@@ -223,23 +154,30 @@ export default {
             return !!(expiryDate > now && notice.form.data.is_active);
 
         },
-        async toggleSticky(notice) {
+        async toggleSticky(id) {
+            const notice = new CNotice(id);
             try {
                 const response = await notice.toggleSticky();
                 if (response.status === 200) {
                     notice.form.data.is_sticky = response.data.notice.is_sticky;
                     this.localFlashSuccess = "Notice updated successfully!";
-                    setTimeout(() => {
-                        this.localFlashSuccess = "";
-                    }, 3000);
                 }
-                if (notice.form.data.is_sticky) {
-                    this.notices.forEach(n => {
-                        if (n.id !== notice.id) {
-                            n.form.data.is_sticky = false;
-                        }
-                    });
+                const index = this.notices.findIndex(n => n.id === id);
+                if (index !== -1) {
+                    this.$set(this.notices, index, { ...this.notices[index], is_sticky: notice.form.data.is_sticky });
                 }
+                this.notices.forEach((n, i) => {
+                    if (i !== index) {
+                        this.$set(this.notices, i, { ...n, is_sticky: false });
+                    }
+                });
+
+                // this.initializeDataTable();
+                await this.fetchNotices();
+
+                setTimeout(() => {
+                    this.localFlashSuccess = "";
+                }, 3000);
             } catch (error) {
                 console.error("Error toggling sticky notice:", error);
                 this.localFlashError = "An error occurred while updating the notice.";
@@ -260,8 +198,11 @@ export default {
         canDelete(userId) {
             return userId === 1;
         },
-        async deleteNotice(notice) {
+        async deleteNotice(id) {
+            const notice = new CNotice(id);
+
             this.deletingNoticeId = notice.id;
+
             if (confirm("Are you sure you want to delete this notice?")) {
                 try {
                     const response = await notice.delete();
@@ -287,6 +228,7 @@ export default {
                     }
                 } finally {
                     this.deletingNoticeId = null;
+                    await this.fetchNotices();
                 }
             }
         },
@@ -294,9 +236,15 @@ export default {
             try {
                 if (this.loading) return;
                 this.startLoading();
-                const results = await CNotices.fetchNoticesListForAdmin(url, this.NoticeSearchQuery);
-                this.notices = results.notices;
-                this.localPagination = results.pagination;
+                const response = await CNotices.fetchNoticesListForAdmin(url, this.NoticeSearchQuery);
+                if (response && response.data && Array.isArray(response.data.notices)) {
+                    this.notices = response.data.notices.map(notice => new CNotice(notice.id, notice));
+                    // console.log(this.notices);
+                } else {
+                    console.error("Invalid API Response Structure:", response.data);
+                    this.notices = [];
+                }
+
                 this.initializeDataTable();
                 this.stopLoading();
             } catch (error) {
@@ -305,8 +253,139 @@ export default {
             }
         },
         initializeDataTable() {
+            // console.log(this.notices);
             this.$nextTick(() => {
-                $('#noticesTable').DataTable({
+                if ($.fn.DataTable.isDataTable("#noticesTable")) {
+                    $("#noticesTable").DataTable().clear().destroy();
+                }
+                $("#noticesTable").DataTable({
+                    order: [[7]], // Sort by created_at column
+                    responsive: true,
+                    processing: true,
+                    paging: true,
+                    searching: false,
+                    destroy: true,
+                    data: this.notices.map(notice => ({
+                        id: notice.form.data.id,
+                        is_sticky: notice.form.data.is_sticky,
+                        name: notice.form.data.name,
+                        description: notice.form.data.description,
+                        notice_type: notice.form.data.notice_type,
+                        expiry_date: notice.form.data.expiry_date,
+                        scheduled_at: notice.form.data.scheduled_at,
+                        created_at: notice.form.data.created_at,
+                        is_active: notice.form.data.is_active,
+                    })),
+                    columns: [
+                        {
+                            data: "id",
+                            title: "ID",
+                            orderable: true
+                        },
+                        {
+                            data: "name",
+                            title: "Title",
+                            render: function (data, type, row, meta) {
+                                if (!row || !row.id) {
+                                    console.error("Row ID is undefined!");
+                                    return "Invalid Data";
+                                }
+
+                                const starIcon = row.is_sticky
+                                    ? '<i class="fas fa-star text-yellow-500"></i>'
+                                    : '<i class="far fa-star"></i>';
+
+                                return `<span class="cursor-pointer toggle-sticky" data-id="${row.id}">${starIcon}</span>
+                                        <span class="text-blue-500 whitespace-nowrap cursor-pointer edit-notice" data-notice='${JSON.stringify(row)}'>${data || "N/A"}</span>`;
+                            }
+                        },
+                        { data: "description", title: "Description", render: (data) => data || "No description" },
+                        {
+                            data: "notice_type", title: "Type", render: (data) => {
+                                if (data && data.type) {
+                                    const type = data.type.charAt(0).toUpperCase() + data.type.slice(1);
+                                    const color = data.color ? data.color : "#808080";
+                                    return `<span style="color: ${color};">${type}</span>`;
+                                }
+                                return "No Type";
+                            }
+                        },
+                        {
+                            data: "expiry_date",
+                            title: "Expiry Date",
+                            render: (data) => {
+                                if (!data) {
+                                    return `<span class="text-blue-500">No Expiry</span>`;
+                                }
+                                const expiryDate = moment(data);
+                                const daysLeft = expiryDate.diff(moment(), 'days');
+                                if (daysLeft < 0) {
+                                    return `<span class="text-red-500">Expired</span>`;
+                                }
+                                return `<span class="text-green-500">${expiryDate.format("MMMM D, YYYY [at] h:mm A")}</span>`;
+                            }
+                        },
+                        {
+                            data: "scheduled_at",
+                            title: "Scheduled At",
+                            render: (data) => {
+                                if (!data) {
+                                    return `<span class="text-red-500">No Schedule</span>`;
+                                }
+                                const scheduledAt = moment(data);
+                                const timeLeft = scheduledAt.diff(moment(), 'milliseconds');
+                                if (timeLeft >= 0) {
+                                    return `<span class="text-blue-500">Scheduled for ${scheduledAt.format("MMM D, YYYY [at] h:mm A")}</span>`;
+                                } else {
+                                    return `<span class="text-green-500">Published on ${scheduledAt.format("MMM D, YYYY [at] h:mm A")}</span>`;
+                                }
+                                return `<span class="text-green-500">${scheduledAt.format("MMM D, YYYY [at] h:mm A")}</span>`;
+                            }
+                        },
+                        {
+                            data: "is_active",
+                            title: "Active",
+                            orderable: true,
+                            render: (data) => data ? `<span class="text-green-500">Yes</span>` : `<span class="text-red-500">No</span>`
+                        },
+                        {
+                            data: "created_at",
+                            title: "Created At",
+                            render: (data) => data ? moment(data).format("MMM D, YYYY [at] h:mm A") : "No Date",
+                            orderable: true,
+                            type: 'date'
+                        },
+                        {
+                            data: "id",
+                            title: "Delete",
+                            orderable: false,
+                            render: (data) => `<button class="text-red-500 delete-notice" data-id="${data}"><i class="fas fa-trash"></i></button>`
+                        }
+                    ],
+                    drawCallback: () => {
+                        document.querySelectorAll(".toggle-sticky").forEach(el => {
+                            el.addEventListener("click", () => {
+                                this.toggleSticky(el.dataset.id);
+                            });
+                        });
+
+                        document.querySelectorAll(".edit-notice").forEach(el => {
+                            el.addEventListener("click", () => {
+                                this.editNotice(el.dataset.notice);
+                            });
+                        });
+
+                        document.querySelectorAll(".delete-notice").forEach(el => {
+                            el.addEventListener("click", () => {
+                                this.deleteNotice(el.dataset.id);
+                            });
+                        });
+                    },
+                    rowCallback: function (row, data) {
+                        if (data.is_active) {
+                            $(row).css('background-color', '#d4edda');
+                        }
+                    },
                 });
             });
         },
@@ -349,6 +428,12 @@ export default {
     async mounted() {
         this.deletingNoticeId = null;
 
+        this.$nextTick(() => {
+            if (!$.fn.DataTable.isDataTable("#noticesTable")) {
+                this.dataTable = $("#noticesTable").DataTable();
+            }
+        });
+
         await this.fetchNotices();
 
         if (this.flashSuccess) {
@@ -365,6 +450,7 @@ export default {
         }
 
         window.addEventListener("keydown", this.focusSearchBar);
+
     },
     beforeUnmount() {
         window.removeEventListener("keydown", this.focusSearchBar);

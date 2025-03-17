@@ -1,7 +1,7 @@
-import "./bootstrap";
-import router from "./routes";
+//import "./bootstrap";
 import Vue from "vue";
 import VueJSModal from "vue-js-modal";
+
 import "@fortawesome/fontawesome-free/css/all.css";
 import Welcome from "@/Pages/Welcome.vue";
 import Carousel from "./components/Carousel.vue";
@@ -30,8 +30,15 @@ import RegisterForm from "./views/session/RegisterForm.vue";
 import Pagination from "@/components/Pagination.vue";
 import noticeForm from "@/components/notice/admin/NoticeForm.vue";
 import noticesList from "@/components/notice/admin/NoticesList.vue";
+import colorTypes from "@/components/notice/admin/ColorTypes.vue";
+import axios from "axios";
 
+window.axios = axios;
+
+window.axios.defaults.headers.common["X-Requested-With"] = "XMLHttpRequest";
+window.Vue = Vue;
 Vue.use(VueJSModal);
+Vue.component("colorTypes", colorTypes);
 Vue.component("Welcome", Welcome);
 Vue.component("Carousel", Carousel);
 Vue.component("SeriesDropdown", SeriesDropdown);
@@ -61,5 +68,5 @@ Vue.component("noticeForm", noticeForm);
 
 new Vue({
     el: "#app",
-    router,
+    // router,
 });

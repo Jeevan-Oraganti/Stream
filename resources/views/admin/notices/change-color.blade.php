@@ -20,7 +20,7 @@
 
 <body>
     <div id="app" class="bg-white">
-        <notice-color-change></notice-color-change>
+        <color-types></color-types>
     </div>
 </body>
 
