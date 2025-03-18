@@ -11,55 +11,38 @@
             {{ localFlashError }}
         </div>
 
-        <div class="bg-white overflow-hidden">
+        <div class="bg-white">
             <table class="min-w-full divide-y divide-gray-200 border">
                 <thead>
-                    <tr>
-                        <th
-                            class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider border">
-                            Notice Types
-                        </th>
-                        <th
-                            class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider border">
-                            Current
-                            Color
-                        </th>
-                        <th
-                            class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider border">
-                            Change
-                            Color
-                        </th>
-                    </tr>
+                <tr>
+                    <th
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-600 bg-gray-100 uppercase tracking-wider border">
+                        Notice Types
+                    </th>
+                    <th
+                        class="px-6 py-3 text-left text-xs font-medium text-gray-600 bg-gray-100 uppercase tracking-wider border">
+                        Change
+                        Color
+                    </th>
+                </tr>
                 </thead>
                 <tbody class="bg-white divide-y divide-gray-200">
-                    <tr v-for="type in noticeTypes" :key="type.id">
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 border">{{
+                <tr v-for="type in noticeTypes" :key="type.id" :style="{ backgroundColor: type.color + 50 }">
+                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 border">{{
                             type.type.charAt(0).toUpperCase() + type.type.slice(1)
                         }}
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap border">
-                            <div :style="{ backgroundColor: type.color }" class="w-24 h-6 rounded-md border"></div>
-                            <span class="text-sm font-semibold" :style="{ color: type.color }">{{
-                                type.color.charAt(0).toUpperCase() + type.color.slice(1)
-                                }}</span>
-                        </td>
-                        <td class="px-6 py-4 items-center whitespace-nowrap border">
-                            <div class="flex items-center space-x-6">
-                                <!-- Color Selection -->
-                                <div class="relative mt-2">
-                                    <v-swatches v-model="type.newColor" @input="updateColor(type, type.newColor)"
-                                        show-fallback fallback-input-type="color">
-                                    </v-swatches>
-                                </div>
-
-                                <!-- Change Button -->
-                                <button @click="changeColor(type)"
-                                    class="bg-indigo-600 text-white px-4 py-2 rounded-lg shadow-sm hover:bg-indigo-500 transition">
-                                    Change
-                                </button>
+                    </td>
+                    <td class="px-6 py-4 items-center whitespace-nowrap border">
+                        <div class="flex items-center space-x-6">
+                            <!-- Color Selection -->
+                            <div class="relative mt-2">
+                                <v-swatches v-model="type.color" @input="changeColor(type)"
+                                            show-fallback fallback-input-type="color">
+                                </v-swatches>
                             </div>
-                        </td>
-                    </tr>
+                        </div>
+                    </td>
+                </tr>
                 </tbody>
             </table>
         </div>
@@ -72,7 +55,7 @@ import VSwatches from 'vue-swatches';
 import 'vue-swatches/dist/vue-swatches.css';
 
 export default {
-    components: { VSwatches },
+    components: {VSwatches},
     data() {
         return {
             noticeTypes: [],
@@ -84,24 +67,24 @@ export default {
         async fetchNoticeTypes() {
             try {
                 const response = await axios.get('/admin/notice-types');
-                this.noticeTypes = response.data.noticeTypes.map(type => ({
-                    ...type,
-                    newColor: type.color || '#000000'
-                }));
+                this.noticeTypes = response.data.noticeTypes.map(type => ({...type}));
             } catch (error) {
                 console.error('Error fetching notice types:', error);
             }
         },
         async changeColor(type) {
             try {
-                const response = await axios.post(`/admin/notice-type/${type.id}/change-color`, {
-                    color: type.newColor
+                await axios.post(`/admin/notice-type/${type.id}/change-color`, {
+                    color: type.color
                 });
                 this.localFlashSuccess = 'Notice type color updated successfully!';
+                const noticeIndex = this.noticeTypes.findIndex(n => n.id === type.id);
+                if (noticeIndex !== -1) {
+                    this.noticeTypes[noticeIndex].color = type.color;
+                }
                 setTimeout(() => {
                     this.localFlashSuccess = '';
                 }, 3000);
-                await this.fetchNoticeTypes();
             } catch (error) {
                 console.error('Error changing color:', error);
                 this.localFlashError = 'An error occurred while changing the color.';
@@ -110,9 +93,6 @@ export default {
                 }, 3000);
             }
         },
-        updateColor(type, color) {
-            type.newColor = color;
-        }
     },
     async mounted() {
         await this.fetchNoticeTypes();
@@ -145,17 +125,5 @@ export default {
     background-color: #f8d7da;
     color: #721c24;
     border: 1px solid #f5c6cb;
-}
-
-.bg-white {
-    overflow: visible !important;
-}
-
-table {
-    overflow: visible !important;
-}
-
-tbody {
-    overflow: visible !important;
 }
 </style>

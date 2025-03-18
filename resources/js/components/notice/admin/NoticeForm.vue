@@ -1,6 +1,6 @@
 <!-- filepath: /home/bnetworks/websites/stream/resources/js/components/notice/admin/NoticeForm.vue -->
 <template>
-    <modal name="add-edit-notice" height="auto" :pivotY=".5" class="rounded-lg shadow-lg w-full max-w-lg mx-auto px-4">
+    <modal name="add-edit-notice" @opened="logging" height="auto" :pivotY=".5" class="rounded-lg shadow-lg w-full max-w-lg mx-auto px-4">
         <div class="container block m-auto justify-center p-8">
             <h2 class="text-xl font-semibold mb-4 text-gray-800">{{ form.id ? 'Edit Notice' : 'Add New Notice' }}</h2>
             <div v-if="localFlashSuccess" class="notification is-success">
@@ -16,7 +16,7 @@
                         class="text-gray-800 w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                         :class="{ 'border-red-500': form.hasError('name') }" @input="clearError('name')">
                     <span v-if="form.hasError('name')" class="text-red-500 text-sm mt-1 block">{{ form.getError('name')
-                    }}</span>
+                        }}</span>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Description</label>
@@ -33,6 +33,7 @@
                         class="text-gray-500 w-full p-2 border rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-400"
                         :class="{ 'border-red-500': form.hasError('notice_type_id') }"
                         @change="clearError('notice_type_id')">
+<!--                        <option v-for="type in form.data.notice_type" :key="type.id" :value="type.id">{{ type.name }}</option>-->
                         <option value="1">Announcement</option>
                         <option value="2">Information</option>
                         <option value="3">Outage</option>
@@ -111,6 +112,9 @@ export default {
         };
     },
     methods: {
+        logging() {
+          console.log(this.form.data);
+        },
         async saveNotice() {
             console.log(this.form.data);
             try {
@@ -132,7 +136,7 @@ export default {
 
                 this.stopLoading();
                 // this.$emit('notice-saved', response.data.notice);
-                // window.location.href = '/admin/notices';
+                window.location.href = '/admin/notices';
 
             } catch (error) {
                 this.localFlashError = "Error saving the notice";

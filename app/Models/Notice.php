@@ -13,8 +13,8 @@ class Notice extends Model
 
     protected $casts = [
       'created_at' => 'datetime',
-        'updated_at' => 'date',
-        'expiry_date' => 'date',
+        'updated_at' => 'datetime',
+        'expiry_date' => 'datetime',
     ];
 
     protected $fillable = [

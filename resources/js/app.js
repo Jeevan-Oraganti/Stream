@@ -1,6 +1,7 @@
-//import "./bootstrap";
+import "./bootstrap";
 import Vue from "vue";
 import VueJSModal from "vue-js-modal";
+import router from "./routes";
 
 import "@fortawesome/fontawesome-free/css/all.css";
 import Welcome from "@/Pages/Welcome.vue";
@@ -68,5 +69,5 @@ Vue.component("noticeForm", noticeForm);
 
 new Vue({
     el: "#app",
-    // router,
+    router,
 });

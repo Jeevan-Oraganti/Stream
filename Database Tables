@@ -1,0 +1,46 @@
+notices table:
+
+CREATE TABLE public.notices (
+  id BIGINT PRIMARY KEY NOT NULL DEFAULT nextval('notices_id_seq'::regclass),
+  name CHARACTER VARYING(255) NOT NULL,
+  description TEXT,
+  notice_type_id BIGINT NOT NULL,
+  expiry_date TIMESTAMP(0) WITHOUT TIME ZONE,
+  created_at TIMESTAMP(0) WITHOUT TIME ZONE,
+  updated_at TIMESTAMP(0) WITHOUT TIME ZONE,
+  is_sticky BOOLEAN DEFAULT false,
+  scheduled_at TIMESTAMP(0) WITHOUT TIME ZONE,
+  is_active BOOLEAN DEFAULT false,
+  FOREIGN KEY (notice_type_id) REFERENCES public.notice_types (id)
+  MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE
+);
+
+
+
+notice_types table:
+
+CREATE TABLE public.notice_types (
+  id BIGINT PRIMARY KEY NOT NULL DEFAULT nextval('notification_types_id_seq'::regclass),
+  type CHARACTER VARYING(255) NOT NULL,
+  color CHARACTER VARYING(255) NOT NULL,
+  created_at TIMESTAMP(0) WITHOUT TIME ZONE,
+  updated_at TIMESTAMP(0) WITHOUT TIME ZONE
+);
+
+
+
+user_notices table:
+
+CREATE TABLE public.user_notices (
+  id BIGINT PRIMARY KEY NOT NULL DEFAULT nextval('user_notices_id_seq'::regclass),
+  user_id BIGINT NOT NULL,
+  notice_id BIGINT NOT NULL,
+  created_at TIMESTAMP(0) WITHOUT TIME ZONE,
+  updated_at TIMESTAMP(0) WITHOUT TIME ZONE,
+  FOREIGN KEY (notice_id) REFERENCES public.notices (id)
+  MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE,
+  FOREIGN KEY (user_id) REFERENCES public.users (id)
+  MATCH SIMPLE ON UPDATE NO ACTION ON DELETE CASCADE
+);
+CREATE UNIQUE INDEX user_notices_pk ON user_notices USING BTREE (notice_id, user_id);
+

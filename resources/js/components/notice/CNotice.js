@@ -21,13 +21,18 @@ export default class CNotice {
         this.form.data = {
             ...data,
             expiry_date:
-                data.expiry_date ||
-                moment().add(1, "week").format("YYYY-MM-DD"),
+                data.hasOwnProperty("expiry_date")
+                    ? data.expiry_date
+                    : moment().add(1, "week").format("YYYY-MM-DD"),
+
             scheduled_at:
-                data.scheduled_at ||
-                moment().add(1, "day").format("YYYY-MM-DD"),
+                data.hasOwnProperty("scheduled_at")
+                    ? data.scheduled_at
+                    : moment().add(1, "day").format("YYYY-MM-DD"),
+
             is_sticky: data.is_sticky || false,
         };
+
     }
 
     //acknowledge the notice by the user
