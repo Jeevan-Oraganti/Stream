@@ -5,23 +5,20 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
-{{--    <link rel="stylesheet" href="https://unpkg.com/vue-swatches/dist/vue-swatches.css">--}}
     <link rel="preconnect" href="https://fonts.bunny.net">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.dataTables.css" />
     <link rel="stylesheet" href="{{ asset('css/bulma.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/font-awesome.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
-    {{-- <script src="https://cdn.tailwindcss.com/"></script>--}}
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.dataTables.css" />
+    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
     <script defer src="{{ asset('js/alpine.js') }}"></script>
+
+    {{-- <script src="https://cdn.tailwindcss.com/"></script>--}}
 
     <title>{{ config('app.name', 'Laravel') }}</title>
 
     @vite(['resources/js/app.js'])
-
-    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
-
 </head>
 
 <body>

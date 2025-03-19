@@ -36,9 +36,10 @@
                         <td class="px-6 py-4 items-center whitespace-nowrap border">
                             <div class="flex items-center space-x-4">
                                 <!-- Color Selection -->
-                                <v-swatches v-model="type.color" @input="changeColor(type)" show-fallback
-                                            fallback-input-type="color" styles="width: '138px', height: '169px'">
-                                </v-swatches>
+                                <swatches v-model="type.color" :swatches="colors" row-length="3"
+                                          @input="changeColor(type)" show-fallback
+                                          fallback-input-type="color" styles="width: '138px', height: '169px'">
+                                </swatches>
                             </div>
                         </td>
                     </tr>
@@ -51,16 +52,26 @@
 
 <script>
 import axios from 'axios';
-import VSwatches from 'vue-swatches';
+import Swatches from 'vue-swatches';
 import 'vue-swatches/dist/vue-swatches.css';
 
 export default {
-    components: {VSwatches},
+    components: {Swatches},
     data() {
         return {
             noticeTypes: [],
             localFlashSuccess: '',
             localFlashError: '',
+            colors: [
+                // Announcement (Red/Pink)
+                ['#D91E36', '#E63946', '#EE6B6E'],
+
+                // Information (Blue)
+                ['#0E4DA4', '#2A69C0', '#4C89DD'],
+
+                // Outage (Amber/Yellow)
+                ['#C97B00', '#E39200', '#F5B700']
+            ]
         };
     },
     methods: {

@@ -2,28 +2,29 @@
     <div class="relative top-0 left-0 w-full flex items-center justify-center">
     <div v-if="filteredNotices.length > 0" class="notice-container w-full">
         <div v-for="notice in filteredNotices" :key="notice.id"
-             class="notice-banner flex items-center justify-between w-full p-1 text-white"
-             :style="{
-                background: `linear-gradient(180deg, ${shadeColor(notice.notice_type.color, 80)} -50%, ${shadeColor(notice.notice_type.color, 40)} 100%)`
+             class="notice-banner flex items-center justify-between px-4 py-2 w-full text-white border-b-2"
+             :style="{ borderColor: `${notice.notice_type.color}`,
+                background: `linear-gradient(180deg, ${shadeColor(notice.notice_type.color, 80)} 0%, ${shadeColor(notice.notice_type.color, 40)} 100%)`
             }">
 
             <div class="flex items-center">
-                <p class="font-semibold text-lg mb-1 p-1"
-                   :style="{ color: notice.notice_type.color }">
+                <p class="font-semibold text-sm ml-1"
+                   :style="{ color:`${shadeTextColor(notice.notice_type.color, 30)}` }">
                     {{ notice.name }}:
                 </p>
                 <p class="text-sm ml-1"
-                   :style="{ color: notice.notice_type.color }">
+                   :style="{ color: `${shadeTextColor(notice.notice_type.color, 30)}` }">
                     {{ notice.description }}
                 </p>
                 <p class="text-sm ml-2"
-                   :style="{ color: notice.notice_type.color }">
+                   :style="{ color: `${shadeTextColor(notice.notice_type.color, 30)}` }">
                     - {{ notice.created_at | ago }}
                 </p>
             </div>
 
-            <button @click="handleNotice(notice.id)" class="dismiss-btn hover text-white">
-                &times;
+            <button @click="handleNotice(notice.id)" class="hover" :style="{ color: `${shadeTextColor(notice.notice_type.color, 30)}` }">
+
+            <i class="fa-solid fa-xmark text-xl"></i>
             </button>
         </div>
     </div>
@@ -71,6 +72,25 @@ export default {
         }
     },
     methods: {
+        // Function to change the shade of the text
+        shadeTextColor(color, percent) {
+            let num = parseInt(color.replace("#", ""), 16),
+                amt = Math.round(2.55 * percent), // Adjust brightness
+                R = (num >> 16) - amt, // Reduce Red
+                G = ((num >> 8) & 0x00FF) - amt, // Reduce Green
+                B = (num & 0x0000FF) - amt; // Reduce Blue
+
+            return (
+                "#" +
+                (0x1000000 +
+                    (R > 0 ? R : 0) * 0x10000 +
+                    (G > 0 ? G : 0) * 0x100 +
+                    (B > 0 ? B : 0))
+                    .toString(16)
+                    .slice(1)
+            );
+        },
+
         // Function to generate lighter or darker shades
         shadeColor(color, percent) {
             let num = parseInt(color.replace("#", ""), 16),
@@ -117,22 +137,20 @@ export default {
 <style>
 .notice-container {
     width: 100vw;
-    margin: auto;
 }
 
 .notice-banner {
-    margin-bottom: 1px;
     position: relative;
     width: 100%;
 }
 
-.dismiss-btn {
-    margin-right: 0.5rem;
-    font-size: 30px;
-    transition: transform 0.3s ease;
-}
+/*.dismiss-btn {*/
+/*    margin-right: 0.5rem;*/
+/*    font-size: 30px;*/
+/*    transition: transform 0.3s ease;*/
+/*}*/
 
-.dismiss-btn:hover {
-    transform: scale(1.1);
-}
+/*.dismiss-btn:hover {*/
+/*    transform: scale(1.1);*/
+/*}*/
 </style>
