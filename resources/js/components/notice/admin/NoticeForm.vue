@@ -125,13 +125,7 @@ export default {
                 } else {
                     await this.form.save('/admin/notice');
                 }
-                this.localFlashSuccess = "Notice saved successfully";
-
-                if (this.localFlashSuccess) {
-                    setTimeout(() => {
-                        this.localFlashSuccess = '';
-                    }, 3000);
-                }
+                this.localFlashSuccess = "Notice edited successfully!";
                 this.$modal.hide("add-edit-notice");
 
                 this.stopLoading();

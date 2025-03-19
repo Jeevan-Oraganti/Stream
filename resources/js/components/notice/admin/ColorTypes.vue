@@ -1,52 +1,52 @@
 <!-- filepath: /home/bnetworks/websites/stream/resources/js/components/notice/admin/ColorTypes.vue -->
 <template>
-    <div class="container mx-auto p-8 min-h-screen">
-        <h2 class="text-2xl font-bold mb-6 text-gray-800">Change Notice Type Color</h2>
+    <modal name="change-notice-type-color" height="auto" :pivotY=".5"
+           class="rounded-lg w-full max-w-lg mx-auto px-4 container p-8 bg-gray-50">
+        <div class="py-4">
+            <h2 class="text-2xl mt-4 font-bold mb-6 text-gray-800 text-center">Change Notice Type Color</h2>
 
-        <!-- Success & Error Messages -->
-        <div v-if="localFlashSuccess" class="notification is-success">
-            {{ localFlashSuccess }}
-        </div>
-        <div v-if="localFlashError" class="notification is-danger">
-            {{ localFlashError }}
-        </div>
+            <!-- Success & Error Messages -->
+            <div v-if="localFlashSuccess" class="notification is-success">
+                {{ localFlashSuccess }}
+            </div>
+            <div v-if="localFlashError" class="notification is-danger">
+                {{ localFlashError }}
+            </div>
 
-        <div class="bg-white">
-            <table class="min-w-full divide-y divide-gray-200 border">
-                <thead>
-                <tr>
-                    <th
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-600 bg-gray-100 uppercase tracking-wider border">
-                        Notice Types
-                    </th>
-                    <th
-                        class="px-6 py-3 text-left text-xs font-medium text-gray-600 bg-gray-100 uppercase tracking-wider border">
-                        Change
-                        Color
-                    </th>
-                </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                <tr v-for="type in noticeTypes" :key="type.id" :style="{ backgroundColor: type.color + 50 }">
-                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 border">{{
-                            type.type.charAt(0).toUpperCase() + type.type.slice(1)
-                        }}
-                    </td>
-                    <td class="px-6 py-4 items-center whitespace-nowrap border">
-                        <div class="flex items-center space-x-6">
-                            <!-- Color Selection -->
-                            <div class="relative mt-2">
-                                <v-swatches v-model="type.color" @input="changeColor(type)"
-                                            show-fallback fallback-input-type="color">
+            <div class="bg-white rounded-lg p-4">
+                <table class="min-w-full divide-y divide-gray-200 border rounded-lg">
+                    <thead>
+                    <tr class="bg-gray-100">
+                        <th
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider border">
+                            Notice Types
+                        </th>
+                        <th
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider border">
+                            Change Color
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                    <tr v-for="type in noticeTypes" :key="type.id" :style="{ backgroundColor: type.color + '50' }"
+                        class="hover:bg-gray-100 transition-colors">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 border">
+                            {{ type.type.charAt(0).toUpperCase() + type.type.slice(1) }}
+                        </td>
+                        <td class="px-6 py-4 items-center whitespace-nowrap border">
+                            <div class="flex items-center space-x-4">
+                                <!-- Color Selection -->
+                                <v-swatches v-model="type.color" @input="changeColor(type)" show-fallback
+                                            fallback-input-type="color" styles="width: '138px', height: '169px'">
                                 </v-swatches>
                             </div>
-                        </div>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </div>
+    </modal>
 </template>
 
 <script>
@@ -82,6 +82,7 @@ export default {
                 if (noticeIndex !== -1) {
                     this.noticeTypes[noticeIndex].color = type.color;
                 }
+                this.$emit('color-updated');
                 setTimeout(() => {
                     this.localFlashSuccess = '';
                 }, 3000);
@@ -125,5 +126,9 @@ export default {
     background-color: #f8d7da;
     color: #721c24;
     border: 1px solid #f5c6cb;
+}
+
+::v-deep .vm--modal {
+    overflow: visible !important;
 }
 </style>

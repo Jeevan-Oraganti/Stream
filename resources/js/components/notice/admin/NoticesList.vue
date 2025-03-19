@@ -14,10 +14,10 @@
                                 class="block justify-center rounded-md bg-indigo-600 px-6 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
                                 Add Notice
                             </button>
-                            <a href="/admin/change-notice-color"
-                                class="block justify-center rounded-md bg-green-500 px-3 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600">
+                            <button @click="changeNoticeTypeColor"
+                                class="block justify-center rounded-md bg-green-500 px-4 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600">
                                 Change Notice Color
-                            </a>
+                            </button>
                         </span>
                     </div>
                     <div v-if="localFlashSuccess" class="notification is-success">
@@ -77,6 +77,7 @@
             </div>
         </div>
         <notice-form :notice="notice"></notice-form>
+        <color-types @color-updated="refreshNotices"></color-types>
     </div>
 </template>
 
@@ -134,6 +135,13 @@ export default {
         };
     },
     methods: {
+        async refreshNotices() {
+            await this.fetchNotices();
+            this.initializeDataTable();
+        },
+        changeNoticeTypeColor() {
+            this.$modal.show('change-notice-type-color');
+        },
         addNotice() {
             this.$modal.show('add-edit-notice');
             this.notice = {};
@@ -144,8 +152,6 @@ export default {
             this.form = new CNotice(notice);
             this.$modal.show('add-edit-notice');
             this.notice = typeof notice === 'string' ? JSON.parse(notice) : notice;
-            // console.log(this.notice);
-            // this.initializeDataTable();
             this.fetchNotices();
         },
         isActive(notice) {
