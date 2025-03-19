@@ -307,7 +307,7 @@ export default {
                                         <span class="text-blue-500 whitespace-nowrap cursor-pointer edit-notice" data-notice='${JSON.stringify(row)}'>${data || "N/A"}</span>`;
                             }
                         },
-                        { data: "description", title: "Description", render: (data) => data || "No description" },
+                        { data: "description", title: "Description", render: (data) => `<span style="color: #2d3748">${data}</span>` || "No description" },
                         {
                             data: "notice_type", title: "Type", render: (data) => {
                                 if (data && data.type) {

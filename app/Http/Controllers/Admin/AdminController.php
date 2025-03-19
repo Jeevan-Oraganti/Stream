@@ -48,9 +48,7 @@ class AdminController extends Controller
         if ($validatedData['is_sticky']) {
             $existingStickyNotice = Notice::where('is_sticky', true)->first();
             if ($existingStickyNotice) {
-                return response()->json([
-                    'errors' => ['is_sticky' => ['A sticky notice already exists. Please unstick the existing one.']]
-                ], 422);
+                Notice::where('is_sticky', true)->update(['is_sticky' => false]);
             }
         }
 
@@ -82,9 +80,7 @@ class AdminController extends Controller
         if ($request->input('is_sticky')) {
             $existingStickyNotice = Notice::where('is_sticky', '1')->where('id', '!=', $notice->id)->first();
             if ($existingStickyNotice) {
-                return response()->json([
-                    'errors' => ['is_sticky' => ['A sticky notice already exists. Please unsticky the existing one.']]
-                ], 422);
+                Notice::where('is_sticky', true)->update(['is_sticky' => false]);
             }
         }
 

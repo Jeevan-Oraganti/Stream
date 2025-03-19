@@ -12,7 +12,7 @@ class Notice extends Model
     protected $guarded = [];
 
     protected $casts = [
-      'created_at' => 'datetime',
+        'created_at' => 'datetime',
         'updated_at' => 'datetime',
         'expiry_date' => 'datetime',
         'is_sticky' => 'boolean',
