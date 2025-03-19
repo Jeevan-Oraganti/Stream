@@ -15,6 +15,7 @@ class Notice extends Model
       'created_at' => 'datetime',
         'updated_at' => 'datetime',
         'expiry_date' => 'datetime',
+        'is_sticky' => 'boolean',
     ];
 
     protected $fillable = [

@@ -13,15 +13,14 @@ class AdminController extends Controller
 {
     public function noticeIndex(Request $request)
     {
-        //sleep(2);
         $search = $request->input('search');
 
         $notices = Notice::with('noticeType')
             ->when($search, function ($query, $search) {
-                return $query->where('name', 'like', "%{$search}%")
-                    ->orWhere('description', 'like', "%{$search}%")
+                return $query->whereRaw('LOWER(name) LIKE ?', ['%' . strtolower($search) . '%'])
+                    ->orWhereRaw('LOWER(description) LIKE ?', ['%' . strtolower($search) . '%'])
                     ->orWhereHas('noticeType', function ($subQuery) use ($search) {
-                        $subQuery->where('type', 'like', "%{$search}%");
+                        $subQuery->whereRaw('LOWER(type) LIKE ?', ['%' . strtolower($search) . '%']);
                     });
             })->latest()->get();
 
@@ -58,17 +57,6 @@ class AdminController extends Controller
         Notice::create($validatedData);
 
         return redirect()->route('admin.notices.index')->with('success', 'Notice added successfully.');
-    }
-
-    public function addNotice()
-    {
-        return view('admin.notices.add-notice');
-    }
-
-    public function editNotice($id)
-    {
-        $notice = Notice::with('noticeType')->findOrFail($id);
-        return view('admin.notices.edit-notice', ['notice' => $notice]);
     }
 
     public function noticeUpdate(Request $request, $noticeId)
@@ -133,7 +121,7 @@ class AdminController extends Controller
 
     public function noticeDestroy($id)
     {
-//        sleep(2);
+        //        sleep(2);
         $notice = Notice::findOrFail($id);
 
         if (Gate::allows('delete-notice')) {

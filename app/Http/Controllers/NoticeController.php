@@ -15,6 +15,14 @@ class NoticeController extends Controller
 
         $notices = Notice::with('noticeType')
             ->where('is_active', true)
+            ->where(function ($query) {
+                $query->where('scheduled_at', '<=', now())
+                    ->orWhereNull('scheduled_at');
+            })
+            ->where(function ($query) {
+                $query->where('expiry_date', '>', now())
+                    ->orWhereNull('expiry_date');
+            })
             ->whereNotIn('id', $dismissedNotices)
             ->orderBy('is_sticky', 'desc')
             ->orderBy('created_at', 'desc')
@@ -32,6 +40,14 @@ class NoticeController extends Controller
 
             $unreadNotices = Notice::with('noticeType')
                 ->where('is_active', true)
+                ->where(function ($query) {
+                    $query->where('scheduled_at', '<=', now())
+                        ->orWhereNull('scheduled_at');
+                })
+                ->where(function ($query) {
+                    $query->where('expiry_date', '>', now())
+                        ->orWhereNull('expiry_date');
+                })
                 ->leftJoin('user_notices', function ($join) use ($userId) {
                     $join->on('notices.id', '=', 'user_notices.notice_id')
                         ->where('user_notices.user_id', '=', $userId);
