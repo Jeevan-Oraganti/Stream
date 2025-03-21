@@ -9,6 +9,10 @@ use Illuminate\Support\Facades\DB;
 
 class NoticeController extends Controller
 {
+    /**
+     * Fetch unread notices for guest users.
+     * Notices are filtered based on their active status, schedule, expiry date, and dismissed notices stored in cookies.
+     */
     public function unreadNoticesForGuest(Request $request)
     {
         $dismissedNotices = json_decode($request->cookie('dismissed_notice', '[]'), true) ?? [];
@@ -26,13 +30,43 @@ class NoticeController extends Controller
             ->whereNotIn('id', $dismissedNotices)
             ->orderBy('is_sticky', 'desc')
             ->orderBy('created_at', 'desc')
-
             ->get();
 
         return response()->json($notices);
     }
 
+    /**
+     * Fetch unread notices for both authenticated and guest users.
+     * Authenticated users' unread notices are determined by the absence of an entry in the `user_notices` table.
+     * Guest users' unread notices are filtered based on dismissed notices stored in cookies.
+     */
+    public function unreadNotices(Request $request)
+    {
+        $query = Notice::with('noticeType')
+            ->whereRaw('"is_active"::BOOLEAN = TRUE')
+            ->orderBy('is_sticky', 'desc')
+            ->orderBy('created_at', 'desc');
 
+        if (Auth::check()) {
+            $userId = Auth::id();
+
+            $query->leftJoin('user_notices', function ($join) use ($userId) {
+                $join->on('notices.id', '=', 'user_notices.notice_id')
+                    ->where('user_notices.user_id', '=', $userId);
+            })->whereNull('user_notices.user_id')
+                ->select('notices.*');
+        } else {
+            $dismissedNotices = json_decode($request->cookie('dismissed_notice', '[]'), true) ?? [];
+            $query->whereNotIn('id', $dismissedNotices);
+        }
+
+        return response()->json($query->get());
+    }
+
+    /**
+     * Fetch unread notices specifically for authenticated users.
+     * Notices are filtered based on their active status, schedule, expiry date, and the absence of an entry in the `user_notices` table.
+     */
     public function unreadNoticesForUser()
     {
         if (Auth::check()) {
@@ -63,6 +97,10 @@ class NoticeController extends Controller
         return response()->json(['message' => 'Unauthorized'], 401);
     }
 
+    /**
+     * Mark a specific notice as read for the authenticated user.
+     * This is done by inserting an entry into the `user_notices` table.
+     */
     public function acknowledge($noticeId)
     {
         if (auth()->check()) {
