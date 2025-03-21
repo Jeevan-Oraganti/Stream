@@ -50,6 +50,7 @@ export default {
     },
     computed: {
         filteredNotices() {
+            // Returns the first notice that has not been dismissed
             const notice = this.notices.find(notice =>
                 !this.dismissedNotices.includes(notice.id.toString())
             );
@@ -58,11 +59,13 @@ export default {
         }
     },
     filters: {
+        // Formats a date to a relative time (e.g., "2 hours ago")
         ago(date) {
             return moment(date).fromNow();
         },
     },
     async created() {
+        // Fetches unread notices for the logged-in user or guest
         if (this.isLoggedIn) {
             document.cookie = "dismissed_notice=; expires=Thu, 01 Jan 1970 00:00:00; path=/";
             localStorage.removeItem('dismissedNotices');
@@ -72,7 +75,7 @@ export default {
         }
     },
     methods: {
-        // Function to change the shade of the text
+        // Adjusts the shade of the text color based on the given percentage
         shadeTextColor(color, percent) {
             let num = parseInt(color.replace("#", ""), 16),
                 amt = Math.round(2.55 * percent), // Adjust brightness
@@ -91,7 +94,7 @@ export default {
             );
         },
 
-        // Function to generate lighter or darker shades
+        // Generates a lighter or darker shade of a given color
         shadeColor(color, percent) {
             let num = parseInt(color.replace("#", ""), 16),
                 amt = Math.round(2.55 * percent),
@@ -110,6 +113,7 @@ export default {
             );
         },
 
+        // Handles the dismissal of a notice
         handleNotice(noticeId) {
             if (this.isLoggedIn) {
                 const cNotice = new CNotice(noticeId);
@@ -119,14 +123,20 @@ export default {
                 this.dismissNotice(noticeId);
             }
         },
+
+        // Dismisses a notice and updates the dismissed notices list
         dismissNotice(noticeId) {
             this.dismissedNotices.push(noticeId.toString());
             document.cookie = `dismissed_notice=${JSON.stringify(this.dismissedNotices)}; path=/; max-age=86400`;
             this.saveDismissedNotices();
         },
+
+        // Saves the dismissed notices to localStorage
         saveDismissedNotices() {
             localStorage.setItem('dismissedNotices', JSON.stringify(this.dismissedNotices));
         },
+
+        // Retrieves the dismissed notices from localStorage
         getDismissedNotices() {
             return JSON.parse(localStorage.getItem('dismissedNotices')) || [];
         }

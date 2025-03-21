@@ -54,6 +54,7 @@
 import axios from 'axios';
 import Swatches from 'vue-swatches';
 import 'vue-swatches/dist/vue-swatches.css';
+import _ from "lodash";
 
 export default {
     components: {Swatches},
@@ -75,6 +76,7 @@ export default {
         };
     },
     methods: {
+        // Fetches the list of notice types from the server and updates the local data
         async fetchNoticeTypes() {
             try {
                 const response = await axios.get('/admin/notice-types');
@@ -83,9 +85,10 @@ export default {
                 console.error('Error fetching notice types:', error);
             }
         },
-        async changeColor(type) {
+        // Updates the color of a specific notice type and sends the change to the server
+        changeColor:_.debounce(function (type) {
             try {
-                await axios.post(`/admin/notice-type/${type.id}/change-color`, {
+                axios.post(`/admin/notice-type/${type.id}/change-color`, {
                     color: type.color
                 });
                 this.localFlashSuccess = 'Notice type color updated successfully!';
@@ -104,8 +107,9 @@ export default {
                     this.localFlashError = '';
                 }, 3000);
             }
-        },
+        },500)
     },
+    // Fetches the notice types when the component is mounted
     async mounted() {
         await this.fetchNoticeTypes();
     }

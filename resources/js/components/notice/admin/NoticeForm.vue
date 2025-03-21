@@ -1,25 +1,19 @@
 <!-- filepath: /home/bnetworks/websites/stream/resources/js/components/notice/admin/NoticeForm.vue -->
 <template>
-    <modal name="add-edit-notice" @opened="logging" height="auto" :pivotY=".5" class="rounded-lg shadow-lg w-full max-w-lg mx-auto px-4">
+    <modal name="add-edit-notice" height="auto" :pivotY=".5" class="rounded-lg shadow-lg w-full max-w-lg mx-auto px-4">
         <div class="container block m-auto justify-center p-8">
             <h2 class="text-xl font-semibold mb-4 text-gray-800">{{ form.id ? 'Edit Notice' : 'Add New Notice' }}</h2>
-            <div v-if="localFlashSuccess" class="notification is-success">
-                {{ localFlashSuccess }}
-            </div>
-            <div v-if="localFlashError" class="notification is-danger">
-                {{ localFlashError }}
-            </div>
             <form @submit.prevent="saveNotice" class="space-y-4">
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">Notice Title</label>
+                    <label class="text-sm font-medium text-gray-700">Notice Title</label>
                     <input v-model="form.data.name" type="text"
                         class="text-gray-800 w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                         :class="{ 'border-red-500': form.hasError('name') }" @input="clearError('name')">
                     <span v-if="form.hasError('name')" class="text-red-500 text-sm mt-1 block">{{ form.getError('name')
-                        }}</span>
+                    }}</span>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">Description</label>
+                    <label class="text-sm font-medium text-gray-700">Description</label>
                     <textarea v-model="form.data.description"
                         class="text-gray-800 w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                         :class="{ 'border-red-500': form.hasError('description') }"
@@ -28,12 +22,11 @@
                         form.getError('description') }}</span>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">Notice Type</label>
+                    <label class="text-sm font-medium text-gray-700">Notice Type</label>
                     <select v-model="form.data.notice_type_id"
                         class="text-gray-500 w-full p-2 border rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-400"
                         :class="{ 'border-red-500': form.hasError('notice_type_id') }"
                         @change="clearError('notice_type_id')">
-<!--                        <option v-for="type in form.data.notice_type" :key="type.id" :value="type.id">{{ type.name }}</option>-->
                         <option value="1">Announcement</option>
                         <option value="2">Information</option>
                         <option value="3">Outage</option>
@@ -42,7 +35,7 @@
                         form.getError('notice_type_id') }}</span>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">Expiry Date</label>
+                    <label class="text-sm font-medium text-gray-700">Expiry Date</label>
                     <input v-model="form.data.expiry_date" type="datetime-local"
                         class="text-gray-500 w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                         :class="{ 'border-red-500': form.hasError('expiry_date') }" @input="clearError('expiry_date')">
@@ -50,7 +43,7 @@
                         form.getError('expiry_date') }}</span>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">Scheduled At</label>
+                    <label class="text-sm font-medium text-gray-700">Scheduled At</label>
                     <input v-model="form.data.scheduled_at" type="datetime-local"
                         class="text-gray-500 w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
                         :class="{ 'border-red-500': form.hasError('scheduled_at') }"
@@ -59,7 +52,28 @@
                         form.getError('scheduled_at') }}</span>
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700">Priority Notice</label>
+                    <div>
+                        <label class="text-sm font-medium text-gray-700">Recurrence</label>
+                        <select v-model="form.data.recurrence"
+                            class="text-gray-500 w-full p-2 border rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-400">
+                            <option value="">None</option>
+                            <option value="daily">Daily</option>
+                            <option value="weekly">Weekly</option>
+                            <option value="monthly">Monthly</option>
+                        </select>
+                    </div>
+                    <div v-if="form.data.recurrence === 'weekly'">
+                        <label class="text-sm font-medium text-gray-700 mb-2">Days of the Week</label>
+                        <div class="flex space-x-2">
+                            <label
+                                v-for="day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']"
+                                :key="day">
+                                <input type="checkbox" :value="day" v-model="form.data.recurrence_days" />
+                                {{ day }}
+                            </label>
+                        </div>
+                    </div>
+                    <label class="text-sm font-medium text-gray-700">Priority Notice</label>
                     <div class="flex items-center">
                         <i :class="{ 'fas fa-star text-yellow-500': form.data.is_sticky, 'far fa-star text-gray-500': !form.data.is_sticky }"
                             @click="form.data.is_sticky = !form.data.is_sticky; clearError('is_sticky')"
@@ -81,13 +95,24 @@
                 </div>
             </form>
         </div>
+
+        <!-- Confirmation Modal -->
+        <confirmation-modal title="Warning"
+            message="There is already an existing sticky notice available. Proceeding will unstick the previous one. Do you want to continue?"
+            @confirm="proceedWithSave" @cancel="cancelSave">
+        </confirmation-modal>
     </modal>
 </template>
 
 <script>
 import CNotice from "@/components/notice/CNotice.js";
+import ConfirmationModal from "@/components/ConfirmationModal.vue";
+
 
 export default {
+    components: {
+        ConfirmationModal,
+    },
     props: {
         notice: {
             type: Object,
@@ -101,6 +126,10 @@ export default {
             type: String,
             default: ''
         },
+        stickyNoticeId: {
+            type: Number,
+            default: null,
+        },
     },
     data() {
         return {
@@ -108,48 +137,57 @@ export default {
             errors: {},
             loading: false,
             localFlashSuccess: '',
-            localFlashError: '',
+            proceed: false,
         };
     },
     methods: {
-        logging() {
-          console.log(this.form.data);
-        },
+        // Handles saving the notice, including validation for sticky notices
         async saveNotice() {
             console.log(this.form.data);
             try {
                 if (this.loading) return;
-                this.startLoading();
-                if (this.form.id) {
-                    await this.form.update(`/admin/notice/${this.form.id}`);
-                } else {
-                    await this.form.save('/admin/notice');
+
+                if (this.form.data.is_sticky && this.stickyNoticeId && this.stickyNoticeId !== this.form.id) {
+                    this.$modal.show('confirmation-modal');
+                    return;
                 }
-                this.localFlashSuccess = "Notice edited successfully!";
-                this.$modal.hide("add-edit-notice");
 
-                this.stopLoading();
-                // this.$emit('notice-saved', response.data.notice);
-                window.location.href = '/admin/notices';
+                await this.proceedWithSave();
 
+                this.startLoading();
             } catch (error) {
-                this.localFlashError = "Error saving the notice";
                 if (error.response && error.response.status === 422) {
                     this.errors = error.response.data.errors;
                 } else {
                     console.error('Error saving notice:', error);
                 }
                 this.stopLoading();
-
-                if (this.localFlashError) {
-                    setTimeout(() => {
-                        this.localFlashError = '';
-                    }, 3000);
-                }
             } finally {
                 this.loading = false;
             }
         },
+        // Proceeds with saving the notice after confirmation
+        async proceedWithSave() {
+            try {
+                this.startLoading();
+                if (this.form.id) {
+                    await this.form.update(`/admin/notice/${this.form.id}`);
+                } else {
+                    await this.form.save('/admin/notice');
+                }
+                this.$parent.localFlashSuccess = "Notice saved successfully!";
+                this.$modal.hide("add-edit-notice");
+                this.stopLoading();
+                await this.$parent.fetchNotices();
+            } catch (error) {
+                console.error('Error saving notice:', error);
+            }
+        },
+        // Cancels the save operation when the confirmation modal is dismissed
+        cancelSave() {
+            this.$modal.hide("confirmation-modal");
+        },
+        // Starts the loading animation and progress tracking
         startLoading() {
             this.loading = true;
             this.progress = 0;
@@ -159,6 +197,7 @@ export default {
                 }
             }, 100);
         },
+        // Stops the loading animation and resets progress
         stopLoading() {
             clearInterval(this.interval);
             this.progress = 100;
@@ -167,6 +206,7 @@ export default {
                 this.progress = 0;
             }, 500);
         },
+        // Clears a specific field's error from the form
         clearError(field) {
             if (this.form.hasError(field)) {
                 this.$delete(this.form.errors, field);
@@ -174,6 +214,7 @@ export default {
         },
     },
     watch: {
+        // Watches for changes in the notice prop and updates the form data accordingly
         notice: {
             immediate: true,
             handler(newNotice) {
@@ -193,7 +234,6 @@ export default {
                 }
 
                 this.localFlashSuccess = this.flashSuccess;
-                this.localFlashError = this.flashError;
             }
         }
     },
