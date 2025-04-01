@@ -15,4 +15,5 @@ class UserNotice extends Model
     public function notice() {
         return $this->belongsTo(Notice::class);
     }
+
 }

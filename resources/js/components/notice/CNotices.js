@@ -1,12 +1,11 @@
 import axios from "axios";
 
 export default class CNotices {
-
     //fetch all notices for the admin
     static async fetchNoticesListForAdmin(url, searchQuery) {
         try {
             return await axios.get(url, {
-                params: {search: searchQuery},
+                params: { search: searchQuery },
             });
         } catch (error) {
             console.error("Error fetching notices:", error);

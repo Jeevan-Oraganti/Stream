@@ -6,6 +6,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Notice;
 use App\Models\NoticeType;
+use App\Models\UserNotice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
@@ -18,32 +19,33 @@ class AdminController extends Controller
 {
     public function show()
     {
-        $notifications = cache()->get('admin_notifications', []);
-        return view('admin.notices.index', compact('notifications'));
-
-        // return view('admin.notices.index');
+        return view('admin.notices.index');
     }
 
     //fetch all notices
     public function notices(Request $request)
     {
-//        $notifications = Auth::user()->notifications()->latest()->get();
-
         $search = $request->input('search');
 
+
         $notices = Notice::with('noticeType')
+            ->withCount('views')
             ->when($search, function ($query, $search) {
                 return $query->whereRaw('LOWER(name) LIKE ?', ['%' . strtolower($search) . '%'])
                     ->orWhereRaw('LOWER(description) LIKE ?', ['%' . strtolower($search) . '%'])
                     ->orWhereHas('noticeType', function ($subQuery) use ($search) {
                         $subQuery->whereRaw('LOWER(type) LIKE ?', ['%' . strtolower($search) . '%']);
                     });
-            })->latest()->get();
+            })
+            ->latest()
+            ->get();
+
+//        dd($notices);
 
 
-        if ($request->ajax()) {
-            return response()->json(['notices' => $notices]);
-        }
+//        if ($request->ajax()) {
+//            return response()->json(['notices' => $notices]);
+//        }
 
         return response()->json(['notices' => $notices]);
     }

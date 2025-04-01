@@ -11,13 +11,20 @@ export default class CNotice {
             description: "",
             is_sticky: false,
             notice_type_id: "",
-            scheduled_at: moment().startOf("day").add(1, "day").format("YYYY-MM-DD HH:mm"),
-            expiry_date: moment().endOf("day").add(2, "day").format("YYYY-MM-DD HH:mm"),
+            scheduled_at: moment()
+                .startOf("day")
+                .add(1, "day")
+                .format("YYYY-MM-DD HH:mm"),
+            expiry_date: moment()
+                .endOf("day")
+                .add(2, "day")
+                .format("YYYY-MM-DD HH:mm"),
             recurrence: "",
             recurrence_days: [],
             is_active: "",
             created_at: "",
             notice_type: {},
+            views_count: 0
         });
 
         if (Object.keys(data).length > 0) {
@@ -42,6 +49,7 @@ export default class CNotice {
             is_active: data.is_active,
             created_at: data.created_at,
             notice_type: data.notice_type,
+            views_count: data.views_count
         });
     }
 

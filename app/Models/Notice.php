@@ -39,22 +39,22 @@ class Notice extends Model
     {
         return $this->belongsTo(NoticeType::class, 'notice_type_id');
     }
-    public function hasRead()
+    public function views()
     {
         return $this->hasMany(UserNotice::class, 'notice_id');
     }
 
-     protected function asDateTimez($value)
-     {
-         if ($value instanceof Carbon) {
-             $value->setTimezone('Asia/Kolkata');
-             return $value;
-         }
+    protected function asDateTimez($value)
+    {
+        if ($value instanceof Carbon) {
+            $value->setTimezone('Asia/Kolkata');
+            return $value;
+        }
 
-         $value = new Carbon($value);
+        $value = new Carbon($value);
 
-         $value->setTimezone('Asia/Kolkata');
+        $value->setTimezone('Asia/Kolkata');
 
-         return $value;
-     }
+        return $value;
+    }
 }

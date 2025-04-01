@@ -48,7 +48,8 @@
                                             class="py-4 pl-4 pr-3 text-left text-sm font-semibold text-gray-900 sm:pl-0">
                                             #
                                         </th>
-                                        <th scope="col" class="whitespace-nowrap px-3 py-4 text-left text-sm font-semibold text-gray-900">
+                                        <th scope="col"
+                                            class="whitespace-nowrap px-3 py-4 text-left text-sm font-semibold text-gray-900">
                                             Title
                                         </th>
                                         <th scope="col" class="px-3 py-4 text-left text-sm font-semibold text-gray-900">
@@ -72,6 +73,9 @@
                                         <th scope="col" class="px-3 py-4 text-left text-sm font-semibold text-gray-900">
                                             Created
                                             At
+                                        </th>
+                                        <th scope="col" class="px-3 py-4 text-left text-sm font-semibold text-gray-900">
+                                            Views
                                         </th>
                                         <th scope="col" class="px-3 py-4 text-left text-sm font-semibold text-gray-900">
                                             Delete
@@ -277,8 +281,8 @@ export default {
                                     return "Invalid Data";
                                 }
                                 const starIcon = row.form.is_sticky
-                                    ? '<i class="fas fa-star text-yellow-500"></i>'
-                                    : '<i class="far fa-star"></i>';
+                                    ? '<i class="fas fa-star text-yellow-500 whitespace-nowrap"></i>'
+                                    : '<i class="far fa-star whitespace-nowrap"></i>';
                                 return `<span class="whitespace-nowrap cursor-pointer toggle-sticky" data-id="${row.id}">${starIcon}</span>
                                         <span class="whitespace-nowrap text-blue-500 whitespace-nowrap cursor-pointer edit-notice" data-notice='${JSON.stringify(row)}'>${row.form.name || "N/A"}</span>`;
                             }
@@ -339,7 +343,7 @@ export default {
                                 if (daysLeft <= 0) {
                                     return `<span class="text-red-500">Expired</span>`;
                                 }
-                                return `<span class="text-green-500">${expiryDate.format("MMMM D, YYYY [at] h:mm A")}</span>`;
+                                return `<span class="whitespace-nowrap text-green-500">${expiryDate.format("MMMM D, YYYY [at] h:mm A")}</span>`;
                             }
                         },
                         {
@@ -352,12 +356,20 @@ export default {
                             data: "created_at",
                             title: "Created At",
                             render: (data, type, row, meta) => {
-                                return `<span class="text-black"> ${row.form.created_at ? moment(row.form.created_at).format("MMM D, YYYY [at] h:mm A") : "No Date"}`
+                                return `<span class="whitespace-nowrap text-black"> ${row.form.created_at ? moment(row.form.created_at).format("MMM D, YYYY [at] h:mm A") : "No Date"}`
                             },
                             orderable: true,
                         },
                         {
-                            data: "id",
+                            data: "views_count",
+                            title: "Views",
+                            render: (data, type, row, meta) => {
+                                return `<span class="text-gray-700">${row.form.views_count || 0}</span>`;
+                            },
+                            orderable: true,
+                        },
+                        {
+                            data: "delete",
                             title: "Delete",
                             orderable: false,
                             render: (data, type, row, meta) => `<button class="delete-notice ${this.canDelete() ? 'text-red-500' : 'text-gray-500'}" data-id="${data}"><i class="fas fa-trash"></i></button>`
@@ -484,6 +496,7 @@ export default {
     z-index: 1000;
     font-size: 12px;
 }
+
 .notification {
     position: fixed;
     top: 20px;
