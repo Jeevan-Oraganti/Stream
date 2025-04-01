@@ -11,18 +11,24 @@ use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 
 class AdminController extends Controller
 {
     public function show()
     {
-        return view('admin.notices.index');
+        $notifications = cache()->get('admin_notifications', []);
+        return view('admin.notices.index', compact('notifications'));
+
+        // return view('admin.notices.index');
     }
 
     //fetch all notices
     public function notices(Request $request)
     {
+//        $notifications = Auth::user()->notifications()->latest()->get();
+
         $search = $request->input('search');
 
         $notices = Notice::with('noticeType')

@@ -14,6 +14,7 @@ class Kernel extends ConsoleKernel
     {
         $schedule->command('notices:scheduled-notices')->everyMinute();
         $schedule->command('notices:schedule-recurring')->everyMinute();
+//        $schedule->command('notices:notify-admin-about-notices')->everyMinute();
     }
 
     /**

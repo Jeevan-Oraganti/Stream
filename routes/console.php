@@ -14,3 +14,4 @@ Artisan::command('inspire', function () {
 
 Schedule::command('notices:scheduled-notices')->everyMinute();
 Schedule::command('notices:schedule-recurring')->everyMinute();
+//Schedule::command('notices:notify-admin-about-notices')->everyMinute();

@@ -90,6 +90,16 @@ export default {
                 let totalHolidayDays = expiryMoment.diff(holidayStart, 'days') + 1;
                 let remainingDays = expiryMoment.diff(today, 'days') + 1;
 
+                // One-day Holiday Case
+                if (totalHolidayDays === 1) {
+                    if (today.isBefore(holidayStart)) {
+                        return "Holiday tomorrow.";
+                    }
+                    if (today.isSame(holidayStart, 'day')) {
+                        return "Holiday today.";
+                    }
+                }
+
                 // Before holiday starts
                 if (today.isBefore(holidayStart)) {
                     const relativeDay = this.formatRelativeDay(holidayStart);
