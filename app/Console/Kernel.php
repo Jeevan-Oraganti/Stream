@@ -13,6 +13,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('notices:scheduled-notices')->everyMinute();
+        $schedule->command('notices:schedule-recurring')->everyMinute();
     }
 
     /**

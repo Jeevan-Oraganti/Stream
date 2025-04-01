@@ -17,7 +17,10 @@ class NoticeFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'name' => $this->faker->sentence,
+            'description' => $this->faker->paragraph,
+            'expiry_date' => now()->addDays(10),
+            'is_sticky' => $this->faker->boolean,
         ];
     }
 }

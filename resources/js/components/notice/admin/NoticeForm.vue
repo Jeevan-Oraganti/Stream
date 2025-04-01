@@ -1,101 +1,105 @@
 <!-- filepath: /home/bnetworks/websites/stream/resources/js/components/notice/admin/NoticeForm.vue -->
 <template>
-    <modal name="add-edit-notice" height="auto" :pivotY=".5" class="rounded-lg shadow-lg w-full max-w-lg mx-auto px-4">
-        <div class="container block m-auto justify-center p-8">
-            <h2 class="text-xl font-semibold mb-4 text-gray-800">{{ form.id ? 'Edit Notice' : 'Add New Notice' }}</h2>
-            <form @submit.prevent="saveNotice" class="space-y-4">
+    <modal name="add-edit-notice" height="auto" @opened="opened" @closed="closed"
+        class="rounded-lg shadow-lg w-full max-w-lg mx-auto px-4">
+        <div class="container block m-auto justify-center p-8 bg-white">
+            <h2 class="text-xl font-semibold mb-4 text-gray-800">{{ notice.form.id ? 'Edit Notice' : 'Add New Notice' }}
+            </h2>
+            <form @submit.prevent="createOrUpdateNotice" class="space-y-4">
                 <div>
                     <label class="text-sm font-medium text-gray-700">Notice Title</label>
-                    <input v-model="form.data.name" type="text"
+                    <input v-model="notice.form.name" type="text"
                         class="text-gray-800 w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-                        :class="{ 'border-red-500': form.hasError('name') }" @input="clearError('name')">
-                    <span v-if="form.hasError('name')" class="text-red-500 text-sm mt-1 block">{{ form.getError('name')
-                    }}</span>
+                        @input="clearError('name')">
+                    <span v-if="notice.form.hasError('name')" class="text-red-500 text-sm mt-1 block">{{
+                        notice.form.getError('name')
+                        }}</span>
                 </div>
                 <div>
                     <label class="text-sm font-medium text-gray-700">Description</label>
-                    <textarea v-model="form.data.description"
+                    <textarea v-model="notice.form.description"
                         class="text-gray-800 w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-                        :class="{ 'border-red-500': form.hasError('description') }"
                         @input="clearError('description')"></textarea>
-                    <span v-if="form.hasError('description')" class="text-red-500 text-sm mt-1 block">{{
-                        form.getError('description') }}</span>
+                    <span v-if="notice.form.hasError('description')" class="text-red-500 text-sm mt-1 block">{{
+                        notice.form.getError('description')
+                        }}</span>
                 </div>
                 <div>
                     <label class="text-sm font-medium text-gray-700">Notice Type</label>
-                    <select v-model="form.data.notice_type_id"
+                    <select v-model="notice.form.notice_type_id"
                         class="text-gray-500 w-full p-2 border rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-400"
-                        :class="{ 'border-red-500': form.hasError('notice_type_id') }"
                         @change="clearError('notice_type_id')">
                         <option value="1">Announcement</option>
                         <option value="2">Information</option>
                         <option value="3">Outage</option>
+                        <option value="4">Holiday</option>
                     </select>
-                    <span v-if="form.hasError('notice_type_id')" class="text-red-500 text-sm mt-1 block">{{
-                        form.getError('notice_type_id') }}</span>
+                    <span v-if="notice.form.hasError('notice_type_id')" class="text-red-500 text-sm mt-1 block">{{
+                        notice.form.getError('notice_type_id')
+                        }}</span>
+                </div>
+                <div>
+                    <label class="text-sm font-medium text-gray-700">Schedule At</label>
+                    <input v-model="notice.form.scheduled_at" type="datetime-local"
+                        class="text-gray-500 w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        @input="clearError('scheduled_at')" @change="syncExpiryDate">
+                    <span v-if="notice.form.hasError('scheduled_at')" class="text-red-500 text-sm mt-1 block">{{
+                        notice.form.getError('scheduled_at')
+                        }}</span>
                 </div>
                 <div>
                     <label class="text-sm font-medium text-gray-700">Expiry Date</label>
-                    <input v-model="form.data.expiry_date" type="datetime-local"
+                    <input v-model="notice.form.expiry_date" type="datetime-local"
                         class="text-gray-500 w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-                        :class="{ 'border-red-500': form.hasError('expiry_date') }" @input="clearError('expiry_date')">
-                    <span v-if="form.hasError('expiry_date')" class="text-red-500 text-sm mt-1 block">{{
-                        form.getError('expiry_date') }}</span>
+                        @input="clearError('expiry_date')">
+                    <span v-if="notice.form.hasError('expiry_date')" class="text-red-500 text-sm mt-1 block">{{
+                        notice.form.getError('expiry_date')
+                        }}</span>
                 </div>
                 <div>
-                    <label class="text-sm font-medium text-gray-700">Scheduled At</label>
-                    <input v-model="form.data.scheduled_at" type="datetime-local"
-                        class="text-gray-500 w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-                        :class="{ 'border-red-500': form.hasError('scheduled_at') }"
-                        @input="clearError('scheduled_at')">
-                    <span v-if="form.hasError('scheduled_at')" class="text-red-500 text-sm mt-1 block">{{
-                        form.getError('scheduled_at') }}</span>
-                </div>
-                <div>
-                    <div>
-                        <label class="text-sm font-medium text-gray-700">Recurrence</label>
-                        <select v-model="form.data.recurrence"
-                            class="text-gray-500 w-full p-2 border rounded-md bg-white focus:outline-none focus:ring-2 focus:ring-blue-400">
-                            <option value="">None</option>
-                            <option value="daily">Daily</option>
-                            <option value="weekly">Weekly</option>
-                            <option value="monthly">Monthly</option>
-                        </select>
-                    </div>
-                    <div v-if="form.data.recurrence === 'weekly'">
-                        <label class="text-sm font-medium text-gray-700 mb-2">Days of the Week</label>
-                        <div class="flex space-x-2">
-                            <label
-                                v-for="day in ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']"
-                                :key="day">
-                                <input type="checkbox" :value="day" v-model="form.data.recurrence_days" />
+                    <label class="text-sm font-medium text-gray-700">Recurrence</label>
+                    <select v-model="notice.form.recurrence" @change="clearSelection"
+                        class="text-gray-500 w-full p-2 border rounded-md bg-white">
+                        <option value="">None</option>
+                        <option value="daily">Daily</option>
+                        <option value="weekly">Weekly</option>
+                        <option value="monthly">Monthly</option>
+                    </select>
+
+                    <div v-if="notice.form.recurrence === 'weekly'" class="mt-2">
+                        <label class="text-sm font-medium text-gray-700">Days of the Week</label>
+                        <div class="flex flex-wrap space-x-2 mt-1">
+                            <label v-for="(day, index) in weekdays" :key="index" class="flex items-center space-x-1">
+                                <input type="checkbox" :value="day" :checked="isChecked(day)" @change="toggleDay(day)"
+                                    class="mr-1" />
                                 {{ day }}
                             </label>
                         </div>
                     </div>
+                </div>
+                <div>
                     <label class="text-sm font-medium text-gray-700">Priority Notice</label>
                     <div class="flex items-center">
-                        <i :class="{ 'fas fa-star text-yellow-500': form.data.is_sticky, 'far fa-star text-gray-500': !form.data.is_sticky }"
-                            @click="form.data.is_sticky = !form.data.is_sticky; clearError('is_sticky')"
-                            class="cursor-pointer text-2xl"></i>
+                        <i :class="{ 'fas fa-star text-yellow-500': notice.form.is_sticky, 'far fa-star text-gray-500': !notice.form.is_sticky }"
+                            @click="toggleSticky" class="cursor-pointer text-2xl"></i>
                         <span class="ml-2 text-gray-700">Make this a priority notice</span>
                     </div>
-                    <span v-if="form.hasError('is_sticky')" class="text-red-500 text-sm mt-1 block">{{
-                        form.getError('is_sticky') }}</span>
+                    <span v-if="notice.form.hasError('is_sticky')" class="text-red-500 text-sm mt-1 block">{{
+                        notice.form.getError('is_sticky')
+                        }}</span>
                 </div>
-                <div class="flex mt-6 justify-between space-x-3">
-                    <button type="button" @click="$modal.hide('add-edit-notice')"
+                <div class="flex mt-4 justify-between space-x-3">
+                    <button type="button" @click="cancel"
                         class="w-full bg-indigo-500 text-white py-2 rounded-md hover:bg-indigo-600 transition duration-200">
                         Cancel
                     </button>
                     <button type="submit"
                         class="w-full bg-indigo-500 text-white py-2 rounded-md hover:bg-indigo-600 transition duration-200">
-                        {{ form.id ? 'Update Notice' : 'Add Notice' }}
+                        {{ notice.id ? 'Update Notice' : 'Add Notice' }}
                     </button>
                 </div>
             </form>
         </div>
-
         <!-- Confirmation Modal -->
         <confirmation-modal title="Warning"
             message="There is already an existing sticky notice available. Proceeding will unstick the previous one. Do you want to continue?"
@@ -105,14 +109,11 @@
 </template>
 
 <script>
-import CNotice from "@/components/notice/CNotice.js";
 import ConfirmationModal from "@/components/ConfirmationModal.vue";
-
+import moment from "moment";
 
 export default {
-    components: {
-        ConfirmationModal,
-    },
+    components: { ConfirmationModal },
     props: {
         notice: {
             type: Object,
@@ -133,21 +134,69 @@ export default {
     },
     data() {
         return {
-            form: new CNotice().form,
+            form: null,
             errors: {},
             loading: false,
-            localFlashSuccess: '',
-            proceed: false,
+            weekdays: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
         };
     },
     methods: {
-        // Handles saving the notice, including validation for sticky notices
-        async saveNotice() {
-            console.log(this.form.data);
+        syncExpiryDate() {
+            if (this.notice.form.scheduled_at) {
+                this.notice.form.expiry_date = moment(this.notice.form.scheduled_at)
+                    .add(1, "days")
+                    .set({ hour: 23, minute: 59, second: 0 })
+                    .format("YYYY-MM-DDTHH:mm");
+            }
+        },
+        clearSelection() {
+            if (this.notice.form.recurrence !== "weekly") {
+                this.notice.form.recurrence_days = [];
+            }
+        },
+        isChecked(day) {
+            return this.notice.form.recurrence_days.includes(day);
+        },
+        toggleDay(day) {
+            const index = this.notice.form.recurrence_days.indexOf(day);
+            if (index > -1) {
+                this.notice.form.recurrence_days.splice(index, 1);
+            } else {
+                this.notice.form.recurrence_days.push(day);
+            }
+        },
+        toggleSticky() {
+            this.notice.form.is_sticky = !this.notice.form.is_sticky;
+            this.clearError('is_sticky');
+        },
+        toggleDaySelection(day) {
+            const index = this.notice.form.recurrence_days.indexOf(day);
+            if (index === -1) {
+                this.notice.form.recurrence_days.push(day);
+            } else {
+                this.notice.form.recurrence_days.splice(index, 1);
+            }
+        },
+        opened() {
+            this.form = JSON.parse(JSON.stringify(this.notice))
+        },
+        closed() {
+
+        },
+        cancel() {
+            console.log(this.notice)
+            console.log(this.form)
+            for (let key in this.notice.form) {
+                this.notice.form[key] = this.form.form[key]
+            }
+            this.$parent.initializeDataTable()
+            this.$modal.hide('add-edit-notice');
+        },
+        async createOrUpdateNotice() {
             try {
                 if (this.loading) return;
 
-                if (this.form.data.is_sticky && this.stickyNoticeId && this.stickyNoticeId !== this.form.id) {
+                if (this.notice.form.is_sticky && this.stickyNoticeId && this.stickyNoticeId !== this.notice.form.id) {
                     this.$modal.show('confirmation-modal');
                     return;
                 }
@@ -166,16 +215,11 @@ export default {
                 this.loading = false;
             }
         },
-        // Proceeds with saving the notice after confirmation
         async proceedWithSave() {
             try {
                 this.startLoading();
-                if (this.form.id) {
-                    await this.form.update(`/admin/notice/${this.form.id}`);
-                } else {
-                    await this.form.save('/admin/notice');
-                }
-                this.$parent.localFlashSuccess = "Notice saved successfully!";
+                await this.notice.form.saveOrUpdate('/admin/notice/createOrUpdate');
+                this.$parent.localFlashSuccess = this.notice.form.id ? 'Notice updated successfully' : 'Notice saved successfully!';
                 this.$modal.hide("add-edit-notice");
                 this.stopLoading();
                 await this.$parent.fetchNotices();
@@ -183,11 +227,9 @@ export default {
                 console.error('Error saving notice:', error);
             }
         },
-        // Cancels the save operation when the confirmation modal is dismissed
         cancelSave() {
             this.$modal.hide("confirmation-modal");
         },
-        // Starts the loading animation and progress tracking
         startLoading() {
             this.loading = true;
             this.progress = 0;
@@ -197,7 +239,6 @@ export default {
                 }
             }, 100);
         },
-        // Stops the loading animation and resets progress
         stopLoading() {
             clearInterval(this.interval);
             this.progress = 100;
@@ -206,36 +247,20 @@ export default {
                 this.progress = 0;
             }, 500);
         },
-        // Clears a specific field's error from the form
         clearError(field) {
-            if (this.form.hasError(field)) {
-                this.$delete(this.form.errors, field);
-            }
+            // if (this.notice.form.hasError(field)) {
+            //   this.$delete(this.notice.form.errors, field);
+            // }
         },
     },
     watch: {
-        // Watches for changes in the notice prop and updates the form data accordingly
-        notice: {
-            immediate: true,
-            handler(newNotice) {
-                if (newNotice) {
-                    this.form.data = new CNotice(newNotice.id, newNotice).form.data;
-                    this.form.id = newNotice.id;
-                    if (this.form.data.expiry_date) {
-                        this.form.data.expiry_date = new Date(this.form.data.expiry_date).toISOString().slice(0, 16);
-                    }
-                    if (this.form.data.scheduled_at) {
-                        this.form.data.scheduled_at = new Date(this.form.data.scheduled_at).toISOString().slice(0, 16);
-                    }
-                } else {
-                    const now = new Date();
-                    const nextWeek = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
-                    this.form.data.expiry_date = nextWeek.toISOString().slice(0, 16);
-                }
+        'notice': {
+            handler(newVAl, oldVAl) {
+                this.$parent.initializeDataTable()
+            },
+            deep: true
+        },
 
-                this.localFlashSuccess = this.flashSuccess;
-            }
-        }
     },
 };
 </script>

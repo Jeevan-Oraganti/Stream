@@ -1,7 +1,7 @@
 <!-- filepath: /home/bnetworks/websites/stream/resources/js/components/notice/admin/ColorTypes.vue -->
 <template>
     <modal name="change-notice-type-color" height="auto" :pivotY=".5"
-           class="rounded-lg w-full max-w-lg mx-auto px-4 container p-8 bg-gray-50">
+        class="rounded-lg w-full max-w-lg mx-auto px-4 container p-8 bg-gray-50">
         <div class="py-4">
             <h2 class="text-2xl mt-4 font-bold mb-6 text-gray-800 text-center">Change Notice Type Color</h2>
 
@@ -16,33 +16,33 @@
             <div class="bg-white rounded-lg p-4">
                 <table class="min-w-full divide-y divide-gray-200 border rounded-lg">
                     <thead>
-                    <tr class="bg-gray-100">
-                        <th
-                            class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider border">
-                            Notice Types
-                        </th>
-                        <th
-                            class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider border">
-                            Change Color
-                        </th>
-                    </tr>
+                        <tr class="bg-gray-100">
+                            <th
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider border">
+                                Notice Types
+                            </th>
+                            <th
+                                class="px-6 py-3 text-left text-xs font-medium text-gray-600 uppercase tracking-wider border">
+                                Change Color
+                            </th>
+                        </tr>
                     </thead>
                     <tbody class="bg-white divide-y divide-gray-200">
-                    <tr v-for="type in noticeTypes" :key="type.id" :style="{ backgroundColor: type.color + '50' }"
-                        class="hover:bg-gray-100 transition-colors">
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 border">
-                            {{ type.type.charAt(0).toUpperCase() + type.type.slice(1) }}
-                        </td>
-                        <td class="px-6 py-4 items-center whitespace-nowrap border">
-                            <div class="flex items-center space-x-4">
-                                <!-- Color Selection -->
-                                <swatches v-model="type.color" :swatches="colors" row-length="3"
-                                          @input="changeColor(type)" show-fallback
-                                          fallback-input-type="color" styles="width: '138px', height: '169px'">
-                                </swatches>
-                            </div>
-                        </td>
-                    </tr>
+                        <tr v-for="type in noticeTypes" :key="type.id" :style="{ backgroundColor: type.color + '50' }"
+                            class="hover:bg-gray-100 transition-colors">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 border">
+                                {{ type.type.charAt(0).toUpperCase() + type.type.slice(1) }}
+                            </td>
+                            <td class="px-6 py-4 items-center whitespace-nowrap border">
+                                <div class="flex items-center space-x-4">
+                                    <!-- Color Selection -->
+                                    <swatches v-model="type.color" :swatches="colors" row-length="3"
+                                        @input="changeColor(type)" show-fallback fallback-input-type="color"
+                                        styles="width: '138px', height: '169px'">
+                                    </swatches>
+                                </div>
+                            </td>
+                        </tr>
                     </tbody>
                 </table>
             </div>
@@ -57,7 +57,7 @@ import 'vue-swatches/dist/vue-swatches.css';
 import _ from "lodash";
 
 export default {
-    components: {Swatches},
+    components: { Swatches },
     data() {
         return {
             noticeTypes: [],
@@ -71,7 +71,10 @@ export default {
                 ['#0E4DA4', '#2A69C0', '#4C89DD'],
 
                 // Outage (Amber/Yellow)
-                ['#C97B00', '#E39200', '#F5B700']
+                ['#C97B00', '#E39200', '#F5B700'],
+
+                // Holiday (Green)
+                ['#1B5E20', '#388E3C', '#66BB6A'],
             ]
         };
     },
@@ -80,13 +83,13 @@ export default {
         async fetchNoticeTypes() {
             try {
                 const response = await axios.get('/admin/notice-types');
-                this.noticeTypes = response.data.noticeTypes.map(type => ({...type}));
+                this.noticeTypes = response.data.noticeTypes.map(type => ({ ...type }));
             } catch (error) {
                 console.error('Error fetching notice types:', error);
             }
         },
         // Updates the color of a specific notice type and sends the change to the server
-        changeColor:_.debounce(function (type) {
+        changeColor: _.debounce(function (type) {
             try {
                 axios.post(`/admin/notice-type/${type.id}/change-color`, {
                     color: type.color
@@ -107,7 +110,7 @@ export default {
                     this.localFlashError = '';
                 }, 3000);
             }
-        },500)
+        }, 500)
     },
     // Fetches the notice types when the component is mounted
     async mounted() {

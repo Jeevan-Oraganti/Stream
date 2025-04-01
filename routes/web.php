@@ -63,24 +63,22 @@ Route::post('/logout', function (Request $request) {
 })->name('logout');
 
 
+//notices routes
 Route::middleware('can:admin')->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard']);
-    Route::get('/admin/notices', [AdminController::class, 'noticeIndex'])->name('admin.notices.index');
-    Route::post('/admin/notice', [AdminController::class, 'noticeStore'])->name('admin.notice.store');
-    Route::post('/admin/notice/{noticeId}', [AdminController::class, 'noticeUpdate'])->name('admin.notice.update');
+    Route::get('/admin/notices', [AdminController::class, 'show'])->name('notices.index');
+    Route::get('/admin/notices/all', [AdminController::class, 'notices'])->name('notices.index');
+    Route::post('/admin/notice/createOrUpdate', [AdminController::class, 'createOrUpdateNotice'])->name('notice.store');
     Route::post('/admin/notice/{noticeId}/delete', [AdminController::class, 'noticeDestroy']);
-    Route::get('/admin/add-notice', [AdminController::class, 'addNotice']);
-    Route::get('/admin/edit-notice/{noticeId}', [AdminController::class, 'editNotice']);
     Route::post('/admin/notice/{noticeId}/toggle-sticky', [AdminController::class, 'toggleSticky']);
-    Route::get('/admin/change-notice-color', [AdminController::class, 'NoticeTypeColor'])->name('admin.change-notice-type-color');
     Route::get('/admin/notice-types', [AdminController::class, 'getNoticeTypes']);
     Route::post('/admin/notice-type/{noticeTypeId}/change-color', [AdminController::class, 'changeNoticeTypeColorPost']);
 });
 
 
-Route::get('/notices', [NoticeController::class, 'unreadNoticesForGuest']);
+Route::get('/notices', [NoticeController::class, 'show']);
+Route::get('/notices/unread', [NoticeController::class, 'unreadNotices']);
 
 Route::middleware('auth')->group(function () {
-    Route::get('/notices/unread', [NoticeController::class, 'unreadNoticesForUser']);
     Route::post('/notice/{noticeId}/acknowledge', [NoticeController::class, 'acknowledge']);
 });

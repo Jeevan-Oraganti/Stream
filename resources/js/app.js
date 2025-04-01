@@ -32,6 +32,7 @@ import Pagination from "@/components/Pagination.vue";
 import noticeForm from "@/components/notice/admin/NoticeForm.vue";
 import noticesList from "@/components/notice/admin/NoticesList.vue";
 import colorTypes from "@/components/notice/admin/ColorTypes.vue";
+import ConfirmationModal from "@/components/ConfirmationModal.vue";
 import axios from "axios";
 
 window.axios = axios;
@@ -66,6 +67,7 @@ Vue.component("RegisterForm", RegisterForm);
 Vue.component("noticesList", noticesList);
 Vue.component("Pagination", Pagination);
 Vue.component("noticeForm", noticeForm);
+Vue.component("ConfirmationModal", ConfirmationModal);
 
 new Vue({
     el: "#app",

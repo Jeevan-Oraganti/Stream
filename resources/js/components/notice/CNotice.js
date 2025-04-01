@@ -6,36 +6,46 @@ export default class CNotice {
     //initialize the notice
     constructor(id = null, data = {}) {
         this.id = id;
-        this.form = new CForm([
-            "name",
-            "description",
-            "is_sticky",
-            "notice_type_id",
-            "expiry_date",
-            "scheduled_at",
-            "is_active",
-            "created_at",
-        ]);
+        this.form = new CForm({
+            name: "",
+            description: "",
+            is_sticky: false,
+            notice_type_id: "",
+            scheduled_at: moment().startOf("day").add(1, "day").format("YYYY-MM-DD HH:mm"),
+            expiry_date: moment().endOf("day").add(2, "day").format("YYYY-MM-DD HH:mm"),
+            recurrence: "",
+            recurrence_days: [],
+            is_active: "",
+            created_at: "",
+            notice_type: {},
+        });
 
-        //set the form data
-        this.form.data = {
-            ...data,
-            expiry_date:
-                data.hasOwnProperty("expiry_date")
-                    ? data.expiry_date
-                    : moment().add(1, "week").format("YYYY-MM-DD"),
-
-            scheduled_at:
-                data.hasOwnProperty("scheduled_at")
-                    ? data.scheduled_at
-                    : moment().add(1, "day").format("YYYY-MM-DD"),
-
-            is_sticky: data.is_sticky || false,
-        };
-
+        if (Object.keys(data).length > 0) {
+            this.initializeFormData(data);
+        }
     }
 
-    //acknowledge the notice by the user
+    initializeFormData(data) {
+        //form data
+        this.form = new CForm({
+            name: data.name,
+            description: data.description,
+            id: data.id,
+            is_sticky: data.is_sticky || false,
+            notice_type_id: data.notice_type_id,
+            expiry_date: data.expiry_date,
+            scheduled_at: data.scheduled_at,
+            recurrence: data.recurrence,
+            recurrence_days: Array.isArray(data.recurrence_days)
+                ? data.recurrence_days
+                : [], // Convert to an array if not already
+            is_active: data.is_active,
+            created_at: data.created_at,
+            notice_type: data.notice_type,
+        });
+    }
+
+    //acknowledge the notice by the logged in user
     async acknowledge() {
         if (!this.id) return;
         try {
@@ -46,28 +56,11 @@ export default class CNotice {
         }
     }
 
-    //save the notice
-    async save() {
-        return this.form.save("/admin/notice");
-    }
-
-    //update the notice
-    async update(url) {
-        if (!this.id) {
-            throw new Error("Cannot update notice without an ID.");
-        }
-        return this.form.update(url);
-    }
-
     //delete the notice
     async delete() {
         if (!this.id) throw new Error("Cannot delete notice without an ID.");
         try {
-            const response = await axios.post(
-                `/admin/notice/${this.id}/delete`
-            );
-            console.log("Notice deleted:", response);
-            return response;
+            return await axios.post(`/admin/notice/${this.id}/delete`);
         } catch (error) {
             console.error(
                 "Error deleting notice:",
@@ -83,11 +76,7 @@ export default class CNotice {
             throw new Error("Cannot toggle sticky without an ID.");
         }
         try {
-            const response = await axios.post(
-                `/admin/notice/${this.id}/toggle-sticky`
-            );
-            console.log("Notice sticky status toggled:", response.data);
-            return response;
+            return await axios.post(`/admin/notice/${this.id}/toggle-sticky`);
         } catch (error) {
             console.error(
                 "Error toggling sticky status:",

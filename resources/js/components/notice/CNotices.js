@@ -5,10 +5,9 @@ export default class CNotices {
     //fetch all notices for the admin
     static async fetchNoticesListForAdmin(url, searchQuery) {
         try {
-            const response = await axios.get(url, {
+            return await axios.get(url, {
                 params: {search: searchQuery},
             });
-            return response;
         } catch (error) {
             console.error("Error fetching notices:", error);
             return {
@@ -18,26 +17,21 @@ export default class CNotices {
         }
     }
 
-    //fetch unread notices for the user who is logged-in
-    static async unreadNoticesForUser() {
+    //fetch unread notices
+    static async fetchUnreadNotices(isUserLoggedIn) {
         try {
             const response = await axios.get("/notices/unread");
-            return response.data;
-        } catch (error) {
-            console.log(error);
-            return [];
-        }
-    }
+            let notices = response.data;
 
-    //fetch all notices for the user who is not logged-in or guest
-    static async unreadNoticesForGuest() {
-        try {
-            const dismissedNotice = localStorage.getItem("dismissedNotice");
-            const response = await fetch("/notices");
-            const data = await response.json();
-            return this.filterGuestNotices(data, dismissedNotice);
+            // Handle guest logic
+            if (!isUserLoggedIn) {
+                const dismissedNotice = localStorage.getItem("dismissedNotice");
+                notices = this.filterGuestNotices(notices, dismissedNotice);
+            }
+
+            return notices;
         } catch (error) {
-            console.log("Error fetching notices", error);
+            console.error("Error fetching unread notices:", error);
             return [];
         }
     }

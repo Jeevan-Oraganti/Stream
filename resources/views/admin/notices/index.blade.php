@@ -9,8 +9,8 @@
     <link rel="stylesheet" href="{{ asset('css/bulma.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/font-awesome.min.css') }}">
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
-    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.dataTables.css" />
+    <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.dataTables.css"/>
     <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
     <script defer src="{{ asset('js/alpine.js') }}"></script>
 
@@ -22,20 +22,17 @@
 </head>
 
 <body>
-    <script>
-        window.Laravel = {
-            isLoggedIn: @json(auth()->check()),
-            user: @json(auth()->user())
-        };
-    </script>
-    <div id="app" class="bg-white">
-        <notices-list
-            :notices="{{ json_encode($notices) }}"
-            :flash-success="{{ json_encode(session('success', '')) }}"
-            :flash-error="{{ json_encode(session('error', '')) }}"
-            :user="{{ json_encode(auth()->user()) }}">
-        </notices-list>
-    </div>
+<script>
+    window.Laravel = {
+        isLoggedIn: @json(auth()->check()),
+        user: @json(auth()->user())
+    };
+</script>
+<div id="app" class="bg-white">
+    <notices-list
+        :user="{{ json_encode(auth()->user()) }}">
+    </notices-list>
+</div>
 </body>
 
 </html>

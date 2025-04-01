@@ -3,19 +3,24 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\NoticeType;
 use Illuminate\Support\Facades\Auth;
 
 class Notice extends Model
 {
+    use HasFactory;
+
     protected $guarded = [];
 
     protected $casts = [
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
         'expiry_date' => 'datetime',
+        'scheduled_at' => 'datetime',
         'is_sticky' => 'boolean',
+        'recurrence_days' => 'array',
     ];
 
     protected $fillable = [
@@ -26,6 +31,8 @@ class Notice extends Model
         'expiry_date',
         'scheduled_at',
         'is_active',
+        'recurrence',
+        'recurrence_days'
     ];
 
     public function noticeType()
@@ -37,17 +44,17 @@ class Notice extends Model
         return $this->hasMany(UserNotice::class, 'notice_id');
     }
 
-    protected function asDateTimez($value)
-    {
-        if($value instanceof Carbon) {
-            $value->setTimezone('Asia/Kolkata');
-            return $value;
-        }
+     protected function asDateTimez($value)
+     {
+         if ($value instanceof Carbon) {
+             $value->setTimezone('Asia/Kolkata');
+             return $value;
+         }
 
-        $value = new Carbon($value);
+         $value = new Carbon($value);
 
-        $value->setTimezone('Asia/Kolkata');
+         $value->setTimezone('Asia/Kolkata');
 
-        return $value;
-    }
+         return $value;
+     }
 }

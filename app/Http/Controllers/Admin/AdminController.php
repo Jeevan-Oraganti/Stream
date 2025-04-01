@@ -2,17 +2,26 @@
 
 namespace App\Http\Controllers\Admin;
 
+
 use App\Http\Controllers\Controller;
 use App\Models\Notice;
 use App\Models\NoticeType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\DB;
+
 
 class AdminController extends Controller
 {
-    // Displays a list of notices, with optional search functionality.
-    public function noticeIndex(Request $request)
+    public function show()
+    {
+        return view('admin.notices.index');
+    }
+
+    //fetch all notices
+    public function notices(Request $request)
     {
         $search = $request->input('search');
 
@@ -25,16 +34,18 @@ class AdminController extends Controller
                     });
             })->latest()->get();
 
+
         if ($request->ajax()) {
             return response()->json(['notices' => $notices]);
         }
 
-        return view('admin.notices.index', compact('notices'));
+        return response()->json(['notices' => $notices]);
     }
 
-    // Stores a new notice in the database.
-    public function noticeStore(Request $request)
+    public function createOrUpdateNotice(Request $request)
     {
+        $notice = Notice::find($request->id);
+
         $validatedData = $request->validate([
             'name' => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -44,66 +55,32 @@ class AdminController extends Controller
             'scheduled_at' => 'nullable|date',
             'recurrence' => 'nullable|in:daily,weekly,monthly',
             'recurrence_days' => 'nullable|array',
-            'created_at' => now()->setTimezone('Asia/Kolkata'),
-            'updated_at' => now()->setTimezone('Asia/Kolkata'),
+            'recurrence_days.*' => 'string|in:Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday'
         ]);
 
-        $validatedData['recurrence_days'] = $request->has('recurrence_days')
-            ? json_encode($validatedData['recurrence_days'])
-            : null;
+        $validatedData['recurrence_days'] = $request->has('recurrence_days') ? $request->input('recurrence_days') : [];
 
-        if ($request->has('recurrence')) {
-            $validatedData['scheduled_at'] = null; // Ensure scheduled_at is null for recurring notices
-        }
 
-        if ($validatedData['is_sticky']) {
-            $existingStickyNotice = Notice::where('is_sticky', true)->first();
-            if ($existingStickyNotice) {
-                Notice::where('is_sticky', true)->update(['is_sticky' => false]);
-            }
-        }
-
-        Notice::create($validatedData);
-
-        return redirect()->route('admin.notices.index')->with('success', 'Notice added successfully.');
-    }
-
-    // Updates an existing notice in the database.
-    public function noticeUpdate(Request $request, $noticeId)
-    {
-        $validator = Validator::make($request->all(), [
-            'name' => 'required',
-            'description' => 'nullable',
-            'notice_type_id' => 'required|exists:notice_types,id',
-            'expiry_date' => 'nullable|date',
-            'is_sticky' => 'required|boolean',
-            'scheduled_at' => 'nullable|date',
-        ]);
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()], 422);
-        }
-
-        $notice = Notice::find($noticeId);
-
-        if (!$notice) {
-            return response()->json(['message' => 'Notice not found'], 404);
-        }
+        $validatedData['is_sticky'] = $request->boolean('is_sticky') ? '1' : '0';
 
         if ($request->input('is_sticky')) {
             $existingStickyNotice = Notice::where('is_sticky', '1')->where('id', '!=', $notice->id)->first();
             if ($existingStickyNotice) {
-                Notice::where('is_sticky', true)->update(['is_sticky' => false]);
+                $existingStickyNotice->update(['is_sticky' => '0']);
             }
         }
 
-        $notice->update($request->all());
+        if ($notice) {
+            $notice->update($validatedData);
+        } else {
+            $validatedData['created_at'] = now()->setTimezone('Asia/Kolkata');
+            $validatedData['updated_at'] = now()->setTimezone('Asia/Kolkata');
+            $notice                      = Notice::create($validatedData);
+        }
 
-        return response()->json([
-            'notice' => $notice,
-        ]);
+        return response()->json(['notice' => $notice]);
     }
 
-    // Toggles the sticky status of a notice.
     public function toggleSticky($noticeId)
     {
         $notice = Notice::find($noticeId);
@@ -112,49 +89,41 @@ class AdminController extends Controller
             return response()->json(['message' => 'Notice not found'], 404);
         }
 
-        Notice::where('is_sticky', true)->update(['is_sticky' => false]);
+        Notice::where('is_sticky', '1')
+            ->update(['is_sticky' => '0']);
 
         if ($notice->is_sticky) {
-            $notice->update(['is_sticky' => false]);
+            $notice->update(['is_sticky' => '0']);
             return response()->json([
                 'notice' => $notice,
             ]);
         }
 
-        $notice->update(['is_sticky' => true]);
+        $notice->update(['is_sticky' => '1']);
 
         return response()->json([
             'notice' => $notice,
         ]);
     }
 
-    // Deletes a notice from the database.
     public function noticeDestroy($id)
     {
         $notice = Notice::findOrFail($id);
 
         if (Gate::allows('delete-notice')) {
             $notice->delete();
-            return redirect()->route('admin.notices.index')->with('success', 'Notice deleted successfully.');
+            return redirect()->route('notices.index')->with('success', 'Notice deleted successfully.');
         } else {
-            return redirect()->route('admin.notices.index')->with('error', 'You do not have permission to delete this notice.');
+            return redirect()->route('notices.index')->with('error', 'You do not have permission to delete this notice.');
         }
     }
 
-    // Displays the view for changing the color of notice types.
-    public function NoticeTypeColor()
-    {
-        return view('admin.notices.change-color');
-    }
-
-    // Retrieves all notice types.
     public function getNoticeTypes()
     {
         $noticeTypes = NoticeType::all();
         return response()->json(['noticeTypes' => $noticeTypes]);
     }
 
-    // Updates the color of a specific notice type.
     public function changeNoticeTypeColorPost(Request $request, $noticeTypeId)
     {
         $request->validate([

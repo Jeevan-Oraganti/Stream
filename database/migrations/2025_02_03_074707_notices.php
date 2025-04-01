@@ -17,9 +17,11 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->boolean('is_sticky')->default(false);
             $table->unsignedBigInteger('notice_type_id');
-            $table->dateTime('expiry_date')->nullable();
+            $table->dateTime('scheduled_at')->nullable();
             $table->dateTime('expiry_date')->nullable();
             $table->boolean('is_active')->default(false);
+            $table->string('recurrence')->nullable(); // daily, weekly, monthly
+            $table->json('recurrence_days')->nullable(); // For weekly recurrence (e.g., ["Monday", "Wednesday"])
             $table->timestamps();
 
             $table->foreign('notice_type_id')->references('id')->on('notice_types')->onDelete('cascade');
