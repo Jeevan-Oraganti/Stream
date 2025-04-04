@@ -65,18 +65,14 @@ Route::post('/logout', function (Request $request) {
 
 //notices routes
 Route::middleware('can:admin')->group(function () {
-    Route::get('/admin/dashboard', [AdminController::class, 'dashboard']);
-    Route::get('/admin/notices', [AdminController::class, 'show'])->name('notices.index');
-    Route::get('/admin/notices/all', [AdminController::class, 'notices'])->name('notices.index');
-    Route::post('/admin/notice/createOrUpdate', [AdminController::class, 'createOrUpdateNotice'])->name('notice.store');
-    Route::post('/admin/notice/{noticeId}/delete', [AdminController::class, 'noticeDestroy']);
-    Route::post('/admin/notice/{noticeId}/toggle-sticky', [AdminController::class, 'toggleSticky']);
-    Route::get('/admin/notice-types', [AdminController::class, 'getNoticeTypes']);
-    Route::post('/admin/notice-type/{noticeTypeId}/change-color', [AdminController::class, 'changeNoticeTypeColorPost']);
-    Route::get('/admin/notifications', function () {
-        $notifications = cache()->get('admin_notifications', []);
-        return response()->json(['notifications' => $notifications]);
-    });
+    Route::get('/admin/dashboard', [NoticeController::class, 'dashboard']);
+    Route::get('/admin/notices', [NoticeController::class, 'showNoticesListForAdmin'])->name('notices.index');
+    Route::get('/admin/notices/all', [NoticeController::class, 'fetchAllNoticesForAdmin'])->name('notices.index');
+    Route::post('/admin/notice/createOrUpdate', [NoticeController::class, 'createOrUpdateNotice'])->name('notice.store');
+    Route::post('/admin/notice/{noticeId}/delete', [NoticeController::class, 'noticeDestroy']);
+    Route::post('/admin/notice/{noticeId}/toggle-sticky', [NoticeController::class, 'toggleSticky']);
+    Route::get('/admin/notice-types', [NoticeController::class, 'getNoticeTypes']);
+    Route::post('/admin/notice-type/{noticeTypeId}/change-color', [NoticeController::class, 'changeNoticeTypeColorPost']);
 });
 
 
@@ -84,5 +80,5 @@ Route::get('/notices', [NoticeController::class, 'show']);
 Route::get('/notices/unread', [NoticeController::class, 'unreadNotices']);
 
 Route::middleware('auth')->group(function () {
-    Route::post('/notice/{noticeId}/acknowledge', [NoticeController::class, 'acknowledge']);
+    Route::post('/notice/{noticeId}/acknowledge', [NoticeController::class, 'storeUserDismissedNotices']);
 });
