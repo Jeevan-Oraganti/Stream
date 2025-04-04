@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\Notice;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class ScheduledNotices extends Command
@@ -24,40 +25,48 @@ class ScheduledNotices extends Command
     /**
      * Execute the console command.
      */
+
+//     start DB transaction
+//     deactivate all notices which are active
+//     activate selected notices with the below query
+//     commit DB transaction
+
     public function handle()
     {
-        Log::info('Sending scheduled notices');
+        DB::beginTransaction();
+        try {
+            // Deactivate all active notices
+            DB::table('notices')->where('is_active', true)->update(['is_active' => false]);
+            Log::info('All active notices have been deactivated.');
 
-        $noticesToActivate = Notice::where('is_active', false)
-            ->where(function ($query) {
-                $query->where('scheduled_at', '<=', now())
-                    ->orWhereNull('scheduled_at');
-            })
-            ->where(function ($query) {
-                $query->where('expiry_date', '>', now())
-                    ->orWhereNull('expiry_date');
-            })
-            ->get();
+            // Fetch notices to activate
+            $noticesToActivate = DB::select("
+            SELECT n.*,
+               (SELECT COUNT(mc.calendar_date)
+                FROM market_calendars mc
+                WHERE mc.calendar_date::DATE BETWEEN NOW()::DATE AND n.event_date::DATE
+            AND mc.is_holiday IS FALSE
+            AND mc.calendar_date::DATE != NOW()::DATE) AS days_before_active
+            FROM notices n
+            WHERE n.is_active = false
+            AND (n.expiry_date > NOW() OR n.expiry_date IS NULL)
+            ORDER BY n.event_date ASC
+        ");
 
+        // Activate selected notices
         foreach ($noticesToActivate as $notice) {
-            $notice->update(['is_active' => true]);
-            Log::info("Notice ID {$notice->id} is now active.");
+            $threshold = 1;
+            if ($notice->days_before_active <= $threshold) {
+                DB::table('notices')->where('id', $notice->id)->update(['is_active' => true]);
+                Log::info("Notice ID {$notice->id} is now active.");
+            }
         }
 
-        $noticesToDeactivate = Notice::where('is_active', true)
-            ->where(function ($query) {
-                $query->whereNotNull('expiry_date')->where('expiry_date', '<=', now());
-            })
-            ->orWhere(function ($query) {
-                $query->whereNotNull('scheduled_at')->where('scheduled_at', '>', now());
-            })
-            ->get();
-
-        foreach ($noticesToDeactivate as $notice) {
-            $notice->update(['is_active' => false]);
-            Log::info("Notice ID {$notice->id} has expired or is scheduled for the future and is now inactive.");
+        DB::commit();
+        Log::info('Scheduled notices processed successfully.');
+    } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Error processing scheduled notices: ' . $e->getMessage());
         }
-
-        Log::info('Scheduled notices Sent');
     }
 }
