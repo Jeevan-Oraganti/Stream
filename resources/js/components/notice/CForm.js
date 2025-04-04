@@ -16,7 +16,7 @@ export default class CForm {
         this.errors = {};
     }
 
-    async saveOrUpdate(url) {
+    async createOrUpdate(url) {
         try {
             const response = await axios.post(url, this);
             // this.reset();
