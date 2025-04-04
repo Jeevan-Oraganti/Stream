@@ -71,6 +71,22 @@ export default class CNotices {
                         }
                     },
                     {
+                        data: "event_date",
+                        title: "Event Date",
+                        render: (data, type, row, meta) => {
+                            if (row.form.event_date === null) {
+                                return `<span class="text-red-500">No Date</span>`;
+                            }
+                            const eventAt = moment(row.form.event_date);
+                            const timeLeft = eventAt.diff(moment(), 'milliseconds');
+                            if (timeLeft >= 0) {
+                                return `<span class="text-blue-500">Event on ${eventAt.format("MMM D, YYYY [at] h:mm A")}</span>`;
+                            } else {
+                                return `<span class="text-red-500">Event on ${eventAt.format("MMM D, YYYY [at] h:mm A")}</span>`;
+                            }
+                        }
+                    },
+                    {
                         data: "expiry_date",
                         title: "Expiry Date",
                         render: (data, type, row, meta) => {
@@ -80,25 +96,9 @@ export default class CNotices {
                             const expiryDate = moment(row.form.expiry_date);
                             const daysLeft = expiryDate.diff(moment(), 'milliseconds');
                             if (daysLeft <= 0) {
-                                return `<span class="text-red-500">Expired</span>`;
+                                return `<span class="text-red-500">${expiryDate.format("MMMM D, YYYY [at] h:mm A")}</span>`;
                             }
                             return `<span class="text-green-500">${expiryDate.format("MMMM D, YYYY [at] h:mm A")}</span>`;
-                        }
-                    },
-                    {
-                        data: "scheduled_at",
-                        title: "Scheduled At",
-                        render: (data, type, row, meta) => {
-                            if (row.form.scheduled_at === null) {
-                                return `<span class="text-red-500">No Schedule</span>`;
-                            }
-                            const scheduledAt = moment(row.form.scheduled_at);
-                            const timeLeft = scheduledAt.diff(moment(), 'milliseconds');
-                            if (timeLeft >= 0) {
-                                return `<span class="text-blue-500">Scheduled for ${scheduledAt.format("MMM D, YYYY [at] h:mm A")}</span>`;
-                            } else {
-                                return `<span class="text-green-500">Published on ${scheduledAt.format("MMM D, YYYY [at] h:mm A")}</span>`;
-                            }
                         }
                     },
                     {

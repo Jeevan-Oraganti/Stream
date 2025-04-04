@@ -5,7 +5,10 @@
                 <h3 class="text-sm font-bold text-blue-700 mb-2 border-b-2 pb-2">Notices Going Live Soon</h3>
                 <ul class="divide-y divide-blue-300">
                     <li v-for="notice in upcomingNotices" :key="notice.id" class="py-3">
-                        <p class="text-sm font-medium text-gray-900">{{ notice.form.name }}</p>
+                            <span class="whitespace-nowrap flex">
+                            <p class="text-sm font-medium text-gray-900 mr-1">{{ notice.form.id }} -</p>
+                            <p class="text-sm font-medium text-gray-900">{{ notice.form.name }}</p>
+                            </span>
                         <p class="text-xs text-gray-600">
                             Scheduled At: {{ formatDate(notice.form.event_date) }}
                             <span class="italic">({{ notice.form.event_date | ago }})</span>
@@ -18,7 +21,10 @@
                 <ul class="divide-y divide-green-300">
                     <li v-for="notice in activeNotices" :key="notice.id" class="w-full py-3 flex">
                         <div>
+                            <span class="whitespace-nowrap flex">
+                            <p class="text-sm font-medium text-gray-900 mr-1">{{ notice.form.id }} -</p>
                             <p class="text-sm font-medium text-gray-900">{{ notice.form.name }}</p>
+                            </span>
                             <p class="text-xs text-gray-600">
                                 Active Since: {{ formatDate(notice.form.event_date) }}
                                 <span class="italic">(Expires {{ notice.form.expiry_date | ago }})</span>
@@ -37,7 +43,10 @@
                 <ul class="divide-y divide-red-300">
                     <li v-for="notice in expiringNotices" :key="notice.id" class="w-full py-3 flex">
                         <div>
+                            <span class="whitespace-nowrap flex">
+                            <p class="text-sm font-medium text-gray-900 mr-1">{{ notice.form.id }} -</p>
                             <p class="text-sm font-medium text-gray-900">{{ notice.form.name }}</p>
+                            </span>
                             <p class="text-xs text-gray-600">
                                 Expiry Date: {{ formatDate(notice.form.expiry_date) }}
                                 <span class="italic">({{ notice.form.expiry_date | ago }})</span>
@@ -68,13 +77,13 @@ export default {
     },
     computed: {
         activeNotices() {
-            return this.notices.filter(({ form }) => {
+            return this.notices.filter(({form}) => {
                 return form.is_active;
             });
         },
         upcomingNotices() {
             const now = moment();
-            return this.notices.filter(({ form }) => {
+            return this.notices.filter(({form}) => {
                 const eventDate = moment(form.event_date);
                 const isWeekend = [6, 0].includes(eventDate.day()); // 6 = Saturday, 0 = Sunday
                 return !form.is_active && eventDate.isAfter(now) && eventDate.diff(now, "hours") <= 24 && !isWeekend;
@@ -82,7 +91,7 @@ export default {
         },
         expiringNotices() {
             const now = moment();
-            return this.notices.filter(({ form }) => {
+            return this.notices.filter(({form}) => {
                 const expiryDate = form.expiry_date ? moment(form.expiry_date) : null;
                 return form.is_active && expiryDate && expiryDate.isAfter(now) && expiryDate.diff(now, "hours") <= 24;
             });
