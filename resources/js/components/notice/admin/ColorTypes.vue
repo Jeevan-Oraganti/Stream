@@ -1,7 +1,6 @@
 <!-- filepath: /home/bnetworks/websites/stream/resources/js/components/notice/admin/ColorTypes.vue -->
 <template>
-    <modal name="change-notice-type-color" height="auto" :pivotY=".5"
-           class="rounded-lg w-full max-w-lg mx-auto px-4">
+    <modal name="change-notice-type-color" height="auto" :pivotY=".5" class="rounded-lg w-full max-w-lg mx-auto px-4">
         <div class="py-4">
             <h2 class="text-2xl mt-4 font-bold mb-6 text-gray-800 text-center">Change Notice Type Color</h2>
 
@@ -36,7 +35,7 @@
                             <td class="px-6 py-4 items-center whitespace-nowrap border">
                                 <div class="flex items-center space-x-4">
                                     <!-- Color Selection -->
-                                    <swatches v-model="type.color" :swatches="colors" row-length="3"
+                                    <swatches v-model="type.color" :swatches="colors" row-length="4"
                                         @input="changeColor(type)" show-fallback fallback-input-type="color"
                                         styles="width: '138px', height: '169px'">
                                     </swatches>
@@ -64,17 +63,15 @@ export default {
             localFlashSuccess: '',
             localFlashError: '',
             colors: [
-                // Announcement (Red/Pink)
-                ['#D91E36', '#E63946', '#EE6B6E'],
+                ['#D91E36', '#E63946', '#EE6B6E', '#0E4DA4'],
 
-                // Information (Blue)
-                ['#0E4DA4', '#2A69C0', '#4C89DD'],
+                ['#2A69C0', '#4C89DD', '#C97B00', '#E39200'],
 
-                // Outage (Amber/Yellow)
-                ['#C97B00', '#E39200', '#F5B700'],
+                ['#F5B700', '#1B5E20', '#388E3C', '#66BB6A',],
 
-                // Holiday (Green)
-                ['#1B5E20', '#388E3C', '#66BB6A'],
+                ['#6A1B9A', '#8E24AA', '#BA68C8', '#FF6F00'],
+
+                ['#FFA000', '#FFC107', '#00796B', '#009688']
             ]
         };
     },
