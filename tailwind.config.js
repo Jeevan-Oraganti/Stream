@@ -9,13 +9,6 @@ export default {
         "./resources/js/**/*.tsx",
         "./resources/css/**/*.css",
     ],
-    safelist: [
-        "text-orange-600",
-        "bg-orange-100",
-        "border-orange-500",
-        "bg-indigo-600",
-        "bg-indigo-500",
-    ],
     theme: {
         extend: {},
     },
