@@ -17,7 +17,7 @@ return new class extends Migration
             $table->text('description')->nullable();
             $table->boolean('is_sticky')->default(false);
             $table->unsignedBigInteger('notice_type_id');
-            $table->dateTime('scheduled_at')->nullable();
+            $table->dateTime('event_date')->nullable();
             $table->dateTime('expiry_date')->nullable();
             $table->boolean('is_active')->default(false);
             $table->string('recurrence')->nullable(); // daily, weekly, monthly

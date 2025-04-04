@@ -13,5 +13,5 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote')->hourly();
 
 Schedule::command('notices:scheduled-notices')->everyMinute();
-Schedule::command('notices:schedule-recurring')->everyMinute();
+//Schedule::command('notices:schedule-recurring')->everyMinute();
 //Schedule::command('notices:notify-admin-about-notices')->everyMinute();
