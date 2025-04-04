@@ -1,7 +1,7 @@
 <!-- filepath: /home/bnetworks/websites/stream/resources/js/components/notice/admin/ColorTypes.vue -->
 <template>
     <modal name="change-notice-type-color" height="auto" :pivotY=".5"
-        class="rounded-lg w-full max-w-lg mx-auto px-4 container p-8 bg-gray-50">
+           class="rounded-lg w-full max-w-lg mx-auto px-4">
         <div class="py-4">
             <h2 class="text-2xl mt-4 font-bold mb-6 text-gray-800 text-center">Change Notice Type Color</h2>
 

@@ -1,7 +1,7 @@
 <!-- filepath: /home/bnetworks/websites/stream/resources/js/components/notice/admin/NoticeForm.vue -->
 <template>
     <modal name="add-edit-notice" height="auto" @opened="opened" @closed="closed"
-        class="rounded-lg shadow-lg w-full max-w-lg mx-auto px-4">
+        class="rounded-lg w-full max-w-lg mx-auto px-4">
         <div class="container block m-auto justify-center p-8 bg-white">
             <h2 class="text-xl font-semibold mb-4 text-gray-800">{{ notice.form.id ? 'Edit Notice' : 'Add New Notice' }}
             </h2>
@@ -39,12 +39,12 @@
                         }}</span>
                 </div>
                 <div>
-                    <label class="text-sm font-medium text-gray-700">Schedule At</label>
-                    <input v-model="notice.form.scheduled_at" type="datetime-local"
+                    <label class="text-sm font-medium text-gray-700">Event Date</label>
+                    <input v-model="notice.form.event_date" type="datetime-local"
                         class="text-gray-500 w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-400"
-                        @input="clearError('scheduled_at')" @change="syncExpiryDate">
-                    <span v-if="notice.form.hasError('scheduled_at')" class="text-red-500 text-sm mt-1 block">{{
-                        notice.form.getError('scheduled_at')
+                        @input="clearError('event_date')" @change="syncExpiryDate">
+                    <span v-if="notice.form.hasError('event_date')" class="text-red-500 text-sm mt-1 block">{{
+                        notice.form.getError('event_date')
                         }}</span>
                 </div>
                 <div>
@@ -89,7 +89,7 @@
                         }}</span>
                 </div>
                 <div class="flex mt-4 justify-between space-x-3">
-                    <button type="button" @click="cancel"
+                    <button type="button" @click="$modal.hide('add-edit-notice')"
                         class="w-full bg-indigo-500 text-white py-2 rounded-md hover:bg-indigo-600 transition duration-200">
                         Cancel
                     </button>
@@ -103,7 +103,7 @@
         <!-- Confirmation Modal -->
         <confirmation-modal title="Warning"
             message="There is already an existing sticky notice available. Proceeding will unstick the previous one. Do you want to continue?"
-            @confirm="proceedWithSave" @cancel="cancelSave">
+            @confirm="proceedWithSave">
         </confirmation-modal>
     </modal>
 </template>
@@ -118,35 +118,21 @@ export default {
         notice: {
             type: Object,
             default: null,
-        },
-        flashSuccess: {
-            type: String,
-            default: ''
-        },
-        flashError: {
-            type: String,
-            default: ''
-        },
-        stickyNoticeId: {
-            type: Number,
-            default: null,
-        },
+        }
     },
     data() {
         return {
-            form: null,
-            errors: {},
+            clonedNotice: null,
             loading: false,
             weekdays: ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"],
         };
     },
     methods: {
         syncExpiryDate() {
-            if (this.notice.form.scheduled_at) {
-                this.notice.form.expiry_date = moment(this.notice.form.scheduled_at)
-                    .add(1, "days")
+            if (this.notice.form.event_date) {
+                this.notice.form.expiry_date = moment(this.notice.form.event_date)
                     .set({ hour: 23, minute: 59, second: 0 })
-                    .format("YYYY-MM-DDTHH:mm");
+                    .format("YYYY-MM-DD HH:mm");
             }
         },
         clearSelection() {
@@ -165,10 +151,6 @@ export default {
                 this.notice.form.recurrence_days.push(day);
             }
         },
-        toggleSticky() {
-            this.notice.form.is_sticky = !this.notice.form.is_sticky;
-            this.clearError('is_sticky');
-        },
         toggleDaySelection(day) {
             const index = this.notice.form.recurrence_days.indexOf(day);
             if (index === -1) {
@@ -177,90 +159,42 @@ export default {
                 this.notice.form.recurrence_days.splice(index, 1);
             }
         },
+        // Toggles the `is_sticky` property of the notice form between true and false
+        toggleSticky() {
+            this.notice.form.is_sticky = !this.notice.form.is_sticky;
+        },
+        //creates a deep copy of `notice` to allow undoing changes
         opened() {
-            this.form = JSON.parse(JSON.stringify(this.notice))
+            this.clonedNotice = JSON.parse(JSON.stringify(this.notice));
         },
+        //restores `notice` from the cloned copy to undo changes
         closed() {
-
+            this.notice.undoChangesFromClone(this.clonedNotice, this);
         },
-        cancel() {
-            console.log(this.notice)
-            console.log(this.form)
-            for (let key in this.notice.form) {
-                this.notice.form[key] = this.form.form[key]
-            }
-            this.$parent.initializeDataTable()
-            this.$modal.hide('add-edit-notice');
-        },
+        //handling creation or updating logic
         async createOrUpdateNotice() {
-            try {
-                if (this.loading) return;
-
-                if (this.notice.form.is_sticky && this.stickyNoticeId && this.stickyNoticeId !== this.notice.form.id) {
-                    this.$modal.show('confirmation-modal');
-                    return;
-                }
-
-                await this.proceedWithSave();
-
-                this.startLoading();
-            } catch (error) {
-                if (error.response && error.response.status === 422) {
-                    this.errors = error.response.data.errors;
-                } else {
-                    console.error('Error saving notice:', error);
-                }
-                this.stopLoading();
-            } finally {
-                this.loading = false;
-            }
+            await this.notice.createOrUpdate(this);
         },
+        //handling the final save operation
         async proceedWithSave() {
-            try {
-                this.startLoading();
-                await this.notice.form.saveOrUpdate('/admin/notice/createOrUpdate');
-                this.$parent.localFlashSuccess = this.notice.form.id ? 'Notice updated successfully' : 'Notice saved successfully!';
-                this.$modal.hide("add-edit-notice");
-                this.stopLoading();
-                await this.$parent.fetchNotices();
-            } catch (error) {
-                console.error('Error saving notice:', error);
-            }
+            await this.notice.proceedWithSave(this);
         },
         cancelSave() {
             this.$modal.hide("confirmation-modal");
         },
-        startLoading() {
-            this.loading = true;
-            this.progress = 0;
-            this.interval = setInterval(() => {
-                if (this.progress < 95) {
-                    this.progress += 5;
-                }
-            }, 100);
-        },
-        stopLoading() {
-            clearInterval(this.interval);
-            this.progress = 100;
-            setTimeout(() => {
-                this.loading = false;
-                this.progress = 0;
-            }, 500);
-        },
+        // Clears validation errors for a specific field
         clearError(field) {
-            // if (this.notice.form.hasError(field)) {
-            //   this.$delete(this.notice.form.errors, field);
-            // }
+            this.notice.clearError(field, this);
         },
     },
     watch: {
+        // Watches for changes in `notice` and re-initializes the DataTable when changes occur
         'notice': {
             handler(newVAl, oldVAl) {
-                this.$parent.initializeDataTable()
+                this.$parent.initializeDataTable();
             },
-            deep: true
-        },
-
+            deep: true // Enables deep watching to detect changes within nested properties
+        }
     },
 };
 </script>

@@ -28,7 +28,7 @@
                         <div v-if="localFlashError" class="notification is-danger">
                             {{ localFlashError }}
                         </div>
-                        <alert-about-notices :notices="notices"></alert-about-notices>
+                        <alert-about-notices :notices="notices.noticesArray"></alert-about-notices>
                         <div class="flex items-center mb-4">
                             <div class="relative w-full">
                                 <input type="text" ref="selectSearch" v-model="NoticeSearchQuery"
@@ -37,7 +37,6 @@
                                 <span class="absolute right-3 top-1/2 transform -translate-y-1/2">
                                     <i class="fas fa-search"></i>
                                 </span>
-                                <LoadingBar :progress="progress" v-if="loading" />
                             </div>
                         </div>
                         <div class="is-overflow-auto">
@@ -59,8 +58,7 @@
                                             Type
                                         </th>
                                         <th scope="col" class="px-3 py-4 text-left text-sm font-semibold text-gray-900">
-                                            Scheduled
-                                            At
+                                            Event Date
                                         </th>
                                         <th scope="col"
                                             class="whitespace-nowrap px-3 py-4 text-left text-sm font-semibold text-gray-900">
@@ -91,7 +89,7 @@
                 </div>
             </div>
         </div>
-        <notice-form :notice="notice" :stickyNoticeId="stickyNoticeId"></notice-form>
+        <notice-form :notice="notice"></notice-form>
         <color-types @color-updated="refreshNotices"></color-types>
     </div>
 </template>
@@ -100,7 +98,6 @@ import CNotice from "@/components/notice/CNotice.js";
 import CNotices from "@/components/notice/CNotices.js";
 import { debounce } from "lodash";
 import moment from "moment-timezone";
-import LoadingBar from "@/components/LoadingBar.vue";
 import NoticeForm from "./NoticeForm.vue";
 import $ from 'jquery';
 import ColorTypes from "./ColorTypes.vue";
@@ -112,7 +109,6 @@ DataTable.use(DataTablesCore);
 export default {
     components: {
         AlertAboutNotices,
-        LoadingBar,
         NoticeForm,
         ColorTypes
     },
@@ -124,29 +120,28 @@ export default {
     },
     data() {
         return {
-            notices: [],
-            errors: {},
             NoticeSearchQuery: '',
-            loading: false,
-            editingNoticeId: null,
-            progress: 0,
-            interval: null,
-            deletingNoticeId: null,
             baseUrl: "/admin/notices/all",
             localFlashSuccess: '',
             localFlashError: '',
             notice: new CNotice(),
-            stickyNoticeId: null,
-            window: window.CHARTINK
+            window: window.CHARTINK,
+            notices: new CNotices(this)
         };
     },
     methods: {
+        // Updates the notice colors by re-fetching notices and reinitializing the DataTable
+        async colorUpdate() {
+            await this.fetchNotices();
+            this.initializeDataTable();
+        },
         async refreshNotices() {
             await this.fetchNotices();
             this.initializeDataTable();
         },
+        // Creates a new notice instance and opens the modal for adding/editing a notice
         addNotice() {
-            this.notice = new CNotice()
+            this.notice = new CNotice();
             this.$modal.show('add-edit-notice');
         },
         convertDateTime(dateTime) {
@@ -164,14 +159,10 @@ export default {
             }).format(utcDate);
             return istDate.replace(",", "").replace(/\//g, "-").replace(" ", "T")
         },
+        // Finds and sets the selected notice for editing, updates its datetime, and opens the modal
         editNotice(noticeId) {
-            this.notice = this.notices.find((notice) => notice.id == noticeId);
-            if (this.notice.form.expiry_date) {
-                this.notice.form.expiry_date = this.convertDateTime(this.notice.form.expiry_date);
-            }
-            if (this.notice.form.scheduled_at) {
-                this.notice.form.scheduled_at = this.convertDateTime(this.notice.form.scheduled_at);
-            }
+            this.notice = this.notices.noticesArray.find((notice) => notice.id == noticeId);
+            this.notice.updateDateTime();
             this.$modal.show('add-edit-notice');
         },
         isActive(notice) {
@@ -179,26 +170,12 @@ export default {
             const expiryDate = new Date(notice.form.expiry_date);
             return !!(expiryDate > now && notice.form.is_active);
         },
+        // Toggles the `is_sticky` property of a specific notice
         async toggleSticky(id) {
-            try {
-                let notice = this.notices.find((notice) => notice.id == id);
-                this.notices.forEach((notice) => {
-                    if (notice.form.is_sticky && notice.id != id) {
-                        notice.form.is_sticky = false
-                    }
-                });
-                notice.form.is_sticky = !notice.form.is_sticky
-                this.initializeDataTable()
-                const response = await notice.toggleSticky();
-                if (response.status === 200) {
-                    notice.form.is_sticky = response.data.notice.is_sticky;
-                    this.localFlashSuccess = "Notice updated successfully!";
-                }
-            } catch (error) {
-                console.error("Error toggling sticky notice:", error);
-                this.localFlashError = "An error occurred while updating the notice.";
-            }
+            let notice = this.notices.noticesArray.find((notice) => notice.id == id);
+            notice.toggleSticky(this);
         },
+        // Focuses on the search bar when "Ctrl + K" is pressed
         focusSearchBar(event) {
             if (event.ctrlKey && event.key === "k") {
                 event.preventDefault();
@@ -211,212 +188,20 @@ export default {
         canDelete() {
             return this.user.id == 1;
         },
+        // Deletes a specific notice by finding it in the array and calling its delete method
         async deleteNotice(id) {
-            const notice = new CNotice(id);
-            this.deletingNoticeId = notice.id;
-            if (confirm("Are you sure you want to delete this notice?")) {
-                try {
-                    const response = await notice.delete();
-                    console.log('Response', response);
-                    if (response.status === 200) {
-                        this.localFlashSuccess = "Notice deleted successfully!";
-                        this.notices = this.notices.filter(n => n.id !== notice.id);
-                    }
-                } catch (error) {
-                    if (error.response && error.response.status === 403) {
-                        this.localFlashError = "You are not authorized to delete this notice!";
-                    } else {
-                        this.localFlashError = "An error occurred while deleting the notice.";
-                    }
-                } finally {
-                    this.deletingNoticeId = null;
-                    await this.fetchNotices();
-                }
-            }
+            let notice = this.notices.noticesArray.find((notice) => notice.id == id);
+            notice.delete(this);
         },
-        async fetchNotices(url = this.baseUrl) {
-            try {
-                if (this.loading) return;
-                this.startLoading();
-                const response = await CNotices.fetchNoticesListForAdmin(url, this.NoticeSearchQuery);
-                if (response && response.data && Array.isArray(response.data.notices)) {
-                    this.notices = response.data.notices.map(notice => new CNotice(notice.id, notice));
-                    const stickyNotice = this.notices.find(notice => notice.form.is_sticky);
-                    this.stickyNoticeId = stickyNotice ? stickyNotice.form.id : null;
-                } else {
-                    console.error("Invalid API Response Structure:", response.data);
-                    this.notices = [];
-                }
-                this.initializeDataTable();
-                this.stopLoading();
-            } catch (error) {
-                console.error("Error fetching notices:", error);
-                this.stopLoading();
-            }
+        // Fetches notices from the server, optionally using a provided URL
+        fetchNotices(url = this.baseUrl) {
+            this.notices.fetchNotices(url);
         },
+        // Initializes the DataTable with the fetched notices
         initializeDataTable() {
-            this.$nextTick(() => {
-                if ($.fn.DataTable.isDataTable("#noticesTable")) {
-                    $("#noticesTable").DataTable().clear().destroy();
-                }
-                $("#noticesTable").DataTable({
-                    order: [[7]], // Sort by created_at column
-                    responsive: true,
-                    processing: true,
-                    paging: true,
-                    searching: false,
-                    destroy: true,
-                    data: this.notices,
-                    columns: [
-                        {
-                            data: "id",
-                            title: "ID",
-                            orderable: true
-                        },
-                        {
-                            data: "name",
-                            title: "Title",
-                            render: function (data, type, row, meta) {
-                                if (!row || !row.id) {
-                                    return "Invalid Data";
-                                }
-                                const starIcon = row.form.is_sticky
-                                    ? '<i class="fas fa-star text-yellow-500 whitespace-nowrap"></i>'
-                                    : '<i class="far fa-star whitespace-nowrap"></i>';
-                                return `<span class="whitespace-nowrap cursor-pointer toggle-sticky" data-id="${row.id}">${starIcon}</span>
-                                        <span class="whitespace-nowrap text-blue-500 whitespace-nowrap cursor-pointer edit-notice" data-notice='${JSON.stringify(row)}'>${row.form.name || "N/A"}</span>`;
-                            }
-                        },
-                        {
-                            data: "description",
-                            title: "Description",
-                            render: (data, type, row, meta) => {
-                                return `<span class="text-black"> ${row.form.description || "No description"}`
-                            }
-                        },
-                        {
-                            data: "notice_type", title: "Type", render: (data, type, row, meta) => {
-                                if (row.form && row.form.notice_type) {
-                                    const color = row.form.notice_type.color ? row.form.notice_type.color : "#808080";
-                                    return `<span class="capitalize" style="color: ${color};">${row.form.notice_type.type}</span>`;
-                                }
-                                return "No Type";
-                            }
-                        },
-                        {
-                            data: "scheduled_at",
-                            title: "Scheduled At",
-                            render: (data, type, row, meta) => {
-                                let result = '';
-                                if (row.form.scheduled_at === null) {
-                                    result += `<span class="whitespace-nowrap text-red-500">No Schedule</span>`;
-                                } else {
-                                    const scheduledAt = moment(row.form.scheduled_at);
-                                    const timeLeft = scheduledAt.diff(moment(), 'milliseconds');
-                                    if (timeLeft >= 0) {
-                                        result += `<span class="whitespace-nowrap text-blue-500">Scheduled for ${scheduledAt.format("MMM D, YYYY [at] h:mm A")}</span>`;
-                                    } else {
-                                        result += `<span class="whitespace-nowrap text-green-500">Published on ${scheduledAt.format("MMM D, YYYY [at] h:mm A")}</span>`;
-                                    }
-                                }
-
-                                if (row.form.recurrence) {
-                                    result += `<br><span class="text-gray-500">Recurrence: ${row.form.recurrence}</span>`;
-                                }
-
-                                if (row.form.recurrence_days && Array.isArray(row.form.recurrence_days) && row.form.recurrence_days.length > 0) {
-                                    result += `<br><span class="text-gray-500">Days: ${row.form.recurrence_days.join(', ')}</span>`;
-                                }
-
-                                return result;
-                            }
-                        },
-                        {
-                            data: "expiry_date",
-                            title: "Expiry Date",
-                            render: (data, type, row, meta) => {
-                                if (row.form.expiry_date === null) {
-                                    return `<span class="text-blue-500">No Expiry</span>`;
-                                }
-                                const expiryDate = moment(row.form.expiry_date);
-                                const daysLeft = expiryDate.diff(moment(), 'milliseconds');
-                                if (daysLeft <= 0) {
-                                    return `<span class="text-red-500">Expired</span>`;
-                                }
-                                return `<span class="whitespace-nowrap text-green-500">${expiryDate.format("MMMM D, YYYY [at] h:mm A")}</span>`;
-                            }
-                        },
-                        {
-                            data: "is_active",
-                            title: "Active",
-                            orderable: true,
-                            render: (data, type, row, meta) => row.form.is_active ? `<span class="text-green-500">Yes</span>` : `<span class="text-red-500">No</span>`
-                        },
-                        {
-                            data: "created_at",
-                            title: "Created At",
-                            render: (data, type, row, meta) => {
-                                return `<span class="whitespace-nowrap text-black"> ${row.form.created_at ? moment(row.form.created_at).format("MMM D, YYYY [at] h:mm A") : "No Date"}`
-                            },
-                            orderable: true,
-                        },
-                        {
-                            data: "views_count",
-                            title: "Views",
-                            render: (data, type, row, meta) => {
-                                return `<span class="text-gray-700">${row.form.views_count || 0}</span>`;
-                            },
-                            orderable: true,
-                        },
-                        {
-                            data: "delete",
-                            title: "Delete",
-                            orderable: false,
-                            render: (data, type, row, meta) => `<button class="delete-notice ${this.canDelete() ? 'text-red-500' : 'text-gray-500'}" data-id="${data}"><i class="fas fa-trash"></i></button>`
-                        }
-                    ],
-                    drawCallback: () => {
-                        document.querySelectorAll(".toggle-sticky").forEach(el => {
-                            el.addEventListener("click", () => {
-                                this.toggleSticky(el.dataset.id);
-                            });
-                        });
-                        document.querySelectorAll(".edit-notice").forEach(el => {
-                            el.addEventListener("click", () => {
-                                this.editNotice(JSON.parse(el.dataset.notice).id);
-                            });
-                        });
-                        document.querySelectorAll(".delete-notice").forEach(el => {
-                            el.addEventListener("click", () => {
-                                this.deleteNotice(el.dataset.id);
-                            });
-                        });
-                    },
-                    rowCallback: function (row, data) {
-                        if (data.form.is_active) {
-                            $(row).css('background-color', '#d4edda');
-                        }
-                    },
-                });
-            });
+            this.notices.initializeDataTable();
         },
-        startLoading() {
-            this.loading = true;
-            this.progress = 0;
-            this.interval = setInterval(() => {
-                if (this.progress < 95) {
-                    this.progress += 5;
-                }
-            }, 100);
-        },
-        stopLoading() {
-            clearInterval(this.interval);
-            this.progress = 100;
-            setTimeout(() => {
-                this.loading = false;
-                this.progress = 0;
-            }, 500);
-        },
+        // Opens the modal to change the notice type color
         changeNoticeTypeColor() {
             this.$modal.show('change-notice-type-color');
         },
@@ -458,25 +243,24 @@ export default {
         },
     },
     async mounted() {
-        this.deletingNoticeId = null;
         this.$nextTick(() => {
             if (!$.fn.DataTable.isDataTable("#noticesTable")) {
                 this.dataTable = $("#noticesTable").DataTable();
             }
         });
         await this.fetchNotices();
-        if (this.flashSuccess) {
-            this.localFlashSuccess = this.flashSuccess;
-            setTimeout(() => {
-                this.localFlashSuccess = "";
-            }, 3000);
-        }
-        if (this.flashError) {
-            this.localFlashError = this.flashError;
-            setTimeout(() => {
-                this.localFlashError = "";
-            }, 3000);
-        }
+        // if (this.flashSuccess) {
+        //     this.localFlashSuccess = this.flashSuccess;
+        //     setTimeout(() => {
+        //         this.localFlashSuccess = "";
+        //     }, 3000);
+        // }
+        // if (this.flashError) {
+        //     this.localFlashError = this.flashError;
+        //     setTimeout(() => {
+        //         this.localFlashError = "";
+        //     }, 3000);
+        // }
         window.addEventListener("keydown", this.focusSearchBar);
     },
     beforeUnmount() {

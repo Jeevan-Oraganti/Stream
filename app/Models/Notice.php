@@ -18,7 +18,7 @@ class Notice extends Model
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
         'expiry_date' => 'datetime',
-        'scheduled_at' => 'datetime',
+        'event_date' => 'datetime',
         'is_sticky' => 'boolean',
         'recurrence_days' => 'array',
     ];
@@ -29,7 +29,7 @@ class Notice extends Model
         'is_sticky',
         'notice_type_id',
         'expiry_date',
-        'scheduled_at',
+        'event_date',
         'is_active',
         'recurrence',
         'recurrence_days'
