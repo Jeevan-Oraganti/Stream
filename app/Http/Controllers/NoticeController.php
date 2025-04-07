@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Models\Notice;
 use App\Models\NoticeType;
+use App\Models\UserNotice;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Facades\Log;
 
 class NoticeController extends Controller
 {
@@ -27,25 +29,24 @@ class NoticeController extends Controller
             })->whereNull('user_notices.user_id')
                 ->select('notices.*');
         } else {
-            $dismissedNotices = json_decode($request->cookie('dismissed_notice', '[]'), true) ?? [];
+            $dismissedNotices = json_decode($request->input('dismissedNotices', '[]'), true) ?? [];
+            Log::info($request->input('dismissedNotices'));
             $query->whereNotIn('id', $dismissedNotices);
         }
 
         return response()->json($query->get());
     }
 
-    //store dismissed notice for logged in user
+    //store dismissed notice for logged-in user
     public function storeUserDismissedNotices($noticeId)
     {
         if (auth()->check()) {
             $userId = auth()->id();
 
-            DB::table('user_notices')->insert([
-                'notice_id' => $noticeId,
-                'user_id' => $userId,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+            $userNotice = new UserNotice();
+            $userNotice->notice_id = $noticeId;
+            $userNotice->user_id = $userId;
+            $userNotice->save();
 
             return response()->json(['message' => 'Notice marked as read.']);
         }
@@ -89,7 +90,7 @@ class NoticeController extends Controller
             'notice_type_id' => 'required|exists:notice_types,id',
             'expiry_date' => 'nullable|date',
             'is_sticky' => 'required|boolean',
-            'scheduled_at' => 'nullable|date',
+            'event_date' => 'nullable|date',
             'recurrence' => 'nullable|in:daily,weekly,monthly',
             'recurrence_days' => 'nullable|array',
             'recurrence_days.*' => 'string|in:Monday,Tuesday,Wednesday,Thursday,Friday,Saturday,Sunday'
@@ -127,7 +128,7 @@ class NoticeController extends Controller
             return response()->json(['message' => 'Notice not found'], 404);
         }
 
-        //mark all noties a not sticky
+        //mark all notices a not sticky
         Notice::where('is_sticky', '1')
             ->update(['is_sticky' => '0']);
 

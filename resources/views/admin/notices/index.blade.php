@@ -11,8 +11,15 @@
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.dataTables.css" />
-    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
+{{--    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>--}}
     <script defer src="{{ asset('js/alpine.js') }}"></script>
+
+    <!-- Load jQuery first -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+    <!-- Then load DataTables -->
+    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+
 
     {{-- <script src="https://cdn.tailwindcss.com/"></script>--}}
 
