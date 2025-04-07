@@ -82,11 +82,8 @@
                     <div class="flex items-center">
                         <i :class="{ 'fas fa-star text-yellow-500': notice.form.is_sticky, 'far fa-star text-gray-500': !notice.form.is_sticky }"
                             @click="toggleSticky" class="cursor-pointer text-2xl"></i>
-                        <span class="ml-2 text-gray-700">Make this a priority notice</span>
+                        <span class="ml-2 text-gray-700 cursor-pointer" @click="toggleSticky">Make this a priority notice</span>
                     </div>
-                    <span v-if="notice.form.hasError('is_sticky')" class="text-red-500 text-sm mt-1 block">{{
-                        notice.form.getError('is_sticky')
-                        }}</span>
                 </div>
                 <div class="flex mt-4 justify-between space-x-3">
                     <button type="button" @click="$modal.hide('add-edit-notice')"

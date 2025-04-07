@@ -55,18 +55,19 @@ export default {
         }
     },
     async created() {
+        //fetch the notices
         try {
             this.notices = await CNotices.fetchUnreadNotices(this.isLoggedIn);
         } catch (error) {
             console.error("Error fetching notices:", error);
-            this.notices = []; // Prevent undefined errors
+            this.notices = [];
         }
     },
     methods: {
         /**
-         * Handles the dismissal of a notice.
+         * Handles the dismissal of a notice when clicked on x.
          * If the user is logged in, it acknowledges the notice on the server.
-         * Otherwise, it simply dismisses the notice locally.
+         * Otherwise, it simply dismisses the notice locally storing the dismissed notice ID in the local storage.
          */
         async handleNoticeDismissal(noticeId) {
             const notice = new CNotice(noticeId);

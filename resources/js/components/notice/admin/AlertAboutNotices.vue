@@ -86,7 +86,7 @@ export default {
             return this.notices.filter(({form}) => {
                 const eventDate = moment(form.event_date);
                 const isWeekend = [6, 0].includes(eventDate.day()); // 6 = Saturday, 0 = Sunday
-                return !form.is_active && eventDate.isAfter(now) && eventDate.diff(now, "hours") <= 24 && !isWeekend;
+                return !form.is_active && eventDate.isAfter(now) && eventDate.diff(now, "hours") <= 48 && !isWeekend;
             });
         },
         expiringNotices() {

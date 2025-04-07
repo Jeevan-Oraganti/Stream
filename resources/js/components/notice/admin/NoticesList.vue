@@ -13,11 +13,13 @@
                             </span>
                             <span class="flex flex-col">
                                 <button @click="addNotice"
-                                    class="block justify-center rounded-md bg-indigo-600 px-6 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600">
+                                    class="block justify-center rounded-full px-4 py-2 text-center text-sm font-semibold text-blue-500 shadow-sm"
+                                    style="border: 2px solid #3b82f6;">
                                     Add Notice
                                 </button>
                                 <button @click="changeNoticeTypeColor"
-                                    class="block justify-center rounded-md bg-green-500 px-4 py-2 text-center text-sm font-semibold text-white shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600">
+                                    class="block justify-center rounded-full px-4 py-2 text-center text-sm font-semibold text-blue-500 shadow-sm"
+                                    style="border: 2px solid #3b82f6">
                                     Change Notice Color
                                 </button>
                             </span>
@@ -125,7 +127,7 @@ export default {
             localFlashSuccess: '',
             localFlashError: '',
             notice: new CNotice(),
-            window: window.CHARTINK,
+            window: window.Laravel,
             notices: new CNotices(this)
         };
     },
@@ -143,21 +145,6 @@ export default {
         addNotice() {
             this.notice = new CNotice();
             this.$modal.show('add-edit-notice');
-        },
-        convertDateTime(dateTime) {
-            // Convert format to YYYY-MM-DDTHH:MM for datetime-local input
-            const utcDate = new Date(dateTime);
-            // Convert to IST timezone
-            const istDate = new Intl.DateTimeFormat("en-CA", {
-                timeZone: "Asia/Kolkata",
-                year: "numeric",
-                month: "2-digit",
-                day: "2-digit",
-                hour: "2-digit",
-                minute: "2-digit",
-                hour12: false
-            }).format(utcDate);
-            return istDate.replace(",", "").replace(/\//g, "-").replace(" ", "T")
         },
         // Finds and sets the selected notice for editing, updates its datetime, and opens the modal
         editNotice(noticeId) {
@@ -249,18 +236,6 @@ export default {
             }
         });
         await this.fetchNotices();
-        // if (this.flashSuccess) {
-        //     this.localFlashSuccess = this.flashSuccess;
-        //     setTimeout(() => {
-        //         this.localFlashSuccess = "";
-        //     }, 3000);
-        // }
-        // if (this.flashError) {
-        //     this.localFlashError = this.flashError;
-        //     setTimeout(() => {
-        //         this.localFlashError = "";
-        //     }, 3000);
-        // }
         window.addEventListener("keydown", this.focusSearchBar);
     },
     beforeUnmount() {
@@ -269,6 +244,12 @@ export default {
 };
 </script>
 <style scoped>
+
+button:hover {
+    background-color: #3b82f6;
+    color: white;
+}
+
 .search-popup {
     position: absolute;
     background: white;
@@ -339,4 +320,5 @@ export default {
         transform: rotate(360deg);
     }
 }
+
 </style>

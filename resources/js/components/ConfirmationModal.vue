@@ -1,7 +1,7 @@
 <!-- filepath: /home/bnetworks/websites/stream/resources/js/components/ConfirmationModal.vue -->
 <template>
-    <modal name="confirmation-modal" height="auto" :pivotY=".5" class="rounded-lg shadow-lg w-full max-w-lg mx-auto px-4">
-        <div class="container block m-auto justify-center p-6 bg-white rounded-lg shadow-md">
+    <modal name="confirmation-modal" height="auto" :pivotY=".5" class="rounded-lg w-full max-w-lg mx-auto px-4">
+        <div class="container block m-auto justify-center p-5 bg-white rounded-lg">
             <div class="border-2 py-5 px-5 rounded-md">
                 <h2 class="text-xl font-bold text-gray-900 mb-4 text-center">{{ title }}</h2>
                 <p class="text-sm text-gray-700 mb-6 text-center">{{ message }}</p>
