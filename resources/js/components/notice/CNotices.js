@@ -59,7 +59,7 @@ export default class CNotices {
                     {
                         data: "description",
                         title: "Description",
-                        render: (data, type, row, meta) => row.form.description || "No description"
+                        render: (data, type, row, meta) => { return `<span class="capitalize text-gray-800">${row.form.description || "No description"}</span>` }
                     },
                     {
                         data: "notice_type", title: "Type", render: (data, type, row, meta) => {
@@ -80,7 +80,7 @@ export default class CNotices {
                             const eventAt = moment(row.form.event_date);
                             const timeLeft = eventAt.diff(moment(), 'milliseconds');
                             if (timeLeft >= 0) {
-                                return `<span class="text-blue-500">Event on ${eventAt.format("MMM D, YYYY [at] h:mm A")}</span>`;
+                                return `<span class="whitespace-nowrap text-blue-500">Event on ${eventAt.format("MMM D, YYYY [at] h:mm A")}</span>`;
                             } else {
                                 return `<span class="text-red-500">Event on ${eventAt.format("MMM D, YYYY [at] h:mm A")}</span>`;
                             }
@@ -96,7 +96,7 @@ export default class CNotices {
                             const expiryDate = moment(row.form.expiry_date);
                             const daysLeft = expiryDate.diff(moment(), 'milliseconds');
                             if (daysLeft <= 0) {
-                                return `<span class="text-red-500">${expiryDate.format("MMMM D, YYYY [at] h:mm A")}</span>`;
+                                return `<span class="whitespace-nowrap text-red-500">Expired on ${expiryDate.format("MMMM D, YYYY [at] h:mm A")}</span>`;
                             }
                             return `<span class="text-green-500">${expiryDate.format("MMMM D, YYYY [at] h:mm A")}</span>`;
                         }
@@ -110,8 +110,8 @@ export default class CNotices {
                     {
                         data: "created_at",
                         title: "Created At",
-                        render: (data, type, row, meta) => row.form.created_at ? moment(row.form.created_at).format("MMM D, YYYY [at] h:mm A") : "No Date",
                         orderable: true,
+                        render: (data, type, row, meta) => {return `<span class="whitespace-nowrap text-gray-800">${row.form.created_at ? moment(row.form.created_at).format("MMM D, YYYY [at] h:mm A") : "No Date"}</span>`}
                     },
                     {
                         data: "views_count",
